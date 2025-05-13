@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Desempeño Anual - Karen Guzmán</title>
+    <style>
+        :root {
+            --primary: #0072ce;
+            --secondary: #4a86e8;
+            --accent: #f9a826;
+            --light: #f5f7fa;
+            --dark: #2c3e50;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header .pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-right: 2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .profile-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-info p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+        
+        .metrics-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metrics {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        
+        .metric {
+            flex: 1;
+            min-width: 180px;
+            background-color: var(--gray-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .metric:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .metric h3 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .section-title h2 {
+            margin-left: 1rem;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 8px;
+            font-size: 1.25rem;
+        }
+        
+        .progress-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-label {
+            font-weight: 600;
+        }
+        
+        .progress-value {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .evidence-link {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 0.5rem;
+            color: var(--info);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .evidence-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        
+        .evidence-icon {
+            margin-right: 0.25rem;
+        }
+        
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .gallery-item {
+            flex: 1;
+            min-width: 150px;
+            max-width: 250px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .gallery-caption {
+            padding: 0.5rem;
+            background: white;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        .progress-bar-container {
+            height: 8px;
+            background-color: var(--gray-light);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .testimonials {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .testimonial {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--gray-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+        }
+        
+        .testimonial::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 4rem;
+            color: rgba(0, 0, 0, 0.1);
+            font-family: Georgia, serif;
+        }
+        
+        .testimonial p {
+            margin-bottom: 1rem;
+            font-style: italic;
+            padding-left: 1rem;
+        }
+        
+        .testimonial-author {
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .projects {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .project {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--gray-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .project h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .project p {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .project-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-novus {
+            background-color: rgba(249, 168, 38, 0.2);
+            color: var(--accent);
+        }
+        
+        .status-progress {
+            background-color: rgba(74, 134, 232, 0.2);
+            color: var(--secondary);
+        }
+        
+        .status-pilot {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success);
+        }
+        
+        .commitments {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .commitment {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .commitment-icon {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(74, 134, 232, 0.2);
+            color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .commitment p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .profile {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-img {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .metrics-container {
+                margin-top: -30px;
+            }
+            
+            .metric {
+                min-width: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="pattern"></div>
+        <div class="container">
+            <div class="profile">
+                <div class="profile-img">KG</div>
+                <div class="profile-info">
+                    <h1>Karen Ariadna Guzmán Vega</h1>
+                    <p>Mentora de Éxito y Bienestar Estudiantil</p>
+                    <p><strong>Reporte de Desempeño 2024-2025</strong></p>
+                </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">📁</div>
+                <h2>Evidencias y Anexos</h2>
+            </div>
+            <div class="gallery">
+                <a href="#" class="gallery-item">
+                    <img src="/api/placeholder/250/150" alt="Tablero MATS" />
+                    <div class="gallery-caption">Tablero MATS - Mayo 2025</div>
+                </a>
+                <a href="#" class="gallery-item">
+                    <img src="/api/placeholder/250/150" alt="Resultados ECOA" />
+                    <div class="gallery-caption">Resultados ECOA WA1057</div>
+                </a>
+                <a href="#" class="gallery-item">
+                    <img src="/api/placeholder/250/150" alt="Certificaciones" />
+                    <div class="gallery-caption">Certificaciones profesionales</div>
+                </a>
+                <a href="#" class="gallery-item">
+                    <img src="/api/placeholder/250/150" alt="Evento Noche KREI" />
+                    <div class="gallery-caption">Evento Noche KREI</div>
+                </a>
+            </div>
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <a href="#" class="evidence-link" style="font-size: 1rem;"><span class="evidence-icon">📂</span> Ver carpeta completa de evidencias</a>
+            </div>
+        </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="metrics-container">
+            <div class="metrics">
+                <div class="metric">
+                    <h3>98.2%</h3>
+                    <p>Retención Primer Año</p>
+                </div>
+                <div class="metric">
+                    <h3>96.8%</h3>
+                    <p>Propósito de Vida</p>
+                </div>
+
+                <div class="metric">
+                    <h3>84h</h3>
+                    <p>Capacitación Profesional</p>
+                </div>
+                <div class="metric">
+                    <h3>3</h3>
+                    <p>Proyectos Innovadores</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">📈</div>
+                <h2>Indicadores Clave</h2>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Retención de alumnos de Primer Año</span>
+                    <span class="progress-value">98.2% / 94.5% <a href="#" class="evidence-link"><span class="evidence-icon">📄</span>Ver evidencia</a></span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 104%;"></div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Propósito de vida documentado</span>
+                    <span class="progress-value">96.8% / 85% <a href="#" class="evidence-link"><span class="evidence-icon">📄</span>Ver evidencia</a></span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 114%;"></div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Metas en 3 dimensiones del bienestar</span>
+                    <span class="progress-value">88.6% / 85%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 104%;"></div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Meta ocupacional CAG actualizada</span>
+                    <span class="progress-value">76.2% / 70%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 109%;"></div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Participación Evaluación Peer</span>
+                    <span class="progress-value">91% / 50%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 182%;"></div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Reclutamiento estudiantes Peer</span>
+                    <span class="progress-value">45 / 25</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 180%;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">💡</div>
+                <h2>Proyectos Innovadores</h2>
+            </div>
+            <div class="projects">
+                <div class="project">
+                    <h3>El Sombrero Selector</h3>
+                    <p>Asistente IA para orientación profesional personalizada que evalúa habilidades e intereses para ofrecer recomendaciones de carrera adaptadas a estudiantes de primer semestre.</p>
+                    <span class="project-status status-novus">Postulado NOVUS</span>
+                    <div class="gallery">
+                        <a href="#" class="gallery-item">
+                            <img src="/api/placeholder/250/150" alt="Prototipo interfaz" />
+                            <div class="gallery-caption">Prototipo de Interfaz</div>
+                        </a>
+                        <a href="#" class="gallery-item">
+                            <img src="/api/placeholder/250/150" alt="Resultados preliminares" />
+                            <div class="gallery-caption">Resultados preliminares</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="project">
+                    <h3>PULSO Tec</h3>
+                    <p>Plataforma digital integradora que centraliza servicios, eventos y recursos para fortalecer pertenencia, bienestar y desarrollo integral de los estudiantes.</p>
+                    <span class="project-status status-progress">Fase 2</span>
+                </div>
+                <div class="project">
+                    <h3>Medidor de Estado de Ánimo</h3>
+                    <p>Herramienta digital basada en metodología del Yale Center for Emotional Intelligence para identificar, monitorear y gestionar emociones efectivamente.</p>
+                    <span class="project-status status-pilot">Listo para Piloto</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">💬</div>
+                <h2>Testimonios de Estudiantes</h2>
+            </div>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <p>Mi mentora es Karen y debo decir que ha sido la mejor mentora a lo largo de todo lo que llevo de mi carrera, siempre me ha apoyado y he recurrido con ella a varias cosas mias, tanto de la uni como personales y siempre sabe que decir o como apoyarme.</p>
+                    <div class="testimonial-author">— Sofía del Carmen Salas Torres</div>
+                </div>
+                <div class="testimonial">
+                    <p>Desde mi primera sesión con Karen supe que podía contar con ella... No habría podido salir adelante sin ella. Ella estuvo apoyándome cuando me planteé mi transferencia permanente a Monterrey.</p>
+                    <div class="testimonial-author">— Erick Alfredo García Huerta</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">🚀</div>
+                <h2>Estrategias Destacadas</h2>
+            </div>
+            <div class="commitments">
+                <div class="commitment">
+                    <div class="commitment-icon">🎮</div>
+                    <p><strong>Gamificación para primer contacto</strong><br>84.4% respuesta en estudiantes transferencia mediante actividades interactivas en Quizizz <a href="#" class="evidence-link"><span class="evidence-icon">📊</span>Ver datos</a></p>
+                </div>
+                <div class="commitment">
+                    <div class="commitment-icon">🧠</div>
+                    <p><strong>"Redefiniendo tu Propósito de Vida"</strong><br>161 alumnos en sesiones de cierre con 87 evidencias documentadas <a href="#" class="evidence-link"><span class="evidence-icon">📷</span>Ver fotos</a></p>
+                </div>
+                <div class="commitment">
+                    <div class="commitment-icon">🤝</div>
+                    <p><strong>Eventos de comunidad</strong><br>Gestión de KREI-Burguesada, Noche KREI y eventos intercomunidades para fortalecer integración <a href="#" class="evidence-link"><span class="evidence-icon">🎥</span>Ver memoria</a></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">🔮</div>
+                <h2>Compromisos Futuros</h2>
+            </div>
+            <div class="commitments">
+                <div class="commitment">
+                    <div class="commitment-icon">📊</div>
+                    <p>Escalar "El Sombrero Selector" a más grupos de primer ingreso</p>
+                </div>
+                <div class="commitment">
+                    <div class="commitment-icon">🌐</div>
+                    <p>Completar Fase 3 del proyecto PULSO Tec para enero 2026</p>
+                </div>
+                <div class="commitment">
+                    <div class="commitment-icon">🧪</div>
+                    <p>Implementar fase piloto del Medidor de Estado de Ánimo con 50+ estudiantes</p>
+                </div>
+                <div class="commitment">
+                    <div class="commitment-icon">📚</div>
+                    <p>Continuar desarrollo profesional en analítica de datos para bienestar estudiantil</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>© 2025 Karen Ariadna Guzmán Vega | karen.gvg@gmail.com | Escobedo, N.L., México</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Animate progress bars on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
