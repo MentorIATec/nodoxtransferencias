@@ -11,9 +11,27 @@
             box-sizing: border-box;
         }
         
+        :root {
+            /* Colores del Tec */
+            --tec-blue: #003b5c;
+            --tec-blue-light: #005b8a;
+            
+            /* Colores de comunidades */
+            --talenta: #EC008C;
+            --revo: #C4829A;
+            --kresko: #0DCCCC;
+            --pasio: #CC0202;
+            --energio: #FD8204;
+            --krei: #79858B;
+            --reflekto: #FFDE17;
+            --forta: #870074;
+            --spirita: #5B0F8B;
+            --ekvilibro: #6FD34A;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #003b5c 0%, #005b8a 100%);
+            background: linear-gradient(135deg, var(--tec-blue) 0%, var(--tec-blue-light) 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -28,6 +46,12 @@
             max-width: 600px;
             width: 100%;
             overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
         
         .header {
@@ -35,6 +59,24 @@
             color: white;
             padding: 40px 30px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 3s ease infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1); opacity: 0.8; }
         }
         
         .logo {
@@ -48,17 +90,23 @@
             justify-content: center;
             font-size: 36px;
             color: #0062cc;
+            position: relative;
+            z-index: 1;
         }
         
         h1 {
             font-size: 28px;
             margin-bottom: 10px;
             font-weight: 700;
+            position: relative;
+            z-index: 1;
         }
         
         .subtitle {
             font-size: 18px;
             opacity: 0.9;
+            position: relative;
+            z-index: 1;
         }
         
         .content {
@@ -89,12 +137,13 @@
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
         }
         
         input:focus {
             outline: none;
             border-color: #0062cc;
+            box-shadow: 0 0 0 4px rgba(0, 98, 204, 0.1);
         }
         
         .btn {
@@ -108,6 +157,26 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:active::before {
+            width: 300px;
+            height: 300px;
         }
         
         .btn-primary {
@@ -131,6 +200,8 @@
         
         .btn-success:hover {
             background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
         }
         
         .btn-whatsapp {
@@ -143,12 +214,17 @@
         
         .btn-whatsapp:hover {
             background: #1da851;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
         }
         
         .error {
             color: #dc3545;
             font-size: 14px;
             margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .info-card {
@@ -156,6 +232,18 @@
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .info-card h3 {
@@ -177,31 +265,65 @@
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .info-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
         
         .info-box-colored {
             color: white;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
         }
         
-        .info-box-purple {
-            background: linear-gradient(135deg, #7c3aed, #6b21a8);
+        .info-box-colored::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
         }
         
-        .info-box-green {
-            background: linear-gradient(135deg, #10b981, #059669);
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
         }
+        
+        /* Colores dinámicos de comunidades */
+        .comunidad-talenta { background: linear-gradient(135deg, var(--talenta), #d10078) !important; }
+        .comunidad-revo { background: linear-gradient(135deg, var(--revo), #b07189) !important; }
+        .comunidad-kresko { background: linear-gradient(135deg, var(--kresko), #0bb8b8) !important; }
+        .comunidad-pasio { background: linear-gradient(135deg, var(--pasio), #b80202) !important; }
+        .comunidad-energio { background: linear-gradient(135deg, var(--energio), #e37404) !important; }
+        .comunidad-krei { background: linear-gradient(135deg, var(--krei), #6a757a) !important; }
+        .comunidad-reflekto { 
+            background: linear-gradient(135deg, var(--reflekto), #e6c815) !important; 
+            color: #333 !important;
+        }
+        .comunidad-forta { background: linear-gradient(135deg, var(--forta), #750063) !important; }
+        .comunidad-spirita { background: linear-gradient(135deg, var(--spirita), #4f0c7a) !important; }
+        .comunidad-ekvilibro { background: linear-gradient(135deg, var(--ekvilibro), #5fc33d) !important; }
         
         .info-box h4 {
             font-size: 14px;
             opacity: 0.9;
             margin-bottom: 8px;
             font-weight: 500;
+            position: relative;
+            z-index: 1;
         }
         
         .info-box p {
             font-size: 20px;
             font-weight: 700;
+            position: relative;
+            z-index: 1;
         }
         
         .detail-list {
@@ -230,6 +352,18 @@
         .success-message {
             text-align: center;
             padding: 40px;
+            animation: zoomIn 0.5s ease;
+        }
+        
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         .success-icon {
@@ -243,6 +377,13 @@
             margin: 0 auto 20px;
             font-size: 40px;
             color: white;
+            animation: checkmark 0.8s ease;
+        }
+        
+        @keyframes checkmark {
+            0% { transform: scale(0) rotate(-45deg); }
+            50% { transform: scale(1.2) rotate(-45deg); }
+            100% { transform: scale(1) rotate(0deg); }
         }
         
         .hidden {
@@ -262,6 +403,36 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #0062cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
         
         @media (max-width: 600px) {
@@ -288,6 +459,14 @@
     </style>
 </head>
 <body>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Cargando datos...</p>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="header">
             <div class="logo">🎓</div>
@@ -305,7 +484,7 @@
                         id="matricula" 
                         placeholder="Ej: A01234567"
                         maxlength="9"
-                        onkeypress="if(event.key === 'Enter') buscarEstudiante()"
+                        autocomplete="off"
                     >
                     <button class="btn btn-primary" onclick="buscarEstudiante()">
                         <span>🔍</span> Buscar
@@ -324,11 +503,11 @@
                 </div>
                 
                 <div class="info-grid">
-                    <div class="info-box info-box-colored info-box-purple">
+                    <div id="mentorBox" class="info-box info-box-colored">
                         <h4>Tu Mentor</h4>
                         <p id="mentorName"></p>
                     </div>
-                    <div class="info-box info-box-colored info-box-green">
+                    <div id="communityBox" class="info-box info-box-colored">
                         <h4>Tu Comunidad</h4>
                         <p id="communityName"></p>
                     </div>
@@ -384,52 +563,76 @@
     </div>
     
     <script>
-        // Base de datos de estudiantes (simulada)
-        const estudiantes = [
-            {
-                matricula: "A01655116",
-                nombre: "Reséndiz Hernández, Juan Carlos",
-                mentor: "Abigail Cepeda Hernández",
-                whatsapp: "+5218125624833",
-                comunidad: "Reflekto",
-                email: "A01655116@tec.mx",
-                campusOrigen: "Campus Ciudad de México",
-                carrera: "Ingeniero Mecánico - IM"
-            },
-            {
-                matricula: "A01781721",
-                nombre: "Santos Montaño, José Luis",
-                mentor: "Alinna Correa Escobedo",
-                whatsapp: "+5218125624833",
-                comunidad: "Reflekto",
-                email: "A01781721@tec.mx",
-                campusOrigen: "Campus Guadalajara",
-                carrera: "Ingeniero en Ciencia de Datos y Matemáticas - IDM"
-            },
-            {
-                matricula: "A01385944",
-                nombre: "Ovalle Valdez, Carlos",
-                mentor: "Andrea Herrera Morales",
-                whatsapp: "+5218125624833",
-                comunidad: "Kresko",
-                email: "A01385944@tec.mx",
-                campusOrigen: "Campus Saltillo",
-                carrera: "Ingeniero Biomédico - IMD"
-            },
-            {
-                matricula: "A01769903",
-                nombre: "Montero Márquez, Sergio Octavio",
-                mentor: "Andrea Herrera Morales",
-                whatsapp: "+5218125624833",
-                comunidad: "Kresko",
-                email: "A01769903@itesm.mx",
-                campusOrigen: "Campus Toluca",
-                carrera: "Ingeniero en Mecatrónica - IMT"
+        // Configuración
+        const CONFIG = {
+            // URL del archivo JSON con los datos de estudiantes
+            STUDENTS_DATA_URL: 'estudiantes.json',
+            // URL del Google Form (configurar después)
+            GOOGLE_FORM_URL: '',
+            // Mapeo de IDs del Google Form (configurar después)
+            FORM_FIELDS: {
+                matricula: 'entry.XXXXXX',
+                nombre: 'entry.XXXXXX',
+                mentor: 'entry.XXXXXX',
+                comunidad: 'entry.XXXXXX',
+                timestamp: 'entry.XXXXXX'
             }
-        ];
+        };
         
+        // Variables globales
+        let estudiantesData = [];
         let estudianteActual = null;
         
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', async () => {
+            await cargarDatosEstudiantes();
+        });
+        
+        // Función para cargar datos de estudiantes
+        async function cargarDatosEstudiantes() {
+            try {
+                const response = await fetch(CONFIG.STUDENTS_DATA_URL);
+                
+                if (!response.ok) {
+                    throw new Error('No se pudieron cargar los datos');
+                }
+                
+                estudiantesData = await response.json();
+                console.log(`Datos cargados: ${estudiantesData.length} estudiantes`);
+                
+                // Ocultar loading
+                document.getElementById('loadingOverlay').style.display = 'none';
+                
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                // En desarrollo, usar datos de ejemplo
+                estudiantesData = [
+                    {
+                        matricula: "A01655116",
+                        nombre: "Reséndiz Hernández, Juan Carlos",
+                        mentor: "Abigail Cepeda Hernández",
+                        whatsapp: "+5218125624833",
+                        comunidad: "Reflekto",
+                        email: "A01655116@tec.mx",
+                        campusOrigen: "Campus Ciudad de México",
+                        carrera: "Ingeniero Mecánico - IM"
+                    },
+                    {
+                        matricula: "A01385944",
+                        nombre: "Ovalle Valdez, Carlos",
+                        mentor: "Andrea Herrera Morales",
+                        whatsapp: "+5218125624833",
+                        comunidad: "Kresko",
+                        email: "A01385944@tec.mx",
+                        campusOrigen: "Campus Saltillo",
+                        carrera: "Ingeniero Biomédico - IMD"
+                    }
+                ];
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        }
+        
+        // Función de búsqueda optimizada para grandes datasets
         function buscarEstudiante() {
             const matricula = document.getElementById('matricula').value.trim().toUpperCase();
             const errorElement = document.getElementById('errorMessage');
@@ -439,8 +642,8 @@
                 return;
             }
             
-            // Buscar estudiante en la base de datos
-            const estudiante = estudiantes.find(e => 
+            // Búsqueda eficiente
+            const estudiante = estudiantesData.find(e => 
                 e.matricula.toUpperCase() === matricula
             );
             
@@ -449,7 +652,7 @@
                 mostrarInformacionEstudiante(estudiante);
                 errorElement.classList.add('hidden');
             } else {
-                mostrarError('Matrícula no encontrada. Por favor verifica e intenta de nuevo.');
+                mostrarError('⚠️ Matrícula no encontrada. Por favor verifica e intenta de nuevo.');
             }
         }
         
@@ -460,73 +663,90 @@
         }
         
         function mostrarInformacionEstudiante(estudiante) {
-            // Ocultar sección de búsqueda
-            document.getElementById('searchSection').classList.add('hidden');
-            
-            // Llenar información
-            document.getElementById('welcomeMessage').textContent = `¡Hola ${estudiante.nombre}!`;
-            document.getElementById('mentorName').textContent = estudiante.mentor;
-            document.getElementById('communityName').textContent = estudiante.comunidad;
-            document.getElementById('careerName').textContent = estudiante.carrera;
-            document.getElementById('campusOrigin').textContent = estudiante.campusOrigen;
-            
-            // Mostrar sección de información
-            document.getElementById('studentInfo').classList.remove('hidden');
+            // Ocultar sección de búsqueda con animación
+            const searchSection = document.getElementById('searchSection');
+            searchSection.style.opacity = '0';
+            setTimeout(() => {
+                searchSection.classList.add('hidden');
+                
+                // Llenar información
+                document.getElementById('welcomeMessage').textContent = `¡Hola ${estudiante.nombre}!`;
+                document.getElementById('mentorName').textContent = estudiante.mentor;
+                document.getElementById('communityName').textContent = estudiante.comunidad;
+                document.getElementById('careerName').textContent = estudiante.carrera;
+                document.getElementById('campusOrigin').textContent = estudiante.campusOrigen;
+                
+                // Aplicar color de comunidad
+                const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
+                document.getElementById('communityBox').className = `info-box info-box-colored ${comunidadClass}`;
+                
+                // Color del mentor (púrpura por defecto)
+                document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-spirita';
+                
+                // Mostrar sección de información
+                const studentInfo = document.getElementById('studentInfo');
+                studentInfo.classList.remove('hidden');
+            }, 300);
         }
         
-        function confirmarAsistencia() {
-            // Aquí puedes agregar el código para enviar la confirmación a Google Sheets
-            // Por ahora solo mostramos el mensaje de confirmación
+        async function confirmarAsistencia() {
+            const botonConfirmar = document.querySelector('.btn-success');
+            botonConfirmar.innerHTML = '<span class="loading"></span> Confirmando...';
+            botonConfirmar.disabled = true;
             
-            document.getElementById('studentInfo').classList.add('hidden');
-            document.getElementById('confirmationMessage').classList.remove('hidden');
-            
-            // Registrar en Google Analytics o tu sistema de tracking
-            console.log('Asistencia confirmada:', estudianteActual);
+            // Simular envío (configurar con Google Forms real)
+            setTimeout(() => {
+                // Aquí iría el código real de envío a Google Forms
+                if (CONFIG.GOOGLE_FORM_URL) {
+                    // enviarAGoogleForms();
+                }
+                
+                // Mostrar confirmación
+                document.getElementById('studentInfo').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('studentInfo').classList.add('hidden');
+                    document.getElementById('confirmationMessage').classList.remove('hidden');
+                }, 300);
+            }, 1500);
         }
         
         function contactarMentor() {
             if (!estudianteActual) return;
             
-            const mensaje = `¡Hola ${estudianteActual.mentor}! Soy ${estudianteActual.nombre} y seré parte de tu grupo en el evento de transferencias. ¡Nos vemos pronto!`;
+            const mensaje = `¡Hola ${estudianteActual.mentor}! Soy ${estudianteActual.nombre} y seré parte de tu grupo en el evento de transferencias. ¡Nos vemos pronto! 🎓`;
             const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
             const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
             
             window.open(url, '_blank');
         }
         
-        // Permitir búsqueda con Enter
+        // Búsqueda con Enter
         document.getElementById('matricula').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 buscarEstudiante();
             }
         });
-    </script>
-    
-    <!-- Script para Google Sheets (opcional) -->
-    <script>
-        // Configuración para enviar datos a Google Sheets
-        const GOOGLE_FORM_URL = 'TU_URL_DE_GOOGLE_FORM_AQUI';
         
-        async function enviarConfirmacionGoogleSheets(estudiante) {
-            // Implementar envío a Google Forms/Sheets
-            // Ejemplo de estructura:
-            /*
+        // Función para enviar a Google Forms (implementar cuando se configure)
+        async function enviarAGoogleForms() {
+            if (!CONFIG.GOOGLE_FORM_URL || !estudianteActual) return;
+            
             const formData = new FormData();
-            formData.append('entry.XXXXXX', estudiante.matricula);
-            formData.append('entry.XXXXXX', estudiante.nombre);
-            formData.append('entry.XXXXXX', new Date().toISOString());
+            formData.append(CONFIG.FORM_FIELDS.matricula, estudianteActual.matricula);
+            formData.append(CONFIG.FORM_FIELDS.nombre, estudianteActual.nombre);
+            formData.append(CONFIG.FORM_FIELDS.mentor, estudianteActual.mentor);
+            formData.append(CONFIG.FORM_FIELDS.comunidad, estudianteActual.comunidad);
+            formData.append(CONFIG.FORM_FIELDS.timestamp, new Date().toISOString());
             
             try {
-                await fetch(GOOGLE_FORM_URL, {
+                await fetch(CONFIG.GOOGLE_FORM_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: formData
                 });
             } catch (error) {
-                console.error('Error al enviar confirmación:', error);
+                console.error('Error enviando formulario:', error);
             }
-            */
         }
     </script>
 </body>
