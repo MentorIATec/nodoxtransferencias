@@ -795,12 +795,10 @@
                 }
                 
                 const data = await response.json();
-                    // 🔍 Detectar la primera pestaña disponible (por ejemplo, "Verano 25")    
-                const primeraClave = Object.keys(data).find(clave => Array.isArray(data[clave]));
-                if (!primeraClave) {
-                  throw new Error('No se encontró ninguna lista de estudiantes válida.');
-                }
-                    estudiantesData = data[primeraClave].map(estudiante => ({
+                  
+                 // Procesar la estructura del JSON
+                if (data && data["Verano 25"]) {
+                    estudiantesData = data["Verano 25"].map(estudiante => ({
                         matricula: estudiante.Matricula.trim(),
                         nombre: estudiante["Nombre del alumno"].trim(),
                         mentor: estudiante["Mentor Asignado Verano 25"].trim(),
@@ -811,7 +809,7 @@
                         carrera: estudiante["Carrera de egreso"].trim()
                     }));
                     
-                    console.log(`✅ Datos cargados exitosamente: ${estudiantesData.length} estudiantes desde "${primeraClave}"`);
+                    console.log(`✅ Datos cargados exitosamente: ${estudiantesData.length} estudiantes`);
                     console.log('📋 Muestra de datos:', estudiantesData.slice(0, 2));
                 } else {
                     throw new Error('Estructura de datos incorrecta');
