@@ -1035,6 +1035,8 @@ async function cargarDatosEstudiantes() {
     document.getElementById('studentInfo').style.opacity = 1;
     // Si tienes scroll, enfoca la tarjeta de info:
     document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
+    // Oculta las opciones de asistencia
+    document.querySelector('.attendance-options').style.display = 'none';
 }   
 </script>
 </body>
