@@ -727,7 +727,7 @@
                     <p><strong>Tip:</strong> ¡No olvides llevar tu termo para mantenerte hidratado! 💙♻️</p>
                 </div>
                 
-                <div class="attendance-options">
+                <div class="attendance-options"> id="attendanceOptions">
                     <h4>Selecciona una opción:</h4>
                     <div class="options-grid">
                         <button class="btn btn-success" onclick="confirmarAsistencia(true, event)">
@@ -738,9 +738,11 @@
                         </button>
                     </div>
                 </div>
-                
+                <div id="mensajeYaRegistrado" style="display:none; margin:18px 0; color:#0062cc; font-weight:bold; text-align:center;">
+                   ✅ Ya registraste tu respuesta. No es necesario hacerlo de nuevo.
+                </div>
                 <button class="btn btn-whatsapp" onclick="contactarMentor()">
-                    💬 Contactar a mi mentor por WhatsApp
+                    💬 Contactar a mi mentor/a por WhatsApp
                 </button>
             </div>
             
@@ -905,9 +907,15 @@ async function cargarDatosEstudiantes() {
             // Color del mentor (púrpura por defecto)
             document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-spirita';
             
-            // Mostrar sección de información
-            const studentInfo = document.getElementById('studentInfo');
-            studentInfo.classList.remove('hidden');
+            // === PREVENCIÓN DE REGISTROS DUPLICADOS ===
+            const yaRegistrado = localStorage.getItem('registroTransferido_' + estudiante.matricula) === '1';
+            if (yaRegistrado) {
+                document.getElementById('attendanceOptions').style.display = 'none';
+                document.getElementById('mensajeYaRegistrado').style.display = 'block';
+            } else {
+                document.getElementById('attendanceOptions').style.display = '';
+                document.getElementById('mensajeYaRegistrado').style.display = 'none';
+            }
         }, 300);
     }
 
@@ -946,6 +954,8 @@ async function cargarDatosEstudiantes() {
                 } else {
                     document.getElementById('confirmationNo').classList.remove('hidden');
                 }
+                // Guarda matrícula como registrada en localStorage
+                localStorage.setItem('registroTransferido_' + estudianteActual.matricula, '1');
             }, 300);
 
         } catch (error) {
@@ -959,7 +969,6 @@ async function cargarDatosEstudiantes() {
             mostrarError('❌ Error al procesar la solicitud. Por favor intenta de nuevo.');
         }
     }
-
     // --- ENVÍO DE FORMULARIO GOOGLE FORMS ---
     async function enviarAGoogleForms(asistira) {
         if (!CONFIG.GOOGLE_FORM_URL || !estudianteActual) return;
@@ -1025,19 +1034,29 @@ async function cargarDatosEstudiantes() {
             });
         }
     });
-   function mostrarInformacionEvento() {
-    // Oculta ambas confirmaciones si estuvieran visibles
-    document.getElementById('confirmationYes').classList.add('hidden');
-    document.getElementById('confirmationNo').classList.add('hidden');
-    // Vuelve a mostrar la info personalizada
-    document.getElementById('studentInfo').classList.remove('hidden');
-    // Opcional: re-aparecer sección de info con animación
-    document.getElementById('studentInfo').style.opacity = 1;
-    // Si tienes scroll, enfoca la tarjeta de info:
-    document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
-    // Oculta las opciones de asistencia
-    document.querySelector('.attendance-options').style.display = 'none';
-}   
+        function mostrarInformacionEvento() {
+            // Oculta ambas confirmaciones si estuvieran visibles
+            document.getElementById('confirmationYes').classList.add('hidden');
+            document.getElementById('confirmationNo').classList.add('hidden');
+            // Vuelve a mostrar la info personalizada
+            document.getElementById('studentInfo').classList.remove('hidden');
+            // Re-aparecer sección de info con animación
+            document.getElementById('studentInfo').style.opacity = 1;
+            // Si tienes scroll, enfoca la tarjeta de info:
+            document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
+        
+            // PREVENCIÓN DE REGISTROS DUPLICADOS
+            if (estudianteActual) {
+                const yaRegistrado = localStorage.getItem('registroTransferido_' + estudianteActual.matricula) === '1';
+                if (yaRegistrado) {
+                    document.getElementById('attendanceOptions').style.display = 'none';
+                    document.getElementById('mensajeYaRegistrado').style.display = 'block';
+                } else {
+                    document.getElementById('attendanceOptions').style.display = '';
+                    document.getElementById('mensajeYaRegistrado').style.display = 'none';
+                }
+            }
+        }
 </script>
 </body>
 </html>
