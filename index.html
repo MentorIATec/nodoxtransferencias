@@ -762,7 +762,7 @@
         // Configuración
         const CONFIG = {
             // URL del Google Form - ACTUALIZAR CON TU URL REAL
-            GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSftfAfazFqnVWx5oo7XS-SIVv-_CoV0JQcU-npq39kitozEXQ/viewform?usp=header',
+            GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSftfAfazFqnVWx5oo7XS-SIVv-_CoV0JQcU-npq39kitozEXQ/formResponse',
             
             // Mapeo de IDs del Google Form - ACTUALIZAR CON TUS IDS REALES
             FORM_FIELDS: {
@@ -798,7 +798,7 @@
                 
                 // Procesar la estructura del JSON
                 if (data && data["Verano 25"]) {
-                    estudiantesData = data["estudiantes.json"].map(estudiante => ({
+                    estudiantesData = data["Verano 25"].map(estudiante => ({
                         matricula: estudiante.Matricula,
                         nombre: estudiante["Nombre del alumno"],
                         mentor: estudiante["Mentor Asignado Verano 25"],
