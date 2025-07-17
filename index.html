@@ -781,42 +781,55 @@
         await cargarDatosEstudiantes();
     });
 
-    async function cargarDatosEstudiantes() {
-        try {
-            const response = await fetch('/estudiantes.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            console.log('🔍 Estructura JSON cargada:', data);
-
-            // Detecta la primera clave que tenga arreglo de estudiantes (ej: "Verano 25")
-            const primeraClave = Object.keys(data).find(clave => Array.isArray(data[clave]));
-
-            if (!primeraClave) {
-                throw new Error('No se encontró ninguna lista de estudiantes válida.');
-            }
-
-            estudiantesData = data[primeraClave].map(estudiante => ({
-                matricula: estudiante.Matricula?.trim(),
-                nombre: estudiante["Nombre del alumno"]?.trim(),
-                mentor: estudiante["Mentor Asignado Verano 25"]?.trim(),
-                whatsapp: estudiante.Whatsapp?.trim(),
-                comunidad: estudiante.Comunidad?.trim(),
-                email: estudiante["Email del alumno"]?.trim(),
-                campusOrigen: estudiante["Campus origen"]?.trim(),
-                carrera: estudiante["Carrera de egreso"]?.trim()
-            })).filter(e => e.matricula);
-
-            console.log(`✅ Datos cargados: ${estudiantesData.length} estudiantes desde "${primeraClave}"`);
-        } catch (error) {
-            console.error('❌ Error cargando datos:', error);
-            estudiantesData = [];
-        }
-        // Oculta loading siempre, pase lo que pase
-        document.getElementById('loadingOverlay').style.display = 'none';
+    // Helper para buscar el campo correcto
+function getField(est, ...candidatos) {
+    for (let c of candidatos) {
+        if (est[c]) return est[c];
     }
+    // Búsqueda "relajada" por nombre si no encontró nada exacto:
+    for (let key of Object.keys(est)) {
+        if (candidatos.some(c => key.toLowerCase().includes(c.toLowerCase()))) {
+            return est[key];
+        }
+    }
+    return "";
+}
 
+async function cargarDatosEstudiantes() {
+    try {
+        const response = await fetch('/estudiantes.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('🔍 Estructura JSON cargada:', data);
+
+        // Detecta la primera clave que tenga arreglo de estudiantes (ej: "Verano 25")
+        const primeraClave = Object.keys(data).find(clave => Array.isArray(data[clave]));
+
+        if (!primeraClave) {
+            throw new Error('No se encontró ninguna lista de estudiantes válida.');
+        }
+
+        estudiantesData = data[primeraClave].map(estudiante => ({
+            matricula: estudiante.Matricula?.trim(),
+            nombre: estudiante["Nombre del alumno"]?.trim(),
+            mentor: getField(estudiante, "Mentor Asignado Verano 25", "Mentor Asignado Agosto-Diciembre 25", "Mentor")?.trim(),
+            whatsapp: estudiante.Whatsapp?.trim(),
+            comunidad: estudiante.Comunidad?.trim(),
+            email: estudiante["Email del alumno"]?.trim(),
+            campusOrigen: estudiante["Campus origen"]?.trim(),
+            carrera: getField(estudiante, "Carrera de egreso", "Carrera", "Carrera destino")?.trim(),
+        })).filter(e => e.matricula);
+
+        console.log(`✅ Datos cargados: ${estudiantesData.length} estudiantes desde "${primeraClave}"`);
+    } catch (error) {
+        console.error('❌ Error cargando datos:', error);
+        estudiantesData = [];
+    }
+    // Oculta loading siempre, pase lo que pase
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
     // --- BÚSQUEDA DE ESTUDIANTE ---
     function buscarEstudiante() {
         const matricula = document.getElementById('matricula').value.trim().toUpperCase();
