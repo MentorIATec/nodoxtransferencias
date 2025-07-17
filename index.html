@@ -599,6 +599,25 @@
             .btn {
                 width: 100%;
             }
+            .tec-logo {
+                width: 120px;
+                height: auto;
+                margin-bottom: 20px;
+                filter: brightness(0) invert(1); /* logo blanco sobre fondo azul */
+                opacity: 0.92;
+                animation: fadeInLogo 1s ease;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            @keyframes fadeInLogo {
+                from { opacity: 0; transform: translateY(-20px);}
+                to { opacity: 0.92; transform: translateY(0);}
+            }
+            @media (max-width: 600px) {
+                .tec-logo { width: 80px; }
+            }
         }
     </style>
 </head>
@@ -611,12 +630,13 @@
         </div>
     </div>
     
-    <div class="container">
-        <div class="header">
-            <div class="emoji-header">🎉🎓✨</div>
-            <h1>Bienvenida de Transferencias</h1>
-            <p class="subtitle">"Tu historia en Mty empieza hoy"</p>
-        </div>
+    <div class="header">
+        <!-- Logo del Tec -->
+        <img src="logo-tec.svg" alt="Tecnológico de Monterrey" class="tec-logo">
+        <div class="emoji-header">🎉🎓✨</div>
+        <h1>Bienvenida de Transferencias</h1>
+        <p class="subtitle">"Tu historia en Mty empieza hoy"</p>
+    </div>
         
         <div class="content">
             <!-- Sección de búsqueda -->
