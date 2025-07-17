@@ -759,315 +759,237 @@
     </div>
     
     <script>
-        // Configuración
-        const CONFIG = {
-            // URL del Google Form - ACTUALIZAR CON TU URL REAL
-            GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSftfAfazFqnVWx5oo7XS-SIVv-_CoV0JQcU-npq39kitozEXQ/formResponse',
-            
-            // Mapeo de IDs del Google Form - ACTUALIZAR CON TUS IDS REALES
-            FORM_FIELDS: {
-                matricula: 'entry.1607137015',
-                nombre: 'entry.1566331032',
-                mentor: 'entry.710554786',
-                comunidad: 'entry.1007914499',
-                asistira: 'entry.52874123',
-                timestamp: 'entry.829961349',
-            }
-        };
-        
-        // Variables globales
-        let estudiantesData = [];
-        let estudianteActual = null;
-        
-        // Cargar datos al iniciar
-        document.addEventListener('DOMContentLoaded', async () => {
-            await cargarDatosEstudiantes();
-        });
-        
-        // Función para cargar datos de estudiantes
-        async function cargarDatosEstudiantes() {
-            try {
-                // Intentar cargar el archivo JSON real
-                const response = await fetch('/estudiantes.json');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                  
-                 // Procesar la estructura del JSON
-                if (data && data["Verano 25"]) {
-                    estudiantesData = data["Verano 25"].map(estudiante => ({
-                        matricula: estudiante.Matricula.trim(),
-                        nombre: estudiante["Nombre del alumno"].trim(),
-                        mentor: estudiante["Mentor Asignado Verano 25"].trim(),
-                        whatsapp: estudiante.Whatsapp.trim(),
-                        comunidad: estudiante.Comunidad.trim(),
-                        email: estudiante["Email del alumno"].trim(),
-                        campusOrigen: estudiante["Campus origen"].trim(),
-                        carrera: estudiante["Carrera de egreso"].trim()
-                    }));
-                    
-                    console.log(`✅ Datos cargados exitosamente: ${estudiantesData.length} estudiantes`);
-                    console.log('📋 Muestra de datos:', estudiantesData.slice(0, 2));
-                } else {
-                    throw new Error('Estructura de datos incorrecta');
-                }
-                
-            } catch (error) {
-                console.error('❌ Error cargando datos:', error);
-                console.log('🔄 Usando datos de ejemplo para desarrollo...');
-                
-                // Datos de ejemplo para desarrollo
-                estudiantesData = [
-                    {
-                        matricula: "A01655116",
-                        nombre: "Reséndiz Hernández, Juan Carlos",
-                        mentor: "Abigail Cepeda Hernández",
-                        whatsapp: "+5218125624833",
-                        comunidad: "Reflekto",
-                        email: "A01655116@tec.mx",
-                        campusOrigen: "Campus Ciudad de México",
-                        carrera: "Ingeniero Mecánico - IM"
-                    },
-                    {
-                        matricula: "A01385944",
-                        nombre: "Ovalle Valdez, Carlos",
-                        mentor: "Andrea Herrera Morales",
-                        whatsapp: "+5218125624833",
-                        comunidad: "Kresko",
-                        email: "A01385944@tec.mx",
-                        campusOrigen: "Campus Saltillo",
-                        carrera: "Ingeniero Biomédico - IMD"
-                    },
-                    {
-                        matricula: "A01781721",
-                        nombre: "Santos Montaño, José Luis",
-                        mentor: "Alinna Correa Escobedo",
-                        whatsapp: "+5218125624833",
-                        comunidad: "Reflekto",
-                        email: "A01781721@tec.mx",
-                        campusOrigen: "Campus Guadalajara",
-                        carrera: "Ingeniero en Ciencia de Datos y Matemáticas - IDM"
-                    }
-                ];
-            }
-            
-            // Ocultar loading
-            document.getElementById('loadingOverlay').style.display = 'none';
+    // --- VARIABLES GLOBALES ---
+    let estudiantesData = [];
+    let estudianteActual = null;
+
+    // --- CONFIGURACIÓN GOOGLE FORMS ---
+    const CONFIG = {
+        GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSftfAfazFqnVWx5oo7XS-SIVv-_CoV0JQcU-npq39kitozEXQ/formResponse',
+        FORM_FIELDS: {
+            matricula: 'entry.1607137015',
+            nombre: 'entry.1566331032',
+            mentor: 'entry.710554786',
+            comunidad: 'entry.1007914499',
+            asistira: 'entry.52874123',
+            timestamp: 'entry.829961349',
         }
-        
-        // Función de búsqueda
-        function buscarEstudiante() {
-            const matricula = document.getElementById('matricula').value.trim().toUpperCase();
-            const errorElement = document.getElementById('errorMessage');
-            
-            if (!matricula) {
-                mostrarError('⚠️ Por favor ingresa tu matrícula');
-                return;
+    };
+
+    // --- CARGA DE DATOS AL INICIAR ---
+    document.addEventListener('DOMContentLoaded', async () => {
+        await cargarDatosEstudiantes();
+    });
+
+    async function cargarDatosEstudiantes() {
+        try {
+            const response = await fetch('/estudiantes.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
-            console.log(`🔍 Buscando matrícula: ${matricula}`);
-            
-            // Búsqueda en los datos
-            const estudiante = estudiantesData.find(e => 
-                e.matricula && e.matricula.toUpperCase() === matricula
-            );
-            
-            if (estudiante) {
-                console.log('✅ Estudiante encontrado:', estudiante);
-                estudianteActual = estudiante;
-                mostrarInformacionEstudiante(estudiante);
-                errorElement.classList.add('hidden');
-            } else {
-                console.log('❌ Estudiante no encontrado');
-                console.log('📋 Matrículas disponibles:', estudiantesData.map(e => e.matricula));
-                mostrarError('⚠️ Matrícula no encontrada. Por favor verifica e intenta de nuevo.');
+            const data = await response.json();
+            console.log('🔍 Estructura JSON cargada:', data);
+
+            // Detecta la primera clave que tenga arreglo de estudiantes (ej: "Verano 25")
+            const primeraClave = Object.keys(data).find(clave => Array.isArray(data[clave]));
+
+            if (!primeraClave) {
+                throw new Error('No se encontró ninguna lista de estudiantes válida.');
             }
+
+            estudiantesData = data[primeraClave].map(estudiante => ({
+                matricula: estudiante.Matricula?.trim(),
+                nombre: estudiante["Nombre del alumno"]?.trim(),
+                mentor: estudiante["Mentor Asignado Verano 25"]?.trim(),
+                whatsapp: estudiante.Whatsapp?.trim(),
+                comunidad: estudiante.Comunidad?.trim(),
+                email: estudiante["Email del alumno"]?.trim(),
+                campusOrigen: estudiante["Campus origen"]?.trim(),
+                carrera: estudiante["Carrera de egreso"]?.trim()
+            })).filter(e => e.matricula);
+
+            console.log(`✅ Datos cargados: ${estudiantesData.length} estudiantes desde "${primeraClave}"`);
+        } catch (error) {
+            console.error('❌ Error cargando datos:', error);
+            estudiantesData = [];
         }
-        
-        function mostrarError(mensaje) {
-            const errorElement = document.getElementById('errorMessage');
-            errorElement.textContent = mensaje;
-            errorElement.classList.remove('hidden');
+        // Oculta loading siempre, pase lo que pase
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    // --- BÚSQUEDA DE ESTUDIANTE ---
+    function buscarEstudiante() {
+        const matricula = document.getElementById('matricula').value.trim().toUpperCase();
+        const errorElement = document.getElementById('errorMessage');
+
+        console.log('🔎 Matrícula ingresada:', matricula);
+        console.log('👥 Primeros estudiantes cargados:', estudiantesData.slice(0, 5));
+
+        if (!matricula) {
+            mostrarError('⚠️ Por favor ingresa tu matrícula');
+            return;
         }
-        
-        function mostrarInformacionEstudiante(estudiante) {
-            // Ocultar sección de búsqueda con animación
-            const searchSection = document.getElementById('searchSection');
-            searchSection.style.opacity = '0';
+
+        const estudiante = estudiantesData.find(e =>
+            e.matricula && e.matricula.toUpperCase() === matricula
+        );
+
+        if (estudiante) {
+            estudianteActual = estudiante;
+            mostrarInformacionEstudiante(estudiante);
+            errorElement.classList.add('hidden');
+        } else {
+            mostrarError('⚠️ Matrícula no encontrada. Por favor verifica e intenta de nuevo.');
+        }
+    }
+
+    function mostrarError(mensaje) {
+        const errorElement = document.getElementById('errorMessage');
+        errorElement.textContent = mensaje;
+        errorElement.classList.remove('hidden');
+    }
+
+    function mostrarInformacionEstudiante(estudiante) {
+        // Ocultar sección de búsqueda con animación
+        const searchSection = document.getElementById('searchSection');
+        searchSection.style.opacity = '0';
+        setTimeout(() => {
+            searchSection.classList.add('hidden');
+            
+            // Llenar información
+            document.getElementById('welcomeMessage').textContent = `¡Hola ${estudiante.nombre}! 👋`;
+            document.getElementById('mentorName').textContent = estudiante.mentor;
+            document.getElementById('communityName').textContent = estudiante.comunidad;
+            document.getElementById('mentorConfirm').textContent = estudiante.mentor;
+            document.getElementById('mentorNoConfirm').textContent = estudiante.mentor;
+            
+            // Aplicar color de comunidad
+            const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
+            document.getElementById('communityBox').className = `info-box info-box-colored ${comunidadClass}`;
+            
+            // Color del mentor (púrpura por defecto)
+            document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-spirita';
+            
+            // Mostrar sección de información
+            const studentInfo = document.getElementById('studentInfo');
+            studentInfo.classList.remove('hidden');
+        }, 300);
+    }
+
+    async function confirmarAsistencia(asistira, event) {
+        if (!estudianteActual) {
+            console.error('❌ No hay estudiante seleccionado');
+            return;
+        }
+
+        const boton = event.target;
+        const textoOriginal = boton.innerHTML;
+
+        // Deshabilitar ambos botones
+        const botones = document.querySelectorAll('.attendance-options .btn');
+        botones.forEach(btn => btn.disabled = true);
+
+        // Cambiar texto del botón clickeado
+        boton.innerHTML = '<span class="loading"></span> Procesando...';
+
+        try {
+            // Enviar a Google Forms
+            await enviarAGoogleForms(asistira);
+
+            // Esperar un poco para dar tiempo al envío
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Animar transición
+            document.getElementById('studentInfo').style.opacity = '0';
+
             setTimeout(() => {
-                searchSection.classList.add('hidden');
-                
-                // Llenar información
-                document.getElementById('welcomeMessage').textContent = `¡Hola ${estudiante.nombre}! 👋`;
-                document.getElementById('mentorName').textContent = estudiante.mentor;
-                document.getElementById('communityName').textContent = estudiante.comunidad;
-                document.getElementById('mentorConfirm').textContent = estudiante.mentor;
-                document.getElementById('mentorNoConfirm').textContent = estudiante.mentor;
-                
-                // Aplicar color de comunidad
-                const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
-                document.getElementById('communityBox').className = `info-box info-box-colored ${comunidadClass}`;
-                
-                // Color del mentor (púrpura por defecto)
-                document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-spirita';
-                
-                // Mostrar sección de información
-                const studentInfo = document.getElementById('studentInfo');
-                studentInfo.classList.remove('hidden');
+                document.getElementById('studentInfo').classList.add('hidden');
+
+                // Mostrar mensaje según la respuesta
+                if (asistira) {
+                    document.getElementById('confirmationYes').classList.remove('hidden');
+                } else {
+                    document.getElementById('confirmationNo').classList.remove('hidden');
+                }
             }, 300);
+
+        } catch (error) {
+            console.error('❌ Error en confirmación:', error);
+
+            // Restaurar botones en caso de error
+            botones.forEach(btn => btn.disabled = false);
+            boton.innerHTML = textoOriginal;
+
+            // Mostrar error al usuario
+            mostrarError('❌ Error al procesar la solicitud. Por favor intenta de nuevo.');
         }
-        
-        async function confirmarAsistencia(asistira, event) {
-            console.log('🎯 Confirmando asistencia:', asistira ? 'Sí' : 'No');
-            
-            if (!estudianteActual) {
-                console.error('❌ No hay estudiante seleccionado');
-                return;
-            }
-            
-            const boton = event.target;
-            const textoOriginal = boton.innerHTML;
-            
-            // Deshabilitar ambos botones
-            const botones = document.querySelectorAll('.attendance-options .btn');
-            botones.forEach(btn => btn.disabled = true);
-            
-            // Cambiar texto del botón clickeado
-            boton.innerHTML = '<span class="loading"></span> Procesando...';
-            
-            try {
-                // Enviar a Google Forms
-                await enviarAGoogleForms(asistira);
-                
-                // Esperar un poco para dar tiempo al envío
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // Animar transición
-                document.getElementById('studentInfo').style.opacity = '0';
-                
-                setTimeout(() => {
-                    document.getElementById('studentInfo').classList.add('hidden');
-                    
-                    // Mostrar mensaje según la respuesta
-                    if (asistira) {
-                        document.getElementById('confirmationYes').classList.remove('hidden');
-                    } else {
-                        document.getElementById('confirmationNo').classList.remove('hidden');
-                    }
-                }, 300);
-                
-            } catch (error) {
-                console.error('❌ Error en confirmación:', error);
-                
-                // Restaurar botones en caso de error
-                botones.forEach(btn => btn.disabled = false);
-                boton.innerHTML = textoOriginal;
-                
-                // Mostrar error al usuario
-                mostrarError('❌ Error al procesar la solicitud. Por favor intenta de nuevo.');
-            }
-        }
-        
-        // Función para enviar a Google Forms
-        async function enviarAGoogleForms(asistira) {
-            console.log('🚀 Iniciando envío a Google Forms...');
-            
-            if (!CONFIG.GOOGLE_FORM_URL) {
-                console.warn('⚠️ URL del Google Form no configurada');
-                return;
-            }
-            
-            if (!estudianteActual) {
-                console.error('❌ No hay datos del estudiante');
-                return;
-            }
-            
-            console.log('📋 Datos del estudiante:', estudianteActual);
-            console.log('✅ Asistirá:', asistira ? 'Sí' : 'No');
-            
-            const formData = new FormData();
-            
-            // Agregar cada campo con logging
-            console.log('📝 Agregando campos al formulario:');
-            
-            formData.append(CONFIG.FORM_FIELDS.matricula, estudianteActual.matricula);
-            console.log(`- Matrícula: ${CONFIG.FORM_FIELDS.matricula} = ${estudianteActual.matricula}`);
-            
-            formData.append(CONFIG.FORM_FIELDS.nombre, estudianteActual.nombre);
-            console.log(`- Nombre: ${CONFIG.FORM_FIELDS.nombre} = ${estudianteActual.nombre}`);
-            
-            formData.append(CONFIG.FORM_FIELDS.mentor, estudianteActual.mentor);
-            console.log(`- Mentor: ${CONFIG.FORM_FIELDS.mentor} = ${estudianteActual.mentor}`);
-            
-            formData.append(CONFIG.FORM_FIELDS.comunidad, estudianteActual.comunidad);
-            console.log(`- Comunidad: ${CONFIG.FORM_FIELDS.comunidad} = ${estudianteActual.comunidad}`);
-            
-            formData.append(CONFIG.FORM_FIELDS.asistira, asistira ? 'Sí' : 'No');
-            console.log(`- Asistirá: ${CONFIG.FORM_FIELDS.asistira} = ${asistira ? 'Sí' : 'No'}`);
-            
-            const fechaHora = new Date().toLocaleString('es-MX', { 
-                timeZone: 'America/Mexico_City',
-                dateStyle: 'short',
-                timeStyle: 'medium'
-            });
-            formData.append(CONFIG.FORM_FIELDS.timestamp, fechaHora);
-            console.log(`- Timestamp: ${CONFIG.FORM_FIELDS.timestamp} = ${fechaHora}`);
-            
-            try {
-                console.log('📡 Enviando a:', CONFIG.GOOGLE_FORM_URL);
-                
-                const response = await fetch(CONFIG.GOOGLE_FORM_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: formData
-                });
-                
-                console.log('✅ Solicitud enviada exitosamente');
-                console.log('💡 Tip: Revisa tu Google Sheets para confirmar la recepción');
-                
-            } catch (error) {
-                console.error('❌ Error al enviar a Google Forms:', error);
-                throw error;
-            }
-        }
-        
-        function contactarMentor() {
-            if (!estudianteActual) {
-                console.error('❌ No hay estudiante seleccionado');
-                return;
-            }
-            
-            const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre} y seré parte de tu grupo en el evento de transferencias. ¡Nos vemos pronto! 🎓`;
-            const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
-            const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
-            
-            console.log('💬 Abriendo WhatsApp para:', estudianteActual.mentor);
-            window.open(url, '_blank');
-        }
-        
-        function contactarMentorNoAsistencia() {
-            if (!estudianteActual) {
-                console.error('❌ No hay estudiante seleccionado');
-                return;
-            }
-            
-            const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una llamada? 😊`;
-            const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
-            const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
-            
-            console.log('💬 Abriendo WhatsApp para:', estudianteActual.mentor);
-            window.open(url, '_blank');
-        }
-        
-        // Búsqueda con Enter
-        document.getElementById('matricula').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                buscarEstudiante();
-            }
+    }
+
+    // --- ENVÍO DE FORMULARIO GOOGLE FORMS ---
+    async function enviarAGoogleForms(asistira) {
+        if (!CONFIG.GOOGLE_FORM_URL || !estudianteActual) return;
+
+        const formData = new FormData();
+        formData.append(CONFIG.FORM_FIELDS.matricula, estudianteActual.matricula);
+        formData.append(CONFIG.FORM_FIELDS.nombre, estudianteActual.nombre);
+        formData.append(CONFIG.FORM_FIELDS.mentor, estudianteActual.mentor);
+        formData.append(CONFIG.FORM_FIELDS.comunidad, estudianteActual.comunidad);
+        formData.append(CONFIG.FORM_FIELDS.asistira, asistira ? 'Sí' : 'No');
+        const fechaHora = new Date().toLocaleString('es-MX', { 
+            timeZone: 'America/Mexico_City',
+            dateStyle: 'short',
+            timeStyle: 'medium'
         });
-    </script>
+        formData.append(CONFIG.FORM_FIELDS.timestamp, fechaHora);
+
+        try {
+            await fetch(CONFIG.GOOGLE_FORM_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            });
+        } catch (error) {
+            console.error('❌ Error al enviar a Google Forms:', error);
+            throw error;
+        }
+    }
+
+    // --- CONTACTAR MENTOR ---
+    function contactarMentor() {
+        if (!estudianteActual) {
+            console.error('❌ No hay estudiante seleccionado');
+            return;
+        }
+
+        const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre} y seré parte de tu grupo en el evento de transferencias. ¡Nos vemos pronto! 🎓`;
+        const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
+        const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
+        window.open(url, '_blank');
+    }
+
+    function contactarMentorNoAsistencia() {
+        if (!estudianteActual) {
+            console.error('❌ No hay estudiante seleccionado');
+            return;
+        }
+
+        const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una llamada? 😊`;
+        const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
+        const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
+        window.open(url, '_blank');
+    }
+
+    // --- BÚSQUEDA CON ENTER ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('matricula');
+        if (input) {
+            input.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    buscarEstudiante();
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>
