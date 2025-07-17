@@ -599,24 +599,26 @@
             .btn {
                 width: 100%;
             }
-            .tec-logo {
-                width: 120px;
-                height: auto;
-                margin-bottom: 20px;
-                filter: brightness(0) invert(1); /* logo blanco sobre fondo azul */
-                opacity: 0.92;
-                animation: fadeInLogo 1s ease;
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
+            /* Logo institucional como marca de agua en la tarjeta */
+            .container {
+                position: relative;
+                z-index: 1;
             }
-            
-            @keyframes fadeInLogo {
-                from { opacity: 0; transform: translateY(-20px);}
-                to { opacity: 0.92; transform: translateY(0);}
-            }
-            @media (max-width: 600px) {
-                .tec-logo { width: 80px; }
+            .container::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 240px;     /* <--- Cambia aquí el tamaño del logo a tu gusto */
+                height: 240px;    /* <--- Mantén cuadrado, o ajusta como prefieras */
+                background-image: url('logo-tec.svg');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                opacity: 0.045;    /* <--- Puedes ajustar opacidad para hacerlo más o menos visible */
+                transform: translate(-50%, -50%);
+                pointer-events: none; /* Para que no bloquee clicks */
+                z-index: 0;
             }
         }
     </style>
@@ -632,8 +634,6 @@
     
 <div class="container">  
     <div class="header">
-        <!-- Logo del Tec -->
-        <img src="logo-tec.svg" alt="Tecnológico de Monterrey" class="tec-logo">
         <div class="emoji-header">🎉🎓✨</div>
         <h1>Bienvenida de Transferencias</h1>
         <p class="subtitle">"Tu historia en Mty empieza hoy"</p>
