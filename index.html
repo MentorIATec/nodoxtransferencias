@@ -799,14 +799,14 @@
                 // Procesar la estructura del JSON
                 if (data && data["Verano 25"]) {
                     estudiantesData = data["Verano 25"].map(estudiante => ({
-                        matricula: estudiante.Matricula,
-                        nombre: estudiante["Nombre del alumno"],
-                        mentor: estudiante["Mentor Asignado Verano 25"],
-                        whatsapp: estudiante.Whatsapp,
-                        comunidad: estudiante.Comunidad,
-                        email: estudiante["Email del alumno"],
-                        campusOrigen: estudiante["Campus origen"],
-                        carrera: estudiante["Carrera de egreso"]
+                        matricula: estudiante.Matricula.trim(),
+                        nombre: estudiante["Nombre del alumno"].trim(),
+                        mentor: estudiante["Mentor Asignado Verano 25"].trim(),
+                        whatsapp: estudiante.Whatsapp.trim(),
+                        comunidad: estudiante.Comunidad.trim(),
+                        email: estudiante["Email del alumno"].trim(),
+                        campusOrigen: estudiante["Campus origen"].trim(),
+                        carrera: estudiante["Carrera de egreso"].trim()
                     }));
                     
                     console.log(`✅ Datos cargados exitosamente: ${estudiantesData.length} estudiantes`);
