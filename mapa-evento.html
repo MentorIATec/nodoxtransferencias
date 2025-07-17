@@ -12,55 +12,76 @@
             padding: 0;
         }
         .container {
-            max-width: 420px;
-            margin: 30px auto;
+            max-width: 480px;
+            margin: 36px auto 24px auto;
             background: white;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.09);
-            padding: 36px 24px 28px 24px;
+            padding: 0 0 28px 0;
             text-align: center;
         }
+        .place-image {
+            width: 100%;
+            border-radius: 16px 16px 0 0;
+            object-fit: cover;
+            max-height: 230px;
+        }
         h2 {
-            margin-bottom: 16px;
+            margin: 26px 0 12px 0;
             color: #0062cc;
             font-size: 1.45em;
         }
         p {
             color: #333;
-            margin-bottom: 18px;
+            margin: 0 22px 18px 22px;
             font-size: 1em;
         }
         .campus-map-btn {
             display: inline-block;
-            padding: 16px 34px;
+            padding: 15px 32px;
             background: #0062cc;
             color: #fff;
             border-radius: 28px;
             font-weight: bold;
             font-size: 1.12em;
             text-decoration: none;
-            margin-bottom: 20px;
+            margin: 10px 8px 18px 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: background 0.16s;
         }
         .campus-map-btn:hover {
             background: #004a99;
         }
+        .source-ref {
+            font-size: 0.97em;
+            color: #888;
+            margin: 0 28px 0 28px;
+            padding-top: 6px;
+        }
         .more-info-link {
             display: block;
             color: #4285f4;
-            margin-top: 22px;
+            margin-top: 16px;
             text-decoration: underline;
             font-size: 0.99em;
+        }
+        @media (max-width: 600px) {
+            .container { max-width: 99vw; border-radius: 0; }
+            .place-image { border-radius: 0; max-height: 36vw;}
+            p, .source-ref { margin-left: 7vw; margin-right: 7vw;}
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <img src="vista-pabellon-la-carreta-tec.jpg"
+             alt="Vista del Pabellón La Carreta, Campus Monterrey"
+             class="place-image">
         <h2>Ubicación del Evento</h2>
         <p>
-            La <strong>Bienvenida de Transferencias</strong> será en el <strong>Pabellón “La Carreta”</strong>, dentro del Campus Monterrey.<br><br>
-            El pabellón está ubicado cerca de la entrada de Av. Luis Elizondo, al sur-este del campus, junto al Food Court y cerca de las canchas deportivas.<br>
+            El evento de <strong>Bienvenida de Transferencias</strong> se llevará a cabo en el <strong>Pabellón “La Carreta”</strong>, dentro del Campus Monterrey.<br><br>
+            El pabellón está ubicado cerca de la entrada de Av. Luis Elizondo, al sur-este del campus, junto al área de comida (Food Court) y las canchas deportivas.<br>
+            Sigue la señalización desde la entrada, ¡no hay pierde!
         </p>
         <a class="campus-map-btn"
            href="mapa-campusmonterrey-es-v12.jpg"
@@ -72,9 +93,9 @@
            target="_blank" rel="noopener">
            📍 Abrir en Google Maps
         </a>
-        <a class="more-info-link" href="https://distritotec.tec.mx/es/proyectos/pabellon-la-carreta" target="_blank" rel="noopener">
-            Más información sobre el Pabellón La Carreta
-        </a>
+        <div class="source-ref">
+            Imagen obtenida de <a href="https://distritotec.tec.mx/es/proyectos/pabellon-la-carreta" target="_blank" rel="noopener">Distrito Tec</a>
+        </div>
     </div>
 </body>
 </html>
