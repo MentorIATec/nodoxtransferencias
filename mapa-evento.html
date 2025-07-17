@@ -3,330 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa Interactivo - Campus Monterrey</title>
+    <title>Ubicación del Evento – Pabellón La Carreta</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
             margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
+            padding: 0;
         }
-        .map-container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .container {
+            max-width: 420px;
+            margin: 30px auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        .map-header {
-            background: linear-gradient(135deg, #0062cc, #004a99);
-            color: white;
-            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+            padding: 36px 24px 28px 24px;
             text-align: center;
         }
-        .map-header h2 {
-            margin: 0 0 10px 0;
-            font-size: 28px;
+        h2 {
+            margin-bottom: 16px;
+            color: #0062cc;
+            font-size: 1.45em;
         }
-        .map-header p {
-            margin: 0;
-            opacity: 0.9;
+        p {
+            color: #333;
+            margin-bottom: 18px;
+            font-size: 1em;
         }
-        .map-wrapper {
-            position: relative;
-            overflow: hidden;
-            height: 55vw;
-            max-height: 600px;
-            min-height: 320px;
-            background: #f0f0f0;
-        }
-        .map-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            cursor: grab;
-            transition: transform 0.3s;
-            touch-action: pan-x pan-y;
-            user-select: none;
-        }
-        .map-image:active {
-            cursor: grabbing;
-        }
-        .map-controls {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            overflow: hidden;
-            z-index: 2;
-        }
-        .map-controls button {
-            display: block;
-            width: 40px;
-            height: 40px;
-            border: none;
-            background: white;
-            cursor: pointer;
-            font-size: 20px;
-            transition: background 0.3s;
-        }
-        .map-controls button:hover {
-            background: #f0f0f0;
-        }
-        .map-controls button:not(:last-child) {
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .map-marker {
-            position: absolute;
-            top: 74%;    /* ajusta según prefieras */
-            left: 60%;   /* ajusta según prefieras */
-            transform: translate(-50%, -100%);
-            cursor: pointer;
-            animation: bounce 2s ease infinite;
-            z-index: 2;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translate(-50%, -100%); }
-            50% { transform: translate(-50%, -120%); }
-        }
-        .marker-icon {
-            width: 40px;
-            height: 40px;
-            background: #dc3545;
-            border-radius: 50% 50% 50% 0;
-            transform: rotate(-45deg);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .marker-icon span {
-            transform: rotate(45deg);
-            font-size: 20px;
+        .campus-map-btn {
+            display: inline-block;
+            padding: 16px 34px;
+            background: #0062cc;
             color: #fff;
-        }
-        .marker-tooltip {
-            position: absolute;
-            bottom: 48px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 8px 15px;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            white-space: nowrap;
-            font-size: 14px;
+            border-radius: 28px;
             font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 3;
-        }
-        .map-marker:hover .marker-tooltip, .map-marker:active .marker-tooltip {
-            opacity: 1;
-        }
-        /* Modal para ver imagen completa */
-        .map-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.93);
-            z-index: 9999;
-            padding: 20px;
-            align-items: center;
-            justify-content: center;
-        }
-        .map-modal img {
-            max-width: 100%;
-            max-height: 95vh;
-            object-fit: contain;
-            cursor: zoom-out;
-        }
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 30px;
-            transition: all 0.3s;
-            z-index: 10000;
-        }
-        .close-modal:hover {
-            background: #f0f0f0;
-            transform: rotate(90deg);
-        }
-        /* Responsive */
-        @media (max-width: 800px) {
-            .map-wrapper { min-height: 200px; height: 60vw; max-height: 360px; }
-            .marker-icon { width: 32px; height: 32px; }
-            .marker-tooltip { font-size: 12px; padding: 6px 12px; }
-        }
-        @media (max-width: 500px) {
-            body { padding: 4vw; }
-            .map-header { padding: 6vw 2vw; }
-            .map-wrapper { height: 55vw; min-height: 150px; }
-            .map-marker { /* para facilitar tap */ }
-            .marker-tooltip { font-size: 11px; padding: 5px 10px; }
-            .marker-icon { width: 26px; height: 26px; }
-            .close-modal { width: 32px; height: 32px; font-size: 22px;}
-        }
-        .google-maps-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #4285f4;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 50px;
+            font-size: 1.12em;
             text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-            margin: 20px 0 30px 0;
-            font-size: 17px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: background 0.16s;
         }
-        .google-maps-btn:hover {
-            background: #357ae8;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(66, 133, 244, 0.16);
+        .campus-map-btn:hover {
+            background: #004a99;
         }
-        /* Mejora el scroll en móvil cuando el modal está abierto */
-        body.modal-open {
-            overflow: hidden !important;
+        .more-info-link {
+            display: block;
+            color: #4285f4;
+            margin-top: 22px;
+            text-decoration: underline;
+            font-size: 0.99em;
         }
     </style>
 </head>
 <body>
-    <div class="map-container">
-        <div class="map-header">
-            <h2>📍 Ubicación del Evento</h2>
-            <p>Pabellón Carreta - Campus Monterrey</p>
-        </div>
-        <div class="map-wrapper" id="mapWrapper">
-            <img src="mapa-campusmonterrey-es-v12.jpg" alt="Mapa del Campus" class="map-image" id="mapImage">
-            <div class="map-controls">
-                <button onclick="zoomIn()">+</button>
-                <button onclick="zoomOut()">−</button>
-                <button onclick="resetZoom()">⟲</button>
-            </div>
-            <!-- Ajusta el marcador según lo necesites -->
-            <div class="map-marker" style="top: 74%; left: 60%;">
-                <div class="marker-icon">
-                    <span>📍</span>
-                </div>
-                <div class="marker-tooltip">Pabellón Carreta</div>
-            </div>
-        </div>
-        <div style="text-align: center;">
-            <a href="https://maps.app.goo.gl/dztK6zBKn1n6xu4v6" target="_blank" class="google-maps-btn">
-                <span>🗺️</span> Abrir en Google Maps
-            </a>
-        </div>
+    <div class="container">
+        <h2>Ubicación del Evento</h2>
+        <p>
+            La <strong>Bienvenida de Transferencias</strong> será en el <strong>Pabellón “La Carreta”</strong>, dentro del Campus Monterrey.<br><br>
+            El pabellón está ubicado cerca de la entrada de Av. Luis Elizondo, al sur-este del campus, junto al Food Court y cerca de las canchas deportivas.<br>
+        </p>
+        <a class="campus-map-btn"
+           href="mapa-campusmonterrey-es-v12.jpg"
+           target="_blank" rel="noopener">
+           🗺️ Ver mapa del campus
+        </a>
+        <a class="campus-map-btn"
+           href="https://www.google.com/maps/dir/25.787662,-100.2974443/25.651437,-100.290163/@25.7201059,-100.3755135,12z/data=!3m1!4b1!4m5!4m4!1m1!4e1!1m0!3e0!11m1!6b1?entry=ttu&g_ep=EgoyMDI1MDcxNS4xIKXMDSoASAFQAw%3D%3D"
+           target="_blank" rel="noopener">
+           📍 Abrir en Google Maps
+        </a>
+        <a class="more-info-link" href="https://distritotec.tec.mx/es/proyectos/pabellon-la-carreta" target="_blank" rel="noopener">
+            Más información sobre el Pabellón La Carreta
+        </a>
     </div>
-    <!-- Modal para ver mapa completo -->
-    <div class="map-modal" id="mapModal" onclick="closeModal()">
-        <div class="close-modal">×</div>
-        <img src="mapa-campusmonterrey-es-v12.jpg" alt="Mapa del Campus">
-    </div>
-    <script>
-        let zoomLevel = 1;
-        const mapImage = document.getElementById('mapImage');
-        function zoomIn() {
-            if (zoomLevel < 3) {
-                zoomLevel += 0.5;
-                mapImage.style.transform = `scale(${zoomLevel})`;
-            }
-        }
-        function zoomOut() {
-            if (zoomLevel > 1) {
-                zoomLevel -= 0.5;
-                mapImage.style.transform = `scale(${zoomLevel})`;
-            }
-        }
-        function resetZoom() {
-            zoomLevel = 1;
-            mapImage.style.transform = 'scale(1)';
-        }
-        // Abrir mapa en modal al hacer clic (pantalla completa)
-        mapImage.addEventListener('click', function(e) {
-            e.stopPropagation();
-            document.body.classList.add('modal-open');
-            document.getElementById('mapModal').style.display = 'flex';
-        });
-        function closeModal() {
-            document.body.classList.remove('modal-open');
-            document.getElementById('mapModal').style.display = 'none';
-        }
-        document.querySelector('.close-modal').addEventListener('click', function(e){
-            e.stopPropagation();
-            closeModal();
-        });
-        // Arrastrar para mover el mapa (desktop y touch)
-        let isDragging = false, startX, startY, imgX = 0, imgY = 0;
-        const mapWrapper = document.getElementById('mapWrapper');
-        mapImage.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.clientX - imgX;
-            startY = e.clientY - imgY;
-            mapImage.style.cursor = "grabbing";
-        });
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            imgX = e.clientX - startX;
-            imgY = e.clientY - startY;
-            mapImage.style.transform = `scale(${zoomLevel}) translate(${imgX/zoomLevel}px, ${imgY/zoomLevel}px)`;
-        });
-        window.addEventListener('mouseup', () => {
-            isDragging = false;
-            mapImage.style.cursor = "grab";
-        });
-        // Para touch móvil (pan con dedo)
-        let lastTouch = null;
-        mapImage.addEventListener('touchstart', function(e){
-            if (e.touches.length === 1) {
-                isDragging = true;
-                lastTouch = e.touches[0];
-                startX = lastTouch.clientX - imgX;
-                startY = lastTouch.clientY - imgY;
-            }
-        });
-        mapImage.addEventListener('touchmove', function(e){
-            if (!isDragging || e.touches.length !== 1) return;
-            let touch = e.touches[0];
-            imgX = touch.clientX - startX;
-            imgY = touch.clientY - startY;
-            mapImage.style.transform = `scale(${zoomLevel}) translate(${imgX/zoomLevel}px, ${imgY/zoomLevel}px)`;
-        });
-        mapImage.addEventListener('touchend', function(e){
-            isDragging = false;
-            mapImage.style.cursor = "grab";
-        });
-        // Doble tap para centrar/reset en móvil
-        let lastTap = 0;
-        mapImage.addEventListener('touchend', function(e){
-            let now = new Date().getTime();
-            if (now - lastTap < 350) {
-                resetZoom();
-                imgX = 0; imgY = 0;
-                mapImage.style.transform = 'scale(1)';
-            }
-            lastTap = now;
-        });
-        // Reset pan position on reset zoom
-        function resetZoom() {
-            zoomLevel = 1;
-            imgX = 0; imgY = 0;
-            mapImage.style.transform = 'scale(1)';
-        }
-    </script>
 </body>
 </html>
