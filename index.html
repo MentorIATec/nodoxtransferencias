@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pre-registro - Evento de Transferencias Campus Monterrey</title>
+    <title>Bienvenida de Transferencias - Tu historia en Mty empieza hoy 🎓</title>
     <style>
         * {
             margin: 0;
@@ -15,6 +15,7 @@
             /* Colores del Tec */
             --tec-blue: #003b5c;
             --tec-blue-light: #005b8a;
+            --tec-blue-bright: #0062cc;
             
             /* Colores de comunidades */
             --talenta: #EC008C;
@@ -33,17 +34,17 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, var(--tec-blue) 0%, var(--tec-blue-light) 100%);
             min-height: 100vh;
+            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
         
         .container {
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
             overflow: hidden;
             opacity: 0;
@@ -55,9 +56,9 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #0062cc, #004a99);
+            background: linear-gradient(135deg, var(--tec-blue-bright) 0%, #004a99 100%);
             color: white;
-            padding: 40px 30px;
+            padding: 50px 30px 40px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -79,23 +80,19 @@
             50% { transform: scale(1); opacity: 0.8; }
         }
         
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            color: #0062cc;
-            position: relative;
-            z-index: 1;
+        .emoji-header {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: bounce 2s ease infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
         
         h1 {
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 10px;
             font-weight: 700;
             position: relative;
@@ -103,10 +100,12 @@
         }
         
         .subtitle {
-            font-size: 18px;
-            opacity: 0.9;
+            font-size: 20px;
+            opacity: 0.95;
             position: relative;
             z-index: 1;
+            font-style: italic;
+            margin-top: 10px;
         }
         
         .content {
@@ -115,6 +114,14 @@
         
         .search-section {
             margin-bottom: 30px;
+        }
+        
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 18px;
+            line-height: 1.6;
         }
         
         label {
@@ -142,7 +149,7 @@
         
         input:focus {
             outline: none;
-            border-color: #0062cc;
+            border-color: var(--tec-blue-bright);
             box-shadow: 0 0 0 4px rgba(0, 98, 204, 0.1);
         }
         
@@ -180,7 +187,7 @@
         }
         
         .btn-primary {
-            background: #0062cc;
+            background: var(--tec-blue-bright);
             color: white;
         }
         
@@ -218,6 +225,20 @@
             box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
         }
         
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            width: 100%;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        }
+        
         .error {
             color: #dc3545;
             font-size: 14px;
@@ -225,6 +246,23 @@
             display: flex;
             align-items: center;
             gap: 5px;
+        }
+        
+        .event-info {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .event-info h3 {
+            color: var(--tec-blue);
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .info-card {
@@ -246,12 +284,6 @@
             }
         }
         
-        .info-card h3 {
-            color: #0062cc;
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
-        
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -261,7 +293,7 @@
         
         .info-box {
             background: white;
-            padding: 20px;
+            padding: 25px 20px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             text-align: center;
@@ -295,21 +327,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Colores dinámicos de comunidades */
-        .comunidad-talenta { background: linear-gradient(135deg, var(--talenta), #d10078) !important; }
-        .comunidad-revo { background: linear-gradient(135deg, var(--revo), #b07189) !important; }
-        .comunidad-kresko { background: linear-gradient(135deg, var(--kresko), #0bb8b8) !important; }
-        .comunidad-pasio { background: linear-gradient(135deg, var(--pasio), #b80202) !important; }
-        .comunidad-energio { background: linear-gradient(135deg, var(--energio), #e37404) !important; }
-        .comunidad-krei { background: linear-gradient(135deg, var(--krei), #6a757a) !important; }
-        .comunidad-reflekto { 
-            background: linear-gradient(135deg, var(--reflekto), #e6c815) !important; 
-            color: #333 !important;
-        }
-        .comunidad-forta { background: linear-gradient(135deg, var(--forta), #750063) !important; }
-        .comunidad-spirita { background: linear-gradient(135deg, var(--spirita), #4f0c7a) !important; }
-        .comunidad-ekvilibro { background: linear-gradient(135deg, var(--ekvilibro), #5fc33d) !important; }
-        
         .info-box h4 {
             font-size: 14px;
             opacity: 0.9;
@@ -326,17 +343,38 @@
             z-index: 1;
         }
         
+        .mentor-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        /* Colores dinámicos de comunidades */
+        .comunidad-talenta { background: linear-gradient(135deg, var(--talenta), #d10078) !important; }
+        .comunidad-revo { background: linear-gradient(135deg, var(--revo), #b07189) !important; }
+        .comunidad-kresko { background: linear-gradient(135deg, var(--kresko), #0bb8b8) !important; }
+        .comunidad-pasio { background: linear-gradient(135deg, var(--pasio), #b80202) !important; }
+        .comunidad-energio { background: linear-gradient(135deg, var(--energio), #e37404) !important; }
+        .comunidad-krei { background: linear-gradient(135deg, var(--krei), #6a757a) !important; }
+        .comunidad-reflekto { 
+            background: linear-gradient(135deg, var(--reflekto), #e6c815) !important; 
+            color: #333 !important;
+        }
+        .comunidad-forta { background: linear-gradient(135deg, var(--forta), #750063) !important; }
+        .comunidad-spirita { background: linear-gradient(135deg, var(--spirita), #4f0c7a) !important; }
+        .comunidad-ekvilibro { background: linear-gradient(135deg, var(--ekvilibro), #5fc33d) !important; }
+        
         .detail-list {
             list-style: none;
             padding: 0;
         }
         
         .detail-list li {
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #e0e0e0;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 16px;
         }
         
         .detail-list li:last-child {
@@ -344,9 +382,80 @@
         }
         
         .icon {
-            width: 20px;
-            height: 20px;
+            font-size: 20px;
             flex-shrink: 0;
+        }
+        
+        .highlight-list {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .highlight-list h4 {
+            color: var(--tec-blue);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .highlight-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .highlight-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .service-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        
+        .service-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+        }
+        
+        .service-item .emoji {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+        
+        .service-item p {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+        }
+        
+        .tip-box {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tip-box .emoji {
+            font-size: 24px;
         }
         
         .success-message {
@@ -386,6 +495,32 @@
             100% { transform: scale(1) rotate(0deg); }
         }
         
+        .attendance-options {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .attendance-options h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
         .hidden {
             display: none;
         }
@@ -395,7 +530,7 @@
             width: 20px;
             height: 20px;
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #0062cc;
+            border-top: 3px solid var(--tec-blue-bright);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -429,7 +564,7 @@
             width: 50px;
             height: 50px;
             border: 5px solid #f3f3f3;
-            border-top: 5px solid #0062cc;
+            border-top: 5px solid var(--tec-blue-bright);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -437,11 +572,15 @@
         
         @media (max-width: 600px) {
             .header {
-                padding: 30px 20px;
+                padding: 40px 20px 30px;
             }
             
             h1 {
-                font-size: 24px;
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 18px;
             }
             
             .content {
@@ -469,15 +608,20 @@
     
     <div class="container">
         <div class="header">
-            <div class="logo">🎓</div>
-            <h1>Evento de Bienvenida</h1>
-            <p class="subtitle">Transferencias Campus Monterrey</p>
+            <div class="emoji-header">🎉🎓✨</div>
+            <h1>Bienvenida de Transferencias</h1>
+            <p class="subtitle">"Tu historia en Mty empieza hoy"</p>
         </div>
         
         <div class="content">
             <!-- Sección de búsqueda -->
             <div id="searchSection" class="search-section">
-                <label for="matricula">Ingresa tu matrícula:</label>
+                <p class="welcome-text">
+                    ¡Hola! 👋 Esperamos que estés teniendo un gran día.<br>
+                    Queremos invitarte a la <strong>Bienvenida de Transferencias</strong> en el Campus Monterrey.
+                </p>
+                
+                <label for="matricula">Para continuar, ingresa tu matrícula:</label>
                 <div class="input-group">
                     <input 
                         type="text" 
@@ -496,67 +640,114 @@
             <!-- Sección de información del estudiante -->
             <div id="studentInfo" class="hidden">
                 <div class="info-card">
-                    <h3 id="welcomeMessage"></h3>
-                    <p style="color: #666; margin-bottom: 20px;">
-                        Te damos la bienvenida al Campus Monterrey. A continuación encontrarás la información de tu mentor asignado y los detalles del evento.
+                    <h3 id="welcomeMessage" style="color: var(--tec-blue); font-size: 24px;"></h3>
+                    <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
+                        ¡Te esperamos con mucha emoción! 🎊
                     </p>
                 </div>
                 
                 <div class="info-grid">
                     <div id="mentorBox" class="info-box info-box-colored">
-                        <h4>Tu Mentor</h4>
+                        <div class="mentor-icon">👥</div>
+                        <h4>Tu Mentor/a</h4>
                         <p id="mentorName"></p>
                     </div>
                     <div id="communityBox" class="info-box info-box-colored">
+                        <div class="mentor-icon">🏠</div>
                         <h4>Tu Comunidad</h4>
                         <p id="communityName"></p>
                     </div>
                 </div>
                 
-                <div class="info-card">
-                    <h4 style="font-weight: 600; margin-bottom: 15px;">Información del evento:</h4>
+                <div class="event-info">
+                    <h3>🌟 Detalles del Evento</h3>
                     <ul class="detail-list">
                         <li>
                             <span class="icon">📅</span>
-                            <strong>Fecha:</strong> &nbsp;Por confirmar
+                            <strong>Fecha:</strong> &nbsp;Viernes 8 de agosto
                         </li>
                         <li>
                             <span class="icon">⏰</span>
-                            <strong>Hora:</strong> &nbsp;Por confirmar
+                            <strong>Horario:</strong> &nbsp;8:30 a.m. - 12:00 p.m.
                         </li>
                         <li>
                             <span class="icon">📍</span>
-                            <strong>Lugar:</strong> &nbsp;Campus Monterrey
-                        </li>
-                        <li id="careerInfo">
-                            <span class="icon">🎯</span>
-                            <strong>Tu carrera:</strong> &nbsp;<span id="careerName"></span>
-                        </li>
-                        <li id="campusInfo">
-                            <span class="icon">🏫</span>
-                            <strong>Campus origen:</strong> &nbsp;<span id="campusOrigin"></span>
+                            <strong>Lugar:</strong> &nbsp;Pabellón Carreta
                         </li>
                     </ul>
+                    
+                    <div class="highlight-list">
+                        <h4>🌟 En este evento podrás:</h4>
+                        <ul>
+                            <li><span>✅</span> Conocer a tu mentor/a y comunidad</li>
+                            <li><span>✅</span> Disfrutar de un rico desayuno 🥐☕</li>
+                            <li><span>✅</span> Hacer un tour por el campus 🏫</li>
+                            <li><span>✅</span> Visitar estands de servicios y actividades</li>
+                            <li><span>✅</span> ¡Habrá algunos regalos! 🎁</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="services-grid">
+                        <div class="service-item">
+                            <div class="emoji">🎭</div>
+                            <p><strong>Arte y Cultura</strong><br>Cartelera cultural</p>
+                        </div>
+                        <div class="service-item">
+                            <div class="emoji">🆔</div>
+                            <p><strong>Tec Services</strong><br>Actualiza tu ID</p>
+                        </div>
+                        <div class="service-item">
+                            <div class="emoji">💼</div>
+                            <p><strong>CVDP</strong><br>Desarrollo profesional</p>
+                        </div>
+                    </div>
                 </div>
                 
-                <button class="btn btn-success" onclick="confirmarAsistencia()">
-                    ✓ Confirmar mi asistencia
-                </button>
+                <div class="tip-box">
+                    <span class="emoji">💡</span>
+                    <p><strong>Tip:</strong> ¡No olvides llevar tu termo para mantenerte hidratado! 💙♻️</p>
+                </div>
+                
+                <div class="attendance-options">
+                    <h4>Selecciona una opción:</h4>
+                    <div class="options-grid">
+                        <button class="btn btn-success" onclick="confirmarAsistencia(true)">
+                            ✓ ¡Sí asistiré!
+                        </button>
+                        <button class="btn btn-secondary" onclick="confirmarAsistencia(false)">
+                            😔 No podré asistir
+                        </button>
+                    </div>
+                </div>
                 
                 <button class="btn btn-whatsapp" onclick="contactarMentor()">
                     💬 Contactar a mi mentor por WhatsApp
                 </button>
             </div>
             
-            <!-- Mensaje de confirmación -->
-            <div id="confirmationMessage" class="success-message hidden">
+            <!-- Mensaje de confirmación - Asistencia -->
+            <div id="confirmationYes" class="success-message hidden">
                 <div class="success-icon">✓</div>
-                <h2 style="color: #28a745; margin-bottom: 15px;">¡Asistencia Confirmada!</h2>
-                <p style="color: #666; margin-bottom: 20px;">
-                    Nos vemos en el evento. No olvides contactar a tu mentor por WhatsApp.
+                <h2 style="color: #28a745; margin-bottom: 15px;">¡Excelente! Te esperamos 🎉</h2>
+                <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
+                    Hemos confirmado tu asistencia al evento.<br>
+                    No olvides contactar a tu mentor <span id="mentorConfirm"></span> por WhatsApp.
                 </p>
                 <button class="btn btn-whatsapp" onclick="contactarMentor()">
                     💬 Enviar mensaje a mi mentor
+                </button>
+            </div>
+            
+            <!-- Mensaje de confirmación - No asistencia -->
+            <div id="confirmationNo" class="success-message hidden">
+                <div class="success-icon" style="background: #6c757d;">😊</div>
+                <h2 style="color: #6c757d; margin-bottom: 15px;">¡No te preocupes!</h2>
+                <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
+                    Aunque no puedas asistir al evento, tu mentor <span id="mentorNoConfirm"></span> está aquí para apoyarte.<br>
+                    Te recomendamos contactarlo/a para conocerse y resolver cualquier duda sobre tu llegada al campus.
+                </p>
+                <button class="btn btn-whatsapp" onclick="contactarMentorNoAsistencia()">
+                    💬 Contactar a mi mentor por WhatsApp
                 </button>
             </div>
         </div>
@@ -575,6 +766,7 @@
                 nombre: 'entry.XXXXXX',
                 mentor: 'entry.XXXXXX',
                 comunidad: 'entry.XXXXXX',
+                asistira: 'entry.XXXXXX',
                 timestamp: 'entry.XXXXXX'
             }
         };
@@ -638,7 +830,7 @@
             const errorElement = document.getElementById('errorMessage');
             
             if (!matricula) {
-                mostrarError('Por favor ingresa tu matrícula');
+                mostrarError('⚠️ Por favor ingresa tu matrícula');
                 return;
             }
             
@@ -670,11 +862,11 @@
                 searchSection.classList.add('hidden');
                 
                 // Llenar información
-                document.getElementById('welcomeMessage').textContent = `¡Hola ${estudiante.nombre}!`;
+                document.getElementById('welcomeMessage').textContent = `¡Hola ${estudiante.nombre}! 👋`;
                 document.getElementById('mentorName').textContent = estudiante.mentor;
                 document.getElementById('communityName').textContent = estudiante.comunidad;
-                document.getElementById('careerName').textContent = estudiante.carrera;
-                document.getElementById('campusOrigin').textContent = estudiante.campusOrigen;
+                document.getElementById('mentorConfirm').textContent = estudiante.mentor;
+                document.getElementById('mentorNoConfirm').textContent = estudiante.mentor;
                 
                 // Aplicar color de comunidad
                 const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
@@ -689,23 +881,30 @@
             }, 300);
         }
         
-        async function confirmarAsistencia() {
-            const botonConfirmar = document.querySelector('.btn-success');
-            botonConfirmar.innerHTML = '<span class="loading"></span> Confirmando...';
-            botonConfirmar.disabled = true;
+        async function confirmarAsistencia(asistira) {
+            const boton = event.target;
+            const textoOriginal = boton.innerHTML;
+            boton.innerHTML = '<span class="loading"></span> Procesando...';
+            boton.disabled = true;
             
-            // Simular envío (configurar con Google Forms real)
+            // Enviar a Google Forms si está configurado
+            if (CONFIG.GOOGLE_FORM_URL) {
+                await enviarAGoogleForms(asistira);
+            }
+            
+            // Simular envío
             setTimeout(() => {
-                // Aquí iría el código real de envío a Google Forms
-                if (CONFIG.GOOGLE_FORM_URL) {
-                    // enviarAGoogleForms();
-                }
-                
-                // Mostrar confirmación
+                // Ocultar información del estudiante
                 document.getElementById('studentInfo').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('studentInfo').classList.add('hidden');
-                    document.getElementById('confirmationMessage').classList.remove('hidden');
+                    
+                    // Mostrar mensaje según la respuesta
+                    if (asistira) {
+                        document.getElementById('confirmationYes').classList.remove('hidden');
+                    } else {
+                        document.getElementById('confirmationNo').classList.remove('hidden');
+                    }
                 }, 300);
             }, 1500);
         }
@@ -713,7 +912,17 @@
         function contactarMentor() {
             if (!estudianteActual) return;
             
-            const mensaje = `¡Hola ${estudianteActual.mentor}! Soy ${estudianteActual.nombre} y seré parte de tu grupo en el evento de transferencias. ¡Nos vemos pronto! 🎓`;
+            const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre} y seré parte de tu grupo en el evento de transferencias. ¡Nos vemos pronto! 🎓`;
+            const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
+            const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
+            
+            window.open(url, '_blank');
+        }
+        
+        function contactarMentorNoAsistencia() {
+            if (!estudianteActual) return;
+            
+            const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una llamada? 😊`;
             const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
             const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
             
@@ -727,8 +936,8 @@
             }
         });
         
-        // Función para enviar a Google Forms (implementar cuando se configure)
-        async function enviarAGoogleForms() {
+        // Función para enviar a Google Forms
+        async function enviarAGoogleForms(asistira) {
             if (!CONFIG.GOOGLE_FORM_URL || !estudianteActual) return;
             
             const formData = new FormData();
@@ -736,7 +945,8 @@
             formData.append(CONFIG.FORM_FIELDS.nombre, estudianteActual.nombre);
             formData.append(CONFIG.FORM_FIELDS.mentor, estudianteActual.mentor);
             formData.append(CONFIG.FORM_FIELDS.comunidad, estudianteActual.comunidad);
-            formData.append(CONFIG.FORM_FIELDS.timestamp, new Date().toISOString());
+            formData.append(CONFIG.FORM_FIELDS.asistira, asistira ? 'Sí' : 'No');
+            formData.append(CONFIG.FORM_FIELDS.timestamp, new Date().toLocaleString('es-MX'));
             
             try {
                 await fetch(CONFIG.GOOGLE_FORM_URL, {
@@ -744,6 +954,7 @@
                     mode: 'no-cors',
                     body: formData
                 });
+                console.log('Confirmación enviada:', asistira ? 'Asistirá' : 'No asistirá');
             } catch (error) {
                 console.error('Error enviando formulario:', error);
             }
