@@ -599,27 +599,6 @@
             .btn {
                 width: 100%;
             }
-            /* Logo institucional como marca de agua en la tarjeta */
-            .container {
-                position: relative;
-                z-index: 1;
-            }
-            .container::before {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 240px;     /* <--- Cambia aquí el tamaño del logo a tu gusto */
-                height: 240px;    /* <--- Mantén cuadrado, o ajusta como prefieras */
-                background-image: url('logo-tec.svg');
-                background-size: contain;
-                background-repeat: no-repeat;
-                background-position: center;
-                opacity: 0.15;    /* <--- Puedes ajustar opacidad para hacerlo más o menos visible */
-                transform: translate(-50%, -50%);
-                pointer-events: none; /* Para que no bloquee clicks */
-                z-index: 0;
-            }
         }
     </style>
 </head>
@@ -698,7 +677,7 @@
                         </li>
                         <li>
                             <span class="icon">📍</span>
-                            <strong>Lugar:</strong> &nbsp;Pabellón Carreta
+                            <strong>Lugar:</strong> &nbsp;Pabellón "La Carreta"
                         </li>
                     </ul>
                     
