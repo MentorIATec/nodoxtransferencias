@@ -750,10 +750,14 @@
                 <h2 style="color: #28a745; margin-bottom: 15px;">¡Excelente! Te esperamos 🎉</h2>
                 <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
                     Hemos confirmado tu asistencia al evento.<br>
-                    No olvides contactar a tu mentor <span id="mentorConfirm"></span> por WhatsApp.
+                    No olvides contactar a tu mentor/a <span id="mentorConfirm"></span> por WhatsApp.
                 </p>
                 <button class="btn btn-whatsapp" onclick="contactarMentor()">
-                    💬 Enviar mensaje a mi mentor
+                    💬 Enviar mensaje a mi mentor/a
+                </button>
+                <br>
+                <button class="btn btn-secondary" onclick="mostrarInformacionEvento()">
+                    🔙 Ver detalles del evento y mi mentor/a
                 </button>
             </div>
             
@@ -762,11 +766,15 @@
                 <div class="success-icon" style="background: #6c757d;">😊</div>
                 <h2 style="color: #6c757d; margin-bottom: 15px;">¡No te preocupes!</h2>
                 <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
-                    Aunque no puedas asistir al evento, tu mentor <span id="mentorNoConfirm"></span> está aquí para apoyarte.<br>
+                    Aunque no puedas asistir al evento, tu mentor/a <span id="mentorNoConfirm"></span> está aquí para apoyarte.<br>
                     Te recomendamos contactarlo/a para conocerse y resolver cualquier duda sobre tu llegada al campus.
                 </p>
                 <button class="btn btn-whatsapp" onclick="contactarMentorNoAsistencia()">
-                    💬 Contactar a mi mentor por WhatsApp
+                    💬 Contactar a mi mentor/a por WhatsApp
+                </button>
+                  <br>
+                <button class="btn btn-secondary" onclick="mostrarInformacionEvento()">
+                    🔙 Ver detalles del evento y mi mentor/a
                 </button>
             </div>
         </div>
@@ -1000,7 +1008,7 @@ async function cargarDatosEstudiantes() {
             return;
         }
 
-        const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una llamada? 😊`;
+        const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una cita? 😊`;
         const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
         const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
         window.open(url, '_blank');
@@ -1017,6 +1025,17 @@ async function cargarDatosEstudiantes() {
             });
         }
     });
+   function mostrarInformacionEvento() {
+    // Oculta ambas confirmaciones si estuvieran visibles
+    document.getElementById('confirmationYes').classList.add('hidden');
+    document.getElementById('confirmationNo').classList.add('hidden');
+    // Vuelve a mostrar la info personalizada
+    document.getElementById('studentInfo').classList.remove('hidden');
+    // Opcional: re-aparecer sección de info con animación
+    document.getElementById('studentInfo').style.opacity = 1;
+    // Si tienes scroll, enfoca la tarjeta de info:
+    document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
+}   
 </script>
 </body>
 </html>
