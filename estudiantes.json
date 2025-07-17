@@ -1,0 +1,96 @@
+{
+"Verano 25":[
+ {
+  "Matricula": "A01655116",
+  "Nombre del alumno": "Reséndiz Hernández, Juan Carlos ",
+  "Mentor Asignado Verano 25": "Abigail Cepeda Hernández",
+  "Whatsapp": "+52 1 81 2562 4833",
+  "Comunidad": "Reflekto",
+  "Email del alumno": "A01655116@tec.mx",
+  "Campus origen": "Campus Ciudad de México",
+  "Campus destino": "Campus Monterrey",
+  "Carrera de egreso": "Ingeniero Mecánico - IM",
+  "Entrada": "IM"
+ },
+ {
+  "Matricula": "A01781721",
+  "Nombre del alumno": "Santos Montaño, José Luis ",
+  "Mentor Asignado Verano 25": "Alinna Correa Escobedo",
+  "Whatsapp": "+52 1 81 2562 4833",
+  "Comunidad": "Reflekto",
+  "Email del alumno": "A01781721@tec.mx",
+  "Campus origen": "Campus Guadalajara",
+  "Campus destino": "Campus Monterrey",
+  "Carrera de egreso": "Ingeniero en Ciencia de Datos y Matemáticas - IDM",
+  "Entrada": "IDM"
+ },
+ {
+  "Matricula": "A01385944",
+  "Nombre del alumno": "Ovalle Valdez, Carlos ",
+  "Mentor Asignado Verano 25": "Andrea Herrera Morales",
+  "Whatsapp": "+52 1 81 2562 4833",
+  "Comunidad": "Kresko",
+  "Email del alumno": "A01385944@tec.mx",
+  "Campus origen": "Campus Saltillo",
+  "Campus destino": "Campus Monterrey",
+  "Carrera de egreso": "Ingeniero Biomédico - IMD",
+  "Entrada": "IIT"
+ },
+ {
+  "Matricula": "A01769903",
+  "Nombre del alumno": "Montero Márquez, Sergio Octavio ",
+  "Mentor Asignado Verano 25": "Andrea Herrera Morales",
+  "Whatsapp": "+52 1 81 2562 4833",
+  "Comunidad": "Kresko",
+  "Email del alumno": "A01769903@itesm.mx",
+  "Campus origen": "Campus Toluca",
+  "Campus destino": "Campus Monterrey",
+  "Carrera de egreso": "Ingeniero en Mecatrónica - IMT",
+  "Entrada": "IIT"
+ },
+ {
+  "Matricula": "A01403703",
+  "Nombre del alumno": "Sánchez Pámanes, Diego ",
+  "Mentor Asignado Verano 25": "Antonio Rowland Ramos Díaz",
+  "Whatsapp": "+52 1 81 2562 4833",
+  "Comunidad": "Forta",
+  "Email del alumno": "A01403703@tec.mx",
+  "Campus origen": "Campus Aguascalientes",
+  "Campus destino": "Campus Monterrey",
+  "Carrera de egreso": "Ingeniero en Tecnologías Computacionales - ITC",
+  "Entrada": "ICT"
+ },
+ {
+  "Matricula": "A01667135",
+  "Nombre del alumno": "Carreño Cervantes, Ana Karen ",
+  "Mentor Asignado Verano 25": "Antonio Rowland Ramos Díaz",
+  "Whatsapp": "+52 1 81 2562 4833",
+  "Comunidad": "Forta",
+  "Email del alumno": "A01667135@tec.mx",
+  "Campus origen": "Campus Estado de México",
+  "Campus destino": "Campus Monterrey",
+  "Carrera de egreso": "Ingeniero en Nanotecnología - INA",
+  "Entrada": "INA"
+ }
+],
+"Agosto- Diciembre 25":[
+  "No. Ticket": null,
+  "Matricula": null,
+  "Nombre del alumno": null,
+  "Fecha de corte transferencias": null,
+  "Mentor en archivo histórico Campus Mty": null,
+  "Mentor(a) expediente AD24": null,
+  "Mentor(a) expediente FJ25": null,
+  "Mentor Asignado Verano 25": null,
+  "Email del alumno": null,
+  "Campus origen": null,
+  "Campus destino": null,
+  "Área de exploración": null,
+  "Carrera de egreso": null,
+  "Entrada": null,
+  "Período": null,
+  "Tipo": null,
+  "Motivo de transferencia": null,
+  "Comentario": null
+]
+}
