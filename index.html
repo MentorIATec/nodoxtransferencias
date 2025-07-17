@@ -603,7 +603,7 @@
     </style>
 </head>
 <body>
-    <!-- Loading overlay -->
+        <!-- Loading overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-content">
             <div class="loading-spinner"></div>
@@ -618,199 +618,196 @@
         <p class="subtitle">"Tu historia en Mty empieza hoy"</p>
     </div>
         
-        <div class="content">
-            <!-- Sección de búsqueda -->
-            <div id="searchSection" class="search-section">
-                <p class="welcome-text">
-                    ¡Hola! 👋 Esperamos que estés teniendo un gran día.<br>
-                    Queremos invitarte a la <strong>Bienvenida de Transferencias</strong> en el Campus Monterrey.
+    <div class="content">
+        <!-- Sección de búsqueda -->
+        <div id="searchSection" class="search-section">
+            <p class="welcome-text">
+                ¡Hola! 👋 Esperamos que estés teniendo un gran día.<br>
+                Queremos invitarte a la <strong>Bienvenida de Transferencias</strong> en el Campus Monterrey.
+            </p>
+            <label for="matricula">Para continuar, ingresa tu matrícula:</label>
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="matricula" 
+                    placeholder="Ej: A01234567"
+                    maxlength="9"
+                    autocomplete="off"
+                >
+                <button class="btn btn-primary" onclick="buscarEstudiante()">
+                    <span>🔍</span> Buscar
+                </button>
+            </div>
+            <p id="errorMessage" class="error hidden"></p>
+        </div>
+        
+        <!-- Sección de información del estudiante -->
+        <div id="studentInfo" class="hidden">
+            <div class="info-card">
+                <h3 id="welcomeMessage" style="color: var(--tec-blue); font-size: 24px;"></h3>
+                <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
+                    ¡Te esperamos con mucha emoción! 🎊
                 </p>
+            </div>
+            
+            <div class="info-grid">
+                <div id="mentorBox" class="info-box info-box-colored">
+                    <div class="mentor-icon">👥</div>
+                    <h4>Tu Mentor/a</h4>
+                    <p id="mentorName"></p>
+                </div>
+                <div id="communityBox" class="info-box info-box-colored">
+                    <div class="mentor-icon">🏠</div>
+                    <h4>Tu Comunidad</h4>
+                    <p id="communityName"></p>
+                </div>
+            </div>
+            
+            <div class="event-info">
+                <h3>🌟 Detalles del Evento</h3>
+                <ul class="detail-list">
+                    <li>
+                        <span class="icon">📅</span>
+                        <strong>Fecha:</strong> &nbsp;Viernes 8 de agosto
+                    </li>
+                    <li>
+                        <span class="icon">⏰</span>
+                        <strong>Horario:</strong> &nbsp;8:30 a.m. - 12:00 p.m.
+                    </li>
+                    <li>
+                        <span class="icon">📍</span>
+                        <strong>Lugar:</strong> &nbsp;Pabellón "La Carreta"
+                        <a href="mapa-evento.html" target="_blank" style="
+                            display: inline-block;
+                            margin-top: 10px;
+                            background: #0062cc;
+                            color: #fff;
+                            padding: 7px 18px;
+                            border-radius: 22px;
+                            font-weight: bold;
+                            font-size: 15px;
+                            text-decoration: none;
+                            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+                            transition: background 0.2s;">
+                            🗺️ Ver cómo llegar
+                        </a>
+                    </li>
+                </ul>
                 
-                <label for="matricula">Para continuar, ingresa tu matrícula:</label>
-                <div class="input-group">
-                    <input 
-                        type="text" 
-                        id="matricula" 
-                        placeholder="Ej: A01234567"
-                        maxlength="9"
-                        autocomplete="off"
-                    >
-                    <button class="btn btn-primary" onclick="buscarEstudiante()">
-                        <span>🔍</span> Buscar
+                <div class="highlight-list">
+                    <h4>🌟 En este evento podrás:</h4>
+                    <ul>
+                        <li><span>✅</span> Conocer a tu mentor/a y comunidad</li>
+                        <li><span>✅</span> Disfrutar de un rico desayuno 🥐☕</li>
+                        <li><span>✅</span> Hacer un tour por el campus 🏫</li>
+                        <li><span>✅</span> Visitar estands de servicios y actividades</li>
+                        <li><span>✅</span> ¡Habrá algunos regalos! 🎁</li>
+                    </ul>
+                </div>
+                
+                <div class="services-grid">
+                    <div class="service-item">
+                        <div class="emoji">🎭</div>
+                        <p><strong>Arte y Cultura</strong><br>Cartelera cultural</p>
+                    </div>
+                    <div class="service-item">
+                        <div class="emoji">🆔</div>
+                        <p><strong>Tec Services</strong><br>Actualiza tu ID</p>
+                    </div>
+                    <div class="service-item">
+                        <div class="emoji">💼</div>
+                        <p><strong>CVDP</strong><br>Desarrollo profesional</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tip-box">
+                <span class="emoji">💡</span>
+                <p><strong>Tip:</strong> ¡No olvides llevar tu termo para mantenerte hidratado! 💙♻️</p>
+            </div>
+            
+            <div class="attendance-options" id="attendanceOptions">
+                <h4>Selecciona una opción:</h4>
+                <div class="options-grid">
+                    <button class="btn btn-success" onclick="confirmarAsistencia(true, event)">
+                        ✓ ¡Sí asistiré!
+                    </button>
+                    <button class="btn btn-secondary" onclick="confirmarAsistencia(false, event)">
+                        😔 No podré asistir
                     </button>
                 </div>
-                <p id="errorMessage" class="error hidden"></p>
             </div>
-            
-            <!-- Sección de información del estudiante -->
-            <div id="studentInfo" class="hidden">
-                <div class="info-card">
-                    <h3 id="welcomeMessage" style="color: var(--tec-blue); font-size: 24px;"></h3>
-                    <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
-                        ¡Te esperamos con mucha emoción! 🎊
-                    </p>
-                </div>
-                
-                <div class="info-grid">
-                    <div id="mentorBox" class="info-box info-box-colored">
-                        <div class="mentor-icon">👥</div>
-                        <h4>Tu Mentor/a</h4>
-                        <p id="mentorName"></p>
-                    </div>
-                    <div id="communityBox" class="info-box info-box-colored">
-                        <div class="mentor-icon">🏠</div>
-                        <h4>Tu Comunidad</h4>
-                        <p id="communityName"></p>
-                    </div>
-                </div>
-                
-                <div class="event-info">
-                    <h3>🌟 Detalles del Evento</h3>
-                    <ul class="detail-list">
-                        <li>
-                            <span class="icon">📅</span>
-                            <strong>Fecha:</strong> &nbsp;Viernes 8 de agosto
-                        </li>
-                        <li>
-                            <span class="icon">⏰</span>
-                            <strong>Horario:</strong> &nbsp;8:30 a.m. - 12:00 p.m.
-                        </li>
-                        <li>
-                            <span class="icon">📍</span>
-                            <strong>Lugar:</strong> &nbsp;Pabellón "La Carreta"
-                            <a href="mapa-evento.html" target="_blank" style="
-                                display: inline-block;
-                                margin-top: 10px;
-                                background: #0062cc;
-                                color: #fff;
-                                padding: 7px 18px;
-                                border-radius: 22px;
-                                font-weight: bold;
-                                font-size: 15px;
-                                text-decoration: none;
-                                box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-                                transition: background 0.2s;">
-                                🗺️ Ver cómo llegar
-                            </a>
-                        </li>
-                    </ul>
-                    
-                    <div class="highlight-list">
-                        <h4>🌟 En este evento podrás:</h4>
-                        <ul>
-                            <li><span>✅</span> Conocer a tu mentor/a y comunidad</li>
-                            <li><span>✅</span> Disfrutar de un rico desayuno 🥐☕</li>
-                            <li><span>✅</span> Hacer un tour por el campus 🏫</li>
-                            <li><span>✅</span> Visitar estands de servicios y actividades</li>
-                            <li><span>✅</span> ¡Habrá algunos regalos! 🎁</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="services-grid">
-                        <div class="service-item">
-                            <div class="emoji">🎭</div>
-                            <p><strong>Arte y Cultura</strong><br>Cartelera cultural</p>
-                        </div>
-                        <div class="service-item">
-                            <div class="emoji">🆔</div>
-                            <p><strong>Tec Services</strong><br>Actualiza tu ID</p>
-                        </div>
-                        <div class="service-item">
-                            <div class="emoji">💼</div>
-                            <p><strong>CVDP</strong><br>Desarrollo profesional</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tip-box">
-                    <span class="emoji">💡</span>
-                    <p><strong>Tip:</strong> ¡No olvides llevar tu termo para mantenerte hidratado! 💙♻️</p>
-                </div>
-                
-                <div class="attendance-options"> id="attendanceOptions">
-                    <h4>Selecciona una opción:</h4>
-                    <div class="options-grid">
-                        <button class="btn btn-success" onclick="confirmarAsistencia(true, event)">
-                            ✓ ¡Sí asistiré!
-                        </button>
-                        <button class="btn btn-secondary" onclick="confirmarAsistencia(false, event)">
-                            😔 No podré asistir
-                        </button>
-                    </div>
-                </div>
-                <div id="mensajeYaRegistrado" style="display:none; margin:18px 0; color:#0062cc; font-weight:bold; text-align:center;">
-                   ✅ Ya registraste tu respuesta. No es necesario hacerlo de nuevo.
-                </div>
-                <button class="btn btn-whatsapp" onclick="contactarMentor()">
-                    💬 Contactar a mi mentor/a por WhatsApp
-                </button>
+            <div id="mensajeYaRegistrado" style="display:none; margin:18px 0; color:#0062cc; font-weight:bold; text-align:center;">
+                ✅ Ya registraste tu respuesta. No es necesario hacerlo de nuevo.
             </div>
-            
-            <!-- Mensaje de confirmación - Asistencia -->
-            <div id="confirmationYes" class="success-message hidden">
-                <div class="success-icon">✓</div>
-                <h2 style="color: #28a745; margin-bottom: 15px;">¡Excelente! Te esperamos 🎉</h2>
-                <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
-                    Hemos confirmado tu asistencia al evento.<br>
-                    No olvides contactar a tu mentor/a <span id="mentorConfirm"></span> por WhatsApp.
-                </p>
-                <button class="btn btn-whatsapp" onclick="contactarMentor()">
-                    💬 Enviar mensaje a mi mentor/a
-                </button>
-                <br>
-                <button class="btn btn-secondary" onclick="mostrarInformacionEvento()">
-                    🔙 Ver detalles del evento y mi mentor/a
-                </button>
-            </div>
-            
-            <!-- Mensaje de confirmación - No asistencia -->
-            <div id="confirmationNo" class="success-message hidden">
-                <div class="success-icon" style="background: #6c757d;">😊</div>
-                <h2 style="color: #6c757d; margin-bottom: 15px;">¡No te preocupes!</h2>
-                <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
-                    Aunque no puedas asistir al evento, tu mentor/a <span id="mentorNoConfirm"></span> está aquí para apoyarte.<br>
-                    Te recomendamos contactarlo/a para conocerse y resolver cualquier duda sobre tu llegada al campus.
-                </p>
-                <button class="btn btn-whatsapp" onclick="contactarMentorNoAsistencia()">
-                    💬 Contactar a mi mentor/a por WhatsApp
-                </button>
-                  <br>
-                <button class="btn btn-secondary" onclick="mostrarInformacionEvento()">
-                    🔙 Ver detalles del evento y mi mentor/a
-                </button>
-            </div>
+            <button class="btn btn-whatsapp" onclick="contactarMentor()">
+                💬 Contactar a mi mentor/a por WhatsApp
+            </button>
+        </div>
+        
+        <!-- Mensaje de confirmación - Asistencia -->
+        <div id="confirmationYes" class="success-message hidden">
+            <div class="success-icon">✓</div>
+            <h2 style="color: #28a745; margin-bottom: 15px;">¡Excelente! Te esperamos 🎉</h2>
+            <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
+                Hemos confirmado tu asistencia al evento.<br>
+                No olvides contactar a tu mentor/a <span id="mentorConfirm"></span> por WhatsApp.
+            </p>
+            <button class="btn btn-whatsapp" onclick="contactarMentor()">
+                💬 Enviar mensaje a mi mentor/a
+            </button>
+            <br>
+            <button class="btn btn-secondary" onclick="mostrarInformacionEvento()">
+                🔙 Ver detalles del evento y mi mentor/a
+            </button>
+        </div>
+        
+        <!-- Mensaje de confirmación - No asistencia -->
+        <div id="confirmationNo" class="success-message hidden">
+            <div class="success-icon" style="background: #6c757d;">😊</div>
+            <h2 style="color: #6c757d; margin-bottom: 15px;">¡No te preocupes!</h2>
+            <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
+                Aunque no puedas asistir al evento, tu mentor/a <span id="mentorNoConfirm"></span> está aquí para apoyarte.<br>
+                Te recomendamos contactarlo/a para conocerse y resolver cualquier duda sobre tu llegada al campus.
+            </p>
+            <button class="btn btn-whatsapp" onclick="contactarMentorNoAsistencia()">
+                💬 Contactar a mi mentor/a por WhatsApp
+            </button>
+            <br>
+            <button class="btn btn-secondary" onclick="mostrarInformacionEvento()">
+                🔙 Ver detalles del evento y mi mentor/a
+            </button>
         </div>
     </div>
+</div>
     
-    <script>
-    // --- VARIABLES GLOBALES ---
-    let estudiantesData = [];
-    let estudianteActual = null;
+<script>
+let estudiantesData = [];
+let estudianteActual = null;
 
-    // --- CONFIGURACIÓN GOOGLE FORMS ---
-    const CONFIG = {
-        GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSftfAfazFqnVWx5oo7XS-SIVv-_CoV0JQcU-npq39kitozEXQ/formResponse',
-        FORM_FIELDS: {
-            matricula: 'entry.1607137015',
-            nombre: 'entry.1566331032',
-            mentor: 'entry.710554786',
-            comunidad: 'entry.1007914499',
-            asistira: 'entry.52874123',
-            timestamp: 'entry.829961349',
-        }
-    };
+// Configuración Google Forms
+const CONFIG = {
+    GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSftfAfazFqnVWx5oo7XS-SIVv-_CoV0JQcU-npq39kitozEXQ/formResponse',
+    FORM_FIELDS: {
+        matricula: 'entry.1607137015',
+        nombre: 'entry.1566331032',
+        mentor: 'entry.710554786',
+        comunidad: 'entry.1007914499',
+        asistira: 'entry.52874123',
+        timestamp: 'entry.829961349',
+    }
+};
 
-    // --- CARGA DE DATOS AL INICIAR ---
-    document.addEventListener('DOMContentLoaded', async () => {
-        await cargarDatosEstudiantes();
-    });
+// Carga de datos
+document.addEventListener('DOMContentLoaded', async () => {
+    await cargarDatosEstudiantes();
+});
 
-    // Helper para buscar el campo correcto
+// Helper para buscar el campo correcto
 function getField(est, ...candidatos) {
     for (let c of candidatos) {
         if (est[c]) return est[c];
     }
-    // Búsqueda "relajada" por nombre si no encontró nada exacto:
     for (let key of Object.keys(est)) {
         if (candidatos.some(c => key.toLowerCase().includes(c.toLowerCase()))) {
             return est[key];
@@ -826,14 +823,10 @@ async function cargarDatosEstudiantes() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log('🔍 Estructura JSON cargada:', data);
 
-        // Detecta la primera clave que tenga arreglo de estudiantes (ej: "Verano 25")
+        // Detecta la primera clave que tenga arreglo de estudiantes
         const primeraClave = Object.keys(data).find(clave => Array.isArray(data[clave]));
-
-        if (!primeraClave) {
-            throw new Error('No se encontró ninguna lista de estudiantes válida.');
-        }
+        if (!primeraClave) throw new Error('No se encontró ninguna lista de estudiantes válida.');
 
         estudiantesData = data[primeraClave].map(estudiante => ({
             matricula: estudiante.Matricula?.trim(),
@@ -846,217 +839,167 @@ async function cargarDatosEstudiantes() {
             carrera: getField(estudiante, "Carrera de egreso", "Carrera", "Carrera destino")?.trim(),
         })).filter(e => e.matricula);
 
-        console.log(`✅ Datos cargados: ${estudiantesData.length} estudiantes desde "${primeraClave}"`);
     } catch (error) {
         console.error('❌ Error cargando datos:', error);
         estudiantesData = [];
     }
-    // Oculta loading siempre, pase lo que pase
     document.getElementById('loadingOverlay').style.display = 'none';
 }
-    // --- BÚSQUEDA DE ESTUDIANTE ---
-    function buscarEstudiante() {
-        const matricula = document.getElementById('matricula').value.trim().toUpperCase();
-        const errorElement = document.getElementById('errorMessage');
 
-        console.log('🔎 Matrícula ingresada:', matricula);
-        console.log('👥 Primeros estudiantes cargados:', estudiantesData.slice(0, 5));
+// Búsqueda de estudiante
+function buscarEstudiante() {
+    const matricula = document.getElementById('matricula').value.trim().toUpperCase();
+    const errorElement = document.getElementById('errorMessage');
+    if (!matricula) {
+        mostrarError('⚠️ Por favor ingresa tu matrícula');
+        return;
+    }
+    const estudiante = estudiantesData.find(e =>
+        e.matricula && e.matricula.toUpperCase() === matricula
+    );
+    if (estudiante) {
+        estudianteActual = estudiante;
+        mostrarInformacionEstudiante(estudiante);
+        errorElement.classList.add('hidden');
+    } else {
+        mostrarError('⚠️ Matrícula no encontrada. Por favor verifica e intenta de nuevo.');
+    }
+}
 
-        if (!matricula) {
-            mostrarError('⚠️ Por favor ingresa tu matrícula');
-            return;
-        }
+function mostrarError(mensaje) {
+    const errorElement = document.getElementById('errorMessage');
+    errorElement.textContent = mensaje;
+    errorElement.classList.remove('hidden');
+}
 
-        const estudiante = estudiantesData.find(e =>
-            e.matricula && e.matricula.toUpperCase() === matricula
-        );
+// Muestra SIEMPRE los datos, solo oculta las opciones si ya registró
+function mostrarInformacionEstudiante(estudiante) {
+    const searchSection = document.getElementById('searchSection');
+    searchSection.style.opacity = '0';
+    setTimeout(() => {
+        searchSection.classList.add('hidden');
+        document.getElementById('welcomeMessage').textContent = `¡Hola ${estudiante.nombre}! 👋`;
+        document.getElementById('mentorName').textContent = estudiante.mentor;
+        document.getElementById('communityName').textContent = estudiante.comunidad;
+        document.getElementById('mentorConfirm').textContent = estudiante.mentor;
+        document.getElementById('mentorNoConfirm').textContent = estudiante.mentor;
+        const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
+        document.getElementById('communityBox').className = `info-box info-box-colored ${comunidadClass}`;
+        document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-spirita';
+        document.getElementById('studentInfo').classList.remove('hidden');
+        document.getElementById('studentInfo').style.opacity = 1;
 
-        if (estudiante) {
-            estudianteActual = estudiante;
-            mostrarInformacionEstudiante(estudiante);
-            errorElement.classList.add('hidden');
+        // Prevención de duplicados
+        const yaRegistrado = localStorage.getItem('registroTransferido_' + estudiante.matricula) === '1';
+        if (yaRegistrado) {
+            document.getElementById('attendanceOptions').style.display = 'none';
+            document.getElementById('mensajeYaRegistrado').style.display = 'block';
         } else {
-            mostrarError('⚠️ Matrícula no encontrada. Por favor verifica e intenta de nuevo.');
+            document.getElementById('attendanceOptions').style.display = '';
+            document.getElementById('mensajeYaRegistrado').style.display = 'none';
         }
-    }
+    }, 300);
+}
 
-    function mostrarError(mensaje) {
-        const errorElement = document.getElementById('errorMessage');
-        errorElement.textContent = mensaje;
-        errorElement.classList.remove('hidden');
-    }
-
-    function mostrarInformacionEstudiante(estudiante) {
-        // Ocultar sección de búsqueda con animación
-        const searchSection = document.getElementById('searchSection');
-        searchSection.style.opacity = '0';
+async function confirmarAsistencia(asistira, event) {
+    if (!estudianteActual) return;
+    const boton = event.target;
+    const textoOriginal = boton.innerHTML;
+    const botones = document.querySelectorAll('.attendance-options .btn');
+    botones.forEach(btn => btn.disabled = true);
+    boton.innerHTML = '<span class="loading"></span> Procesando...';
+    try {
+        await enviarAGoogleForms(asistira);
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        document.getElementById('studentInfo').style.opacity = '0';
         setTimeout(() => {
-            searchSection.classList.add('hidden');
-            
-            // Llenar información
-            document.getElementById('welcomeMessage').textContent = `¡Hola ${estudiante.nombre}! 👋`;
-            document.getElementById('mentorName').textContent = estudiante.mentor;
-            document.getElementById('communityName').textContent = estudiante.comunidad;
-            document.getElementById('mentorConfirm').textContent = estudiante.mentor;
-            document.getElementById('mentorNoConfirm').textContent = estudiante.mentor;
-            
-            // Aplicar color de comunidad
-            const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
-            document.getElementById('communityBox').className = `info-box info-box-colored ${comunidadClass}`;
-            
-            // Color del mentor (púrpura por defecto)
-            document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-spirita';
-            
-            // === PREVENCIÓN DE REGISTROS DUPLICADOS ===
-            const yaRegistrado = localStorage.getItem('registroTransferido_' + estudiante.matricula) === '1';
-            if (yaRegistrado) {
-                document.getElementById('attendanceOptions').style.display = 'none';
-                document.getElementById('mensajeYaRegistrado').style.display = 'block';
+            document.getElementById('studentInfo').classList.add('hidden');
+            if (asistira) {
+                document.getElementById('confirmationYes').classList.remove('hidden');
             } else {
-                document.getElementById('attendanceOptions').style.display = '';
-                document.getElementById('mensajeYaRegistrado').style.display = 'none';
+                document.getElementById('confirmationNo').classList.remove('hidden');
             }
+            // Guarda matrícula como registrada en localStorage
+            localStorage.setItem('registroTransferido_' + estudianteActual.matricula, '1');
         }, 300);
+    } catch (error) {
+        botones.forEach(btn => btn.disabled = false);
+        boton.innerHTML = textoOriginal;
+        mostrarError('❌ Error al procesar la solicitud. Por favor intenta de nuevo.');
     }
+}
 
-    async function confirmarAsistencia(asistira, event) {
-        if (!estudianteActual) {
-            console.error('❌ No hay estudiante seleccionado');
-            return;
-        }
-
-        const boton = event.target;
-        const textoOriginal = boton.innerHTML;
-
-        // Deshabilitar ambos botones
-        const botones = document.querySelectorAll('.attendance-options .btn');
-        botones.forEach(btn => btn.disabled = true);
-
-        // Cambiar texto del botón clickeado
-        boton.innerHTML = '<span class="loading"></span> Procesando...';
-
-        try {
-            // Enviar a Google Forms
-            await enviarAGoogleForms(asistira);
-
-            // Esperar un poco para dar tiempo al envío
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            // Animar transición
-            document.getElementById('studentInfo').style.opacity = '0';
-
-            setTimeout(() => {
-                document.getElementById('studentInfo').classList.add('hidden');
-
-                // Mostrar mensaje según la respuesta
-                if (asistira) {
-                    document.getElementById('confirmationYes').classList.remove('hidden');
-                } else {
-                    document.getElementById('confirmationNo').classList.remove('hidden');
-                }
-                // Guarda matrícula como registrada en localStorage
-                localStorage.setItem('registroTransferido_' + estudianteActual.matricula, '1');
-            }, 300);
-
-        } catch (error) {
-            console.error('❌ Error en confirmación:', error);
-
-            // Restaurar botones en caso de error
-            botones.forEach(btn => btn.disabled = false);
-            boton.innerHTML = textoOriginal;
-
-            // Mostrar error al usuario
-            mostrarError('❌ Error al procesar la solicitud. Por favor intenta de nuevo.');
-        }
-    }
-    // --- ENVÍO DE FORMULARIO GOOGLE FORMS ---
-    async function enviarAGoogleForms(asistira) {
-        if (!CONFIG.GOOGLE_FORM_URL || !estudianteActual) return;
-
-        const formData = new FormData();
-        formData.append(CONFIG.FORM_FIELDS.matricula, estudianteActual.matricula);
-        formData.append(CONFIG.FORM_FIELDS.nombre, estudianteActual.nombre);
-        formData.append(CONFIG.FORM_FIELDS.mentor, estudianteActual.mentor);
-        formData.append(CONFIG.FORM_FIELDS.comunidad, estudianteActual.comunidad);
-        formData.append(CONFIG.FORM_FIELDS.asistira, asistira ? 'Sí' : 'No');
-        const fechaHora = new Date().toLocaleString('es-MX', { 
-            timeZone: 'America/Mexico_City',
-            dateStyle: 'short',
-            timeStyle: 'medium'
-        });
-        formData.append(CONFIG.FORM_FIELDS.timestamp, fechaHora);
-
-        try {
-            await fetch(CONFIG.GOOGLE_FORM_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: formData
-            });
-        } catch (error) {
-            console.error('❌ Error al enviar a Google Forms:', error);
-            throw error;
-        }
-    }
-
-    // --- CONTACTAR MENTOR ---
-    function contactarMentor() {
-        if (!estudianteActual) {
-            console.error('❌ No hay estudiante seleccionado');
-            return;
-        }
-
-        const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre} y seré parte de tu grupo en el evento de transferencias. ¡Nos vemos pronto! 🎓`;
-        const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
-        const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
-        window.open(url, '_blank');
-    }
-
-    function contactarMentorNoAsistencia() {
-        if (!estudianteActual) {
-            console.error('❌ No hay estudiante seleccionado');
-            return;
-        }
-
-        const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una cita? 😊`;
-        const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
-        const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
-        window.open(url, '_blank');
-    }
-
-    // --- BÚSQUEDA CON ENTER ---
-    document.addEventListener('DOMContentLoaded', function() {
-        const input = document.getElementById('matricula');
-        if (input) {
-            input.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    buscarEstudiante();
-                }
-            });
-        }
+async function enviarAGoogleForms(asistira) {
+    if (!CONFIG.GOOGLE_FORM_URL || !estudianteActual) return;
+    const formData = new FormData();
+    formData.append(CONFIG.FORM_FIELDS.matricula, estudianteActual.matricula);
+    formData.append(CONFIG.FORM_FIELDS.nombre, estudianteActual.nombre);
+    formData.append(CONFIG.FORM_FIELDS.mentor, estudianteActual.mentor);
+    formData.append(CONFIG.FORM_FIELDS.comunidad, estudianteActual.comunidad);
+    formData.append(CONFIG.FORM_FIELDS.asistira, asistira ? 'Sí' : 'No');
+    const fechaHora = new Date().toLocaleString('es-MX', { 
+        timeZone: 'America/Mexico_City',
+        dateStyle: 'short',
+        timeStyle: 'medium'
     });
-        function mostrarInformacionEvento() {
-            // Oculta ambas confirmaciones si estuvieran visibles
-            document.getElementById('confirmationYes').classList.add('hidden');
-            document.getElementById('confirmationNo').classList.add('hidden');
-            // Vuelve a mostrar la info personalizada
-            document.getElementById('studentInfo').classList.remove('hidden');
-            // Re-aparecer sección de info con animación
-            document.getElementById('studentInfo').style.opacity = 1;
-            // Si tienes scroll, enfoca la tarjeta de info:
-            document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
-        
-            // PREVENCIÓN DE REGISTROS DUPLICADOS
-            if (estudianteActual) {
-                const yaRegistrado = localStorage.getItem('registroTransferido_' + estudianteActual.matricula) === '1';
-                if (yaRegistrado) {
-                    document.getElementById('attendanceOptions').style.display = 'none';
-                    document.getElementById('mensajeYaRegistrado').style.display = 'block';
-                } else {
-                    document.getElementById('attendanceOptions').style.display = '';
-                    document.getElementById('mensajeYaRegistrado').style.display = 'none';
-                }
+    formData.append(CONFIG.FORM_FIELDS.timestamp, fechaHora);
+
+    try {
+        await fetch(CONFIG.GOOGLE_FORM_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
+function contactarMentor() {
+    if (!estudianteActual) return;
+    const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre} y seré parte de tu grupo en el evento de transferencias. ¡Nos vemos pronto! 🎓`;
+    const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
+    const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
+}
+
+function contactarMentorNoAsistencia() {
+    if (!estudianteActual) return;
+    const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una cita? 😊`;
+    const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
+    const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('matricula');
+    if (input) {
+        input.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                buscarEstudiante();
             }
+        });
+    }
+});
+
+// Muestra siempre los datos, solo oculta asistencia si ya registró
+function mostrarInformacionEvento() {
+    document.getElementById('confirmationYes').classList.add('hidden');
+    document.getElementById('confirmationNo').classList.add('hidden');
+    document.getElementById('studentInfo').classList.remove('hidden');
+    document.getElementById('studentInfo').style.opacity = 1;
+    document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
+    if (estudianteActual) {
+        const yaRegistrado = localStorage.getItem('registroTransferido_' + estudianteActual.matricula) === '1';
+        if (yaRegistrado) {
+            document.getElementById('attendanceOptions').style.display = 'none';
+            document.getElementById('mensajeYaRegistrado').style.display = 'block';
+        } else {
+            document.getElementById('attendanceOptions').style.display = '';
+            document.getElementById('mensajeYaRegistrado').style.display = 'none';
         }
+    }
+}
 </script>
 </body>
 </html>
