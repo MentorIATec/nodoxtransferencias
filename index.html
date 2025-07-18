@@ -887,8 +887,8 @@ function mostrarInformacionEstudiante(estudiante) {
         mentorNameElem.textContent = estudiante.mentorFullname;
         mentorNameElem.className = `mentor-comunidad comunidad-${comunidadKey}`;
         document.getElementById('communityName').textContent = estudiante.comunidad;
-        document.getElementById('mentorConfirm').textContent = estudiante.mentor;
-        document.getElementById('mentorNoConfirm').textContent = estudiante.mentor;
+        document.getElementById('mentorConfirm').textContent = estudiante.mentorFullname;
+        document.getElementById('mentorNoConfirm').textContent = estudiante.mentorFullname;
         const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
         document.getElementById('communityBox').className = `info-box info-box-colored ${comunidadClass}`;
         document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-spirita';
@@ -939,8 +939,8 @@ async function enviarAGoogleForms(asistira) {
     if (!CONFIG.GOOGLE_FORM_URL || !estudianteActual) return;
     const formData = new FormData();
     formData.append(CONFIG.FORM_FIELDS.matricula, estudianteActual.matricula);
-    formData.append(CONFIG.FORM_FIELDS.nombre, estudianteActual.nombre);
-    formData.append(CONFIG.FORM_FIELDS.mentor, estudianteActual.mentor);
+    formData.append(CONFIG.FORM_FIELDS.nombre, estudianteActual.fullnameEstudiante);
+    formData.append(CONFIG.FORM_FIELDS.mentor, estudianteActual.mentorFullname);
     formData.append(CONFIG.FORM_FIELDS.comunidad, estudianteActual.comunidad);
     formData.append(CONFIG.FORM_FIELDS.asistira, asistira ? 'Sí' : 'No');
     const fechaHora = new Date().toLocaleString('es-MX', { 
