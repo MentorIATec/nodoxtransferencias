@@ -884,8 +884,8 @@ function mostrarInformacionEstudiante(estudiante) {
         document.getElementById('mentorConfirm').textContent = estudiante.mentorFullname;
         document.getElementById('mentorNoConfirm').textContent = estudiante.mentorFullname;
         const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
-        document.getElementById('communityBox').className = `info-box info-box-colored ${comunidadClass}`;
-        document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-spirita';
+        document.getElementById('communityBox').className = 'info-box info-box-colored comunidad-' + comunidadKey;
+        document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-' + comunidadKey;
         document.getElementById('studentInfo').classList.remove('hidden');
         document.getElementById('studentInfo').style.opacity = 1;
 
