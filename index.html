@@ -829,14 +829,14 @@ async function cargarDatosEstudiantes() {
         if (!primeraClave) throw new Error('No se encontró ninguna lista de estudiantes válida.');
 
         estudiantesData = data[primeraClave].map(estudiante => ({
-            matricula: estudiante.Matricula?.trim(),
-            nombre: estudiante["Nombre del alumno"]?.trim(),
-            mentor: getField(estudiante, "Mentor Asignado Verano 25", "Mentor Asignado Agosto-Diciembre 25", "Mentor")?.trim(),
-            whatsapp: estudiante.Whatsapp?.trim(),
-            comunidad: estudiante.Comunidad?.trim(),
-            email: estudiante["Email del alumno"]?.trim(),
-            campusOrigen: estudiante["Campus origen"]?.trim(),
-            carrera: getField(estudiante, "Carrera de egreso", "Carrera", "Carrera destino")?.trim(),
+            matricula: estudiante.matricula?.trim(),
+            nameEstudiante: estudiante.nameEstudiante?.trim(),
+            fullnameEstudiante: estudiante.fullnameEstudiante?.trim(),
+            mentorFullname: estudiante.mentorFullname?.trim(),
+            mentorNickname: estudiante.mentorNickname?.trim(),
+            whatsappMentor: estudiante.whatsappMentor?.trim(),
+            comunidad: estudiante.comunidad?.trim(),
+            campusOrigen: estudiante.campusOrigen?.trim(),
         })).filter(e => e.matricula);
 
     } catch (error) {
@@ -878,8 +878,14 @@ function mostrarInformacionEstudiante(estudiante) {
     searchSection.style.opacity = '0';
     setTimeout(() => {
         searchSection.classList.add('hidden');
-        document.getElementById('welcomeMessage').textContent = `¡Hola, ${estudiante.nombre}! 👋`;
-        document.getElementById('mentorName').textContent = estudiante.mentor;
+        document.getElementById('welcomeMessage').textContent = estudiante.nameEstudiante
+            ? `¡Hola, ${estudiante.nameEstudiante.trim()}! 👋`
+            : `¡Hola! 👋`;
+        
+        const comunidadKey = estudiante.comunidad.trim().toLowerCase();
+        const mentorNameElem = document.getElementById('mentorName');
+        mentorNameElem.textContent = estudiante.mentorFullname;
+        mentorNameElem.className = `mentor-comunidad comunidad-${comunidadKey}`;
         document.getElementById('communityName').textContent = estudiante.comunidad;
         document.getElementById('mentorConfirm').textContent = estudiante.mentor;
         document.getElementById('mentorNoConfirm').textContent = estudiante.mentor;
@@ -957,16 +963,16 @@ async function enviarAGoogleForms(asistira) {
 
 function contactarMentor() {
     if (!estudianteActual) return;
-    const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre} y seré parte de tu grupo en el evento de transferencias. ¡Nos vemos pronto! 🎓`;
-    const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
+    const mensaje = `¡Hola ${estudianteActual.mentorNickname}! 👋 Soy ${estudianteActual.fullnameEstudiante} y vengo de ${estudianteActual.campusOrigen}. Ya confirmé mi asistencia al evento de transferencias. ¡Nos vemos pronto! 🎓`;
+    const numeroLimpio = estudianteActual.whatsappMentor.replace(/\D/g, '');
     const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
 }
 
 function contactarMentorNoAsistencia() {
     if (!estudianteActual) return;
-    const mensaje = `¡Hola ${estudianteActual.mentor}! 👋 Soy ${estudianteActual.nombre}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una cita? 😊`;
-    const numeroLimpio = estudianteActual.whatsapp.replace(/\D/g, '');
+    const mensaje = `¡Hola ${estudianteActual.mentorNickname}! 👋 Soy ${estudianteActual.fullnameEstudiante} y vengo de ${estudianteActual.campusOrigen}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una cita? 😊`;
+    const numeroLimpio = estudianteActual.whatsappMentor.replace(/\D/g, '');
     const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
 }
