@@ -878,7 +878,7 @@ function mostrarInformacionEstudiante(estudiante) {
     searchSection.style.opacity = '0';
     setTimeout(() => {
         searchSection.classList.add('hidden');
-        document.getElementById('welcomeMessage').textContent = `¡Hola ${estudiante.nombre}! 👋`;
+        document.getElementById('welcomeMessage').textContent = `¡Hola, ${estudiante.nombre}! 👋`;
         document.getElementById('mentorName').textContent = estudiante.mentor;
         document.getElementById('communityName').textContent = estudiante.comunidad;
         document.getElementById('mentorConfirm').textContent = estudiante.mentor;
