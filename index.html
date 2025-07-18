@@ -829,7 +829,7 @@ async function cargarDatosEstudiantes() {
         if (!primeraClave) throw new Error('No se encontró ninguna lista de estudiantes válida.');
 
         estudiantesData = data[primeraClave].map(estudiante => ({
-            matricula: estudiante.matricula?.trim(),
+            matricula: estudiante.matrícula?.trim(),
             nameEstudiante: estudiante.nameEstudiante?.trim(),
             fullnameEstudiante: estudiante.fullnameEstudiante?.trim(),
             mentorFullname: estudiante.mentorFullname?.trim(),
