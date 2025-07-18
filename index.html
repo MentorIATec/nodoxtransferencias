@@ -815,21 +815,14 @@ function getField(est, ...candidatos) {
     }
     return "";
 }
-
 async function cargarDatosEstudiantes() {
     try {
         const response = await fetch('/estudiantes.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
 
-        // Detecta la primera clave que tenga arreglo de estudiantes
-        const primeraClave = Object.keys(data).find(clave => Array.isArray(data[clave]));
-        if (!primeraClave) throw new Error('No se encontró ninguna lista de estudiantes válida.');
-
-        estudiantesData = data[primeraClave].map(estudiante => ({
-            matricula: estudiante.matricula?.trim().toUpperCase() || estudiante["matrícula"]?.trim().toUpperCase(),
+        estudiantesData = data.map(estudiante => ({
+            matricula: (estudiante.matricula || estudiante["matrícula"] || estudiante.Matricula)?.trim().toUpperCase(),
             nameEstudiante: estudiante.nameEstudiante?.trim(),
             fullnameEstudiante: estudiante.fullnameEstudiante?.trim(),
             mentorFullname: estudiante.mentorFullname?.trim(),
@@ -839,6 +832,7 @@ async function cargarDatosEstudiantes() {
             campusOrigen: estudiante.campusOrigen?.trim(),
         })).filter(e => e.matricula);
 
+        console.log('MATRÍCULAS CARGADAS:', estudiantesData.map(e => e.matricula));
     } catch (error) {
         console.error('❌ Error cargando datos:', error);
         estudiantesData = [];
