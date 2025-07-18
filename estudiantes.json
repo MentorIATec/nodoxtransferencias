@@ -1,292 +1,289 @@
-{
-"Verano 25":[
- {
-  "Matricula": "A01655116",
-  "Nombre del alumno": " Juan Carlos ",
-  "Mentor Asignado Verano 25": "Abby",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Reflekto",
-  "Email del alumno": "A01655116@tec.mx",
-  "Campus origen": "Campus Ciudad de México",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero Mecánico - IM",
-  "Entrada": "IM"
- },
- {
-  "Matricula": "A01781721",
-  "Nombre del alumno": " José Luis ",
-  "Mentor Asignado Verano 25": "Alinna",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Reflekto",
-  "Email del alumno": "A01781721@tec.mx",
-  "Campus origen": "Campus Guadalajara",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Ciencia de Datos y Matemáticas - IDM",
-  "Entrada": "IDM"
- },
- {
-  "Matricula": "A01385944",
-  "Nombre del alumno": " Carlos ",
-  "Mentor Asignado Verano 25": "Andrea",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Kresko",
-  "Email del alumno": "A01385944@tec.mx",
-  "Campus origen": "Campus Saltillo",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero Biomédico - IMD",
-  "Entrada": "IIT"
- },
- {
-  "Matricula": "A01769903",
-  "Nombre del alumno": " Sergio Octavio ",
-  "Mentor Asignado Verano 25": "Andrea",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Kresko",
-  "Email del alumno": "A01769903@itesm.mx",
-  "Campus origen": "Campus Toluca",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Mecatrónica - IMT",
-  "Entrada": "IIT"
- },
- {
-  "Matricula": "A01403703",
-  "Nombre del alumno": " Diego ",
-  "Mentor Asignado Verano 25": "Rowland",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Forta",
-  "Email del alumno": "A01403703@tec.mx",
-  "Campus origen": "Campus Aguascalientes",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Tecnologías Computacionales - ITC",
-  "Entrada": "ICT"
- },
- {
-  "Matricula": "A01667135",
-  "Nombre del alumno": " Ana Karen ",
-  "Mentor Asignado Verano 25": "Rowland",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Forta",
-  "Email del alumno": "A01667135@tec.mx",
-  "Campus origen": "Campus Estado de México",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Nanotecnología - INA",
-  "Entrada": "INA"
- },
- {
-  "Matricula": "A01734519",
-  "Nombre del alumno": " Alicia Nohemí ",
-  "Mentor Asignado Verano 25": "Bety",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Talenta",
-  "Email del alumno": "A01734519@tec.mx",
-  "Campus origen": "Campus Querétaro",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Licenciado en Arte Digital - LAD",
-  "Entrada": "ESC"
- },
- {
-  "Matricula": "A01413248",
-  "Nombre del alumno": " Ana Victoria ",
-  "Mentor Asignado Verano 25": "Brenda",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Talenta",
-  "Email del alumno": "A01413248@tec.mx",
-  "Campus origen": "Campus Tampico",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Licenciado en Inteligencia de Negocios - LIT",
-  "Entrada": "NEG"
- },
- {
-  "Matricula": "A01661735",
-  "Nombre del alumno": " Pamela Nicole ",
-  "Mentor Asignado Verano 25": "Chris",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Spirita",
-  "Email del alumno": "A01661735@tec.mx",
-  "Campus origen": "Campus Ciudad de México",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero Mecánico - IM",
-  "Entrada": "IIT"
- },
- {
-  "Matricula": "A01423796",
-  "Nombre del alumno": " Yeri Alexa ",
-  "Mentor Asignado Verano 25": "Dámaris",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Forta",
-  "Email del alumno": "A01423796@itesm.mx",
-  "Campus origen": "Campus Puebla",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Licenciado en Relaciones Internacionales - LRI",
-  "Entrada": "CIS"
- },
- {
-  "Matricula": "A00574439",
-  "Nombre del alumno": " María Regina ",
-  "Mentor Asignado Verano 25": "Itzel",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Spirita",
-  "Email del alumno": "A00574439@tec.mx",
-  "Campus origen": "Campus Guadalajara",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Licenciado en Diseño - LDI",
-  "Entrada": "ESC"
- },
- {
-  "Matricula": "A01712275",
-  "Nombre del alumno": " Arturo ",
-  "Mentor Asignado Verano 25": "Jacob",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Spirita",
-  "Email del alumno": "A01712275@tec.mx",
-  "Campus origen": "Campus Querétaro",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Robótica y Sistemas Digitales - IRS",
-  "Entrada": "ICT"
- },
- {
-  "Matricula": "A01666218",
-  "Nombre del alumno": " Daniel ",
-  "Mentor Asignado Verano 25": "Jacob",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Spirita",
-  "Email del alumno": "A01666218@itesm.mx",
-  "Campus origen": "Campus Estado de México",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Nanotecnología - INA",
-  "Entrada": "INA"
- },
- {
-  "Matricula": "A00843194",
-  "Nombre del alumno": " José Eduardo ",
-  "Mentor Asignado Verano 25": "Mauricio",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Talenta",
-  "Email del alumno": "A00843194@tec.mx",
-  "Campus origen": "Campus Puebla",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero Mecánico - IM",
-  "Entrada": "IM"
- },
- {
-  "Matricula": "A01736257",
-  "Nombre del alumno": " Santiago ",
-  "Mentor Asignado Verano 25": "Roger ",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Revo",
-  "Email del alumno": "A01736257@tec.mx",
-  "Campus origen": "Campus Puebla",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Mecatrónica (BS Mechatronics Engineering) – BME",
-  "Entrada": "IIT"
- },
- {
-  "Matricula": "A01735005",
-  "Nombre del alumno": " Alejandro ",
-  "Mentor Asignado Verano 25": "Roger ",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Revo",
-  "Email del alumno": "A01735005@tec.mx",
-  "Campus origen": "Campus Puebla",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero Industrial y de Sistemas - IIS",
-  "Entrada": "IIT"
- },
- {
-  "Matricula": "A00835900",
-  "Nombre del alumno": " José Gael ",
-  "Mentor Asignado Verano 25": "Gaby",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Talenta",
-  "Email del alumno": "A00835900@tec.mx",
-  "Campus origen": "Campus Sonora Norte",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Arquitecto - ARQ",
-  "Entrada": "ESC"
- },
- {
-  "Matricula": "A00227850",
-  "Nombre del alumno": " Rafael ",
-  "Mentor Asignado Verano 25": "Leo",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Ekvilibro",
-  "Email del alumno": "A00227850@tec.mx",
-  "Campus origen": "Campus Ciudad Obregón",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Licenciado en Finanzas - LAF",
-  "Entrada": "NEG"
- },
- {
-  "Matricula": "A01711430",
-  "Nombre del alumno": " Xavier Ignacio ",
-  "Mentor Asignado Verano 25": "Vinicio",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Energio",
-  "Email del alumno": "A01711430@itesm.mx",
-  "Campus origen": "Campus Querétaro",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Licenciado en Emprendimiento - LDE",
-  "Entrada": "LDE"
- },
- {
-  "Matricula": "A01772946",
-  "Nombre del alumno": " Ana Sarahí ",
-  "Mentor Asignado Verano 25": "Vinicio",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Energio",
-  "Email del alumno": "A01772946@tec.mx",
-  "Campus origen": "Campus Toluca",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "c",
-  "Entrada": "LEM"
- },
- {
-  "Matricula": "A01709672",
-  "Nombre del alumno": " Itzel ",
-  "Mentor Asignado Verano 25": "María",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Revo",
-  "Email del alumno": "A01709672@tec.mx",
-  "Campus origen": "Campus Querétaro",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Robótica y Sistemas Digitales - IRS",
-  "Entrada": "IRS"
- },
- {
-  "Matricula": "A01646141",
-  "Nombre del alumno": " Vanessa Sarahi ",
-  "Mentor Asignado Verano 25": "María",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Revo",
-  "Email del alumno": "A01646141@tec.mx",
-  "Campus origen": "Campus Guadalajara",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Robótica y Sistemas Digitales - IRS",
-  "Entrada": "IRS"
- },
- {
-  "Matricula": "A01782048",
-  "Nombre del alumno": " Sara Sofía ",
-  "Mentor Asignado Verano 25": "Ernesto",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Revo",
-  "Email del alumno": "A01782048@tec.mx",
-  "Campus origen": "Campus Santa Fe",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero Mecánico - IM",
-  "Entrada": "IMT"
- },
- {
-  "Matricula": "A01754213",
-  "Nombre del alumno": " Santiago Elías ",
-  "Mentor Asignado Verano 25": "Rodrigo",
-  "Whatsapp": "+52 1 81 2562 4833",
-  "Comunidad": "Pasio",
-  "Email del alumno": "A01754213@tec.mx",
-  "Campus origen": "Campus Estado de México",
-  "Campus destino": "Campus Monterrey",
-  "Carrera de egreso": "Ingeniero en Mecatrónica - IMT",
-  "Entrada": "IMT"
- }
-]
-}
+	
+0	
+matrícula	"A01655116"
+fullnameEstudiante	" Juan Carlos  Reséndiz Hernández"
+nameEstudiante	" Juan Carlos "
+mentorFullname	"Abigail Cepeda Hernández"
+mentorNickname	"Abby"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Reflekto"
+email	"A01655116 @tec.mx"
+campusOrigen	"Campus Ciudad de México"
+carrera	"Ingeniero Mecánico - IM"
+entrada	"IM"
+1	
+matrícula	"A01781721"
+fullnameEstudiante	" José Luis  Santos Montaño"
+nameEstudiante	" José Luis "
+mentorFullname	"Alinna Correa Escobedo"
+mentorNickname	"Alinna"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Reflekto"
+email	"A01781721 @tec.mx"
+campusOrigen	"Campus Guadalajara"
+carrera	"Ingeniero en Ciencia de Datos y Matemáticas - IDM"
+entrada	"IDM"
+2	
+matrícula	"A01385944"
+fullnameEstudiante	" Carlos  Ovalle Valdez"
+nameEstudiante	" Carlos "
+mentorFullname	"Andrea Herrera Morales"
+mentorNickname	"Andrea"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Kresko"
+email	"A01385944 @tec.mx"
+campusOrigen	"Campus Saltillo"
+carrera	"Ingeniero Biomédico - IMD"
+entrada	"IIT"
+3	
+matrícula	"A01769903"
+fullnameEstudiante	" Sergio Octavio  Montero Márquez"
+nameEstudiante	" Sergio Octavio "
+mentorFullname	"Andrea Herrera Morales"
+mentorNickname	"Andrea"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Kresko"
+email	"A01769903 @tec.mx"
+campusOrigen	"Campus Toluca"
+carrera	"Ingeniero en Mecatrónica - IMT"
+entrada	"IIT"
+4	
+matrícula	"A01403703"
+fullnameEstudiante	" Diego  Sánchez Pámanes"
+nameEstudiante	" Diego "
+mentorFullname	"Antonio Rowland Ramos Díaz"
+mentorNickname	"Rowland"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Forta"
+email	"A01403703 @tec.mx"
+campusOrigen	"Campus Aguascalientes"
+carrera	"Ingeniero en Tecnologías Computacionales - ITC"
+entrada	"ICT"
+5	
+matrícula	"A01667135"
+fullnameEstudiante	" Ana Karen  Carreño Cervantes"
+nameEstudiante	" Ana Karen "
+mentorFullname	"Antonio Rowland Ramos Díaz"
+mentorNickname	"Rowland"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Forta"
+email	"A01667135 @tec.mx"
+campusOrigen	"Campus Estado de México"
+carrera	"Ingeniero en Nanotecnología - INA"
+entrada	"INA"
+6	
+matrícula	"A01734519"
+fullnameEstudiante	" Alicia Nohemí  Tlaxcalteca Aguilar"
+nameEstudiante	" Alicia Nohemí "
+mentorFullname	"Beatriz Eugenia González Canales"
+mentorNickname	"Bety"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Talenta"
+email	"A01734519 @tec.mx"
+campusOrigen	"Campus Querétaro"
+carrera	"Licenciado en Arte Digital - LAD"
+entrada	"ESC"
+7	
+matrícula	"A01413248"
+fullnameEstudiante	" Ana Victoria  Solís Treviño"
+nameEstudiante	" Ana Victoria "
+mentorFullname	"Brenda Alicia Ramírez Téllez"
+mentorNickname	"Brenda"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Talenta"
+email	"A01413248 @tec.mx"
+campusOrigen	"Campus Tampico"
+carrera	"Licenciado en Inteligencia de Negocios - LIT"
+entrada	"NEG"
+8	
+matrícula	"A01661735"
+fullnameEstudiante	" Pamela Nicole  Castillo Conde"
+nameEstudiante	" Pamela Nicole "
+mentorFullname	"Christopher Jean-Philippe Josette Michaux"
+mentorNickname	"Chris"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Spirita"
+email	"A01661735 @tec.mx"
+campusOrigen	"Campus Ciudad de México"
+carrera	"Ingeniero Mecánico - IM"
+entrada	"IIT"
+9	
+matrícula	"A01423796"
+fullnameEstudiante	" Yeri Alexa  Orozco Flores"
+nameEstudiante	" Yeri Alexa "
+mentorFullname	"Dámaris Yannaí Morales Leal"
+mentorNickname	"Dámaris"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Forta"
+email	"A01423796 @tec.mx"
+campusOrigen	"Campus Puebla"
+carrera	"Licenciado en Relaciones Internacionales - LRI"
+entrada	"CIS"
+10	
+matrícula	"A00574439"
+fullnameEstudiante	" María Regina  González García"
+nameEstudiante	" María Regina "
+mentorFullname	"Itzel Giannina Treviño Mahuad"
+mentorNickname	"Itzel"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Spirita"
+email	"A00574439 @tec.mx"
+campusOrigen	"Campus Guadalajara"
+carrera	"Licenciado en Diseño - LDI"
+entrada	"ESC"
+11	
+matrícula	"A01712275"
+fullnameEstudiante	" Arturo  Balboa Alvarado"
+nameEstudiante	" Arturo "
+mentorFullname	"Jacob de la Cruz Hinojosa"
+mentorNickname	"Jacob"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Spirita"
+email	"A01712275 @tec.mx"
+campusOrigen	"Campus Querétaro"
+carrera	"Ingeniero en Robótica y Sistemas Digitales - IRS"
+entrada	"ICT"
+12	
+matrícula	"A01666218"
+fullnameEstudiante	" Daniel  Jaramillo Hernández"
+nameEstudiante	" Daniel "
+mentorFullname	"Jacob de la Cruz Hinojosa"
+mentorNickname	"Jacob"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Spirita"
+email	"A01666218 @tec.mx"
+campusOrigen	"Campus Estado de México"
+carrera	"Ingeniero en Nanotecnología - INA"
+entrada	"INA"
+13	
+matrícula	"A00843194"
+fullnameEstudiante	" José Eduardo  Calderón Grajales"
+nameEstudiante	" José Eduardo "
+mentorFullname	"Jorge Mauricio Noriega Montemayor"
+mentorNickname	"Mauricio"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Talenta"
+email	"A00843194 @tec.mx"
+campusOrigen	"Campus Puebla"
+carrera	"Ingeniero Mecánico - IM"
+entrada	"IM"
+14	
+matrícula	"A01736257"
+fullnameEstudiante	" Santiago  López Merino"
+nameEstudiante	" Santiago "
+mentorFullname	"José Rogelio Rivas Pimentel"
+mentorNickname	"Roger "
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Revo"
+email	"A01736257 @tec.mx"
+campusOrigen	"Campus Puebla"
+carrera	"Ingeniero en Mecatrónica (BS Mechatronics Engineering) – BME"
+entrada	"IIT"
+15	
+matrícula	"A01735005"
+fullnameEstudiante	" Alejandro  Osio Limón"
+nameEstudiante	" Alejandro "
+mentorFullname	"José Rogelio Rivas Pimentel"
+mentorNickname	"Roger "
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Revo"
+email	"A01735005 @tec.mx"
+campusOrigen	"Campus Puebla"
+carrera	"Ingeniero Industrial y de Sistemas - IIS"
+entrada	"IIT"
+16	
+matrícula	"A00835900"
+fullnameEstudiante	" José Gael  Astorga Cárdenas"
+nameEstudiante	" José Gael "
+mentorFullname	"Laura Gabriela Ríos Contreras"
+mentorNickname	"Gaby"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Talenta"
+email	"A00835900 @tec.mx"
+campusOrigen	"Campus Sonora Norte"
+carrera	"Arquitecto - ARQ"
+entrada	"ESC"
+17	
+matrícula	"A00227850"
+fullnameEstudiante	" Rafael  López Tineo"
+nameEstudiante	" Rafael "
+mentorFullname	"Leonardo Páez Hervert"
+mentorNickname	"Leo"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Ekvilibro"
+email	"A00227850 @tec.mx"
+campusOrigen	"Campus Ciudad Obregón"
+carrera	"Licenciado en Finanzas - LAF"
+entrada	"NEG"
+18	
+matrícula	"A01711430"
+fullnameEstudiante	" Xavier Ignacio  Carranza Solís"
+nameEstudiante	" Xavier Ignacio "
+mentorFullname	"Marco Vinicio Cristerna Mata"
+mentorNickname	"Vinicio"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Energio"
+email	"A01711430 @tec.mx"
+campusOrigen	"Campus Querétaro"
+carrera	"Licenciado en Emprendimiento - LDE"
+entrada	"LDE"
+19	
+matrícula	"A01772946"
+fullnameEstudiante	" Ana Sarahí  Peña García"
+nameEstudiante	" Ana Sarahí "
+mentorFullname	"Marco Vinicio Cristerna Mata"
+mentorNickname	"Vinicio"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Energio"
+email	"A01772946 @tec.mx"
+campusOrigen	"Campus Toluca"
+carrera	"Licenciado en Mercadotecnia - LEM"
+entrada	"LEM"
+20	
+matrícula	"A01709672"
+fullnameEstudiante	" Itzel  Hernández Vargas"
+nameEstudiante	" Itzel "
+mentorFullname	"María del Roble Mendiola Delgado"
+mentorNickname	"María"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Revo"
+email	"A01709672 @tec.mx"
+campusOrigen	"Campus Querétaro"
+carrera	"Ingeniero en Robótica y Sistemas Digitales - IRS"
+entrada	"IRS"
+21	
+matrícula	"A01646141"
+fullnameEstudiante	" Vanessa Sarahi  Salazar Ibarra"
+nameEstudiante	" Vanessa Sarahi "
+mentorFullname	"María del Roble Mendiola Delgado"
+mentorNickname	"María"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Revo"
+email	"A01646141 @tec.mx"
+campusOrigen	"Campus Guadalajara"
+carrera	"Ingeniero en Robótica y Sistemas Digitales - IRS"
+entrada	"IRS"
+22	
+matrícula	"A01782048"
+fullnameEstudiante	" Sara Sofía  Marón Obeso"
+nameEstudiante	" Sara Sofía "
+mentorFullname	"Norman Ernesto Ramírez González"
+mentorNickname	"Ernesto"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Revo"
+email	"A01782048 @tec.mx"
+campusOrigen	"Campus Santa Fe"
+carrera	"Ingeniero Mecánico - IM"
+entrada	"IMT"
+23	
+matrícula	"A01754213"
+fullnameEstudiante	" Santiago Elías  Cruz Aguilar"
+nameEstudiante	" Santiago Elías "
+mentorFullname	"Rodrigo Eugenio Holguín Salinas"
+mentorNickname	"Rodrigo"
+whatsappMentor	"+52 1 81 2562 4833"
+comunidad	"Pasio"
+email	"A01754213 @tec.mx"
+campusOrigen	"Campus Estado de México"
+carrera	"Ingeniero en Mecatrónica - IMT"
+entrada	"IMT"
