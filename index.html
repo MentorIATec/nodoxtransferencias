@@ -829,7 +829,7 @@ async function cargarDatosEstudiantes() {
         if (!primeraClave) throw new Error('No se encontró ninguna lista de estudiantes válida.');
 
         estudiantesData = data[primeraClave].map(estudiante => ({
-            matricula: estudiante.matrícula?.trim(),
+            matricula: estudiante.matricula?.trim().toUpperCase() || estudiante["matrícula"]?.trim().toUpperCase(),
             nameEstudiante: estudiante.nameEstudiante?.trim(),
             fullnameEstudiante: estudiante.fullnameEstudiante?.trim(),
             mentorFullname: estudiante.mentorFullname?.trim(),
@@ -855,7 +855,7 @@ function buscarEstudiante() {
         return;
     }
     const estudiante = estudiantesData.find(e =>
-        e.matricula && e.matricula.toUpperCase() === matricula
+        e.matricula && e.matricula === matricula
     );
     if (estudiante) {
         estudianteActual = estudiante;
