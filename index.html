@@ -949,6 +949,9 @@ async function enviarAGoogleForms(asistira) {
         timeStyle: 'medium'
     });
     formData.append(CONFIG.FORM_FIELDS.timestamp, fechaHora);
+    
+    const correoGenerado = estudianteActual.matricula.toLowerCase() + '@itesm.mx';
+    formData.append(CONFIG.FORM_FIELDS.correo, correoGenerado);
 
     try {
         await fetch(CONFIG.GOOGLE_FORM_URL, {
