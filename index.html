@@ -950,7 +950,7 @@ async function enviarAGoogleForms(asistira) {
     });
     formData.append(CONFIG.FORM_FIELDS.timestamp, fechaHora);
     
-    const correoGenerado = estudianteActual.matricula.toLowerCase() + '@itesm.mx';
+    const correoGenerado = estudianteActual.matricula.toLowerCase() + '@tec.mx';
     formData.append(CONFIG.FORM_FIELDS.correo, correoGenerado);
 
     try {
