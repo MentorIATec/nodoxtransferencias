@@ -1,6 +1,6 @@
 [
  {
-  "matricula": "A01569012",
+  "matrícula": "A01569012",
   "fullnameEstudiante": " Juan Carlos Reséndiz Hernández",
   "nameEstudiante": "Juan Carlos",
   "mentorFullname": "Abigail Cepeda Hernández",
@@ -11,6 +11,7 @@
   "email": "A01655116@tec.mx",
   "campusOrigen": "Campus Ciudad de México",
   "carrera": "Ingeniero Mecánico - IM",
+  "entrada": "IMT"
  },
  {
   "matrícula": "A00803848",
