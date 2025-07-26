@@ -809,18 +809,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await cargarDatosEstudiantes();
 });
 
-// Helper para buscar el campo correcto
-function getField(est, ...candidatos) {
-    for (let c of candidatos) {
-        if (est[c]) return est[c];
-    }
-    for (let key of Object.keys(est)) {
-        if (candidatos.some(c => key.toLowerCase().includes(c.toLowerCase()))) {
-            return est[key];
-        }
-    }
-    return "";
-}
 async function cargarDatosEstudiantes() {
     try {
         const response = await fetch('/estudiantes.json');
