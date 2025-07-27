@@ -5,13 +5,12 @@
         "nameEstudiante": "César Mauricio",
         "mentorFullname": "Abigail Cepeda Hernández",
         "mentorNickname": "Abby",
-        "fotoMentor": "mentores/AbbyReflekto.jpg",
+        "fotoMentor": "mentores\/AbbyReflekto.jpg",
         "whatsappMentor": "+528120109380",
         "comunidad": "Reflekto",
         "email": "A01569012@tec.mx",
         "campusOrigen": "Campus Chihuahua",
         "carrera": "Ingeniero Mecánico - IM",
-        "entrada": "IM"
     },
     {
         "matrícula": "A01747377",
