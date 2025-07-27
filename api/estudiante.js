@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+
 export default async function handler(req, res) {
   // Configurar CORS primero
   res.setHeader('Access-Control-Allow-Origin', '*');
