@@ -1,0 +1,19 @@
+# Archivos de datos sensibles
+api/estudiantes.json
+
+# Archivos de entorno y configuraciones
+.env
+.env.local
+.env.*.local
+.vercel
+.idea
+.vscode
+
+# Archivos generados por el sistema
+.DS_Store
+Thumbs.db
+
+# Dependencias y builds
+node_modules/
+dist/
+build/
