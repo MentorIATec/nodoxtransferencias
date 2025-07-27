@@ -682,7 +682,7 @@
                     <li>
                         <span class="icon">📍</span>
                         <strong>Lugar:</strong> &nbsp;Pabellón "La Carreta"
-                        <a href="mapa-evento.html" target="_blank" style="
+                        <a href="public/mapa-evento.html" target="_blank" style="
                             display: inline-block;
                             margin-top: 10px;
                             background: #0062cc;
@@ -806,51 +806,81 @@ const CONFIG = {
 
 // Carga de datos
 document.addEventListener('DOMContentLoaded', async () => {
-    await cargarDatosEstudiantes();
+  document.getElementById('loadingOverlay').style.display = 'none'; 
 });
 
-async function cargarDatosEstudiantes() {
-    try {
-        const response = await fetch('/estudiantes.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-
-        estudiantesData = data.map(estudiante => ({
-            matricula: (estudiante.matricula || estudiante["matrícula"] || estudiante.Matricula)?.trim().toUpperCase(),
-            nameEstudiante: estudiante.nameEstudiante?.trim(),
-            fullnameEstudiante: estudiante.fullnameEstudiante?.trim(),
-            mentorFullname: estudiante.mentorFullname?.trim(),
-            mentorNickname: estudiante.mentorNickname?.trim(),
-            whatsappMentor: estudiante.whatsappMentor?.trim(),
-            comunidad: estudiante.comunidad?.trim(),
-            campusOrigen: estudiante.campusOrigen?.trim(),
-        })).filter(e => e.matricula);
-
-        console.log('MATRÍCULAS CARGADAS:', estudiantesData.map(e => e.matricula));
-    } catch (error) {
-        console.error('❌ Error cargando datos:', error);
-        estudiantesData = [];
-    }
-    document.getElementById('loadingOverlay').style.display = 'none';
-}
-
 // Búsqueda de estudiante
-function buscarEstudiante() {
+const API_CONFIG = {
+    ENABLED: true,
+    ENDPOINT: "/api/estudiante",
+    API_KEY: process.env.API_KEY_FRONT || "cc_basic_2025_karen_mentoria_xyz789abc123"
+};
+
+async function buscarEstudiante() {
     const matricula = document.getElementById('matricula').value.trim().toUpperCase();
     const errorElement = document.getElementById('errorMessage');
+    const btnBuscar = document.querySelector('.btn-primary');
+    
+    // Validación básica
     if (!matricula) {
         mostrarError('⚠️ Por favor ingresa tu matrícula');
         return;
     }
-    const estudiante = estudiantesData.find(e =>
-        e.matricula && e.matricula === matricula
-    );
-    if (estudiante) {
+    
+    // Validar formato de matrícula
+    if (!/^[A-Z]\d{8}$/.test(matricula)) {
+        mostrarError('⚠️ Formato de matrícula inválido. Debe ser una letra seguida de 8 dígitos (ej: A01234567)');
+        return;
+    }
+
+    // Mostrar estado de carga en el botón
+    const originalText = btnBuscar.innerHTML;
+    btnBuscar.innerHTML = '<span class="loading"></span> Buscando...';
+    btnBuscar.disabled = true;
+
+    try {
+        // Hacer la petición a la API
+        const response = await fetch(API_CONFIG.ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': API_CONFIG.API_KEY
+            },
+            body: JSON.stringify({ matricula })
+        });
+
+        // Manejar errores HTTP
+        if (!response.ok) {
+            let errorMsg = 'Error en la búsqueda';
+            try {
+            const errorData = await response.json();
+            errorMsg = errorData.error || errorMsg;
+            } catch (parseError) {
+            errorMsg = `${response.status} ${response.statusText}`;
+            }
+            throw new Error(errorMsg);
+        }
+
+        // Obtener los datos del estudiante
+        const estudiante = await response.json();
+        
+        // Si la API devuelve un objeto vacío, considerar como no encontrado
+        if (!estudiante || Object.keys(estudiante).length === 0) {
+            throw new Error('Estudiante no encontrado');
+        }
+
+        // Guardar el estudiante actual y mostrar la información
         estudianteActual = estudiante;
         mostrarInformacionEstudiante(estudiante);
         errorElement.classList.add('hidden');
-    } else {
-        mostrarError('⚠️ Matrícula no encontrada. Por favor verifica e intenta de nuevo.');
+        
+    } catch (error) {
+        console.error('Error en búsqueda:', error);
+        mostrarError(`⚠️ ${error.message}`);
+    } finally {
+        // Restaurar el botón a su estado original
+        btnBuscar.innerHTML = originalText;
+        btnBuscar.disabled = false;
     }
 }
 
@@ -955,6 +985,11 @@ async function enviarAGoogleForms(asistira) {
 function contactarMentor() {
     if (!estudianteActual) return;
     const mensaje = `¡Hola ${estudianteActual.mentorNickname}! 👋 Soy ${estudianteActual.fullnameEstudiante} y vengo de ${estudianteActual.campusOrigen}. Ya confirmé mi asistencia al evento de transferencias. ¡Nos vemos pronto! 🎓`;
+    // AÑADIR VALIDACIÓN:
+    if (!estudianteActual.whatsappMentor) {
+        mostrarError('No se encontró contacto del mentor');
+        return;
+    }
     const numeroLimpio = estudianteActual.whatsappMentor.replace(/\D/g, '');
     const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
