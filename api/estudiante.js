@@ -2,7 +2,7 @@ import estudiantes from './estudiantes.json';
 
 export default function handler(req, res) {
   // 1. Validar API Key
-  const apiKey = req.headers['x-api-key'];
+  const apiKey = req.headers['cc_basic_2025_karen_mentoria_xyz789abc123'];
   if (apiKey !== process.env.API_KEY_BASIC) {
     return res.status(401).json({ error: 'Acceso no autorizado' });
   }
