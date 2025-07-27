@@ -11,6 +11,7 @@
         "email": "A01569012@tec.mx",
         "campusOrigen": "Campus Chihuahua",
         "carrera": "Ingeniero Mecánico - IM",
+        "entrada": "IM"
     },
     {
         "matrícula": "A01747377",
@@ -18,13 +19,13 @@
         "nameEstudiante": "Pablo Emmanuel",
         "mentorFullname": "Abigail Cepeda Hernández",
         "mentorNickname": "Abby",
-        "fotoMentor": "mentores/AbbyReflekto.jpg",
+        "fotoMentor": "mentores\/AbbyReflekto.jpg",
         "whatsappMentor": "+5218120109380",
         "comunidad": "Reflekto",
-        "email": "kareng@tec.mx",
+        "email": "A017457377@tec.mx",
         "campusOrigen": "Campus Estado de México",
         "carrera": "Ingeniero Mecánico - IM",
-        "entrada": NaN
+        "entrada": null
     },
     {
         "matrícula": "A01384274",
@@ -32,10 +33,10 @@
         "nameEstudiante": "Luis",
         "mentorFullname": "Abigail Cepeda Hernández",
         "mentorNickname": "Abby",
-        "fotoMentor": "mentores/AbbyReflekto.jpg",
+        "fotoMentor": "mentores\/AbbyReflekto.jpg",
         "whatsappMentor": "+5218120109380",
         "comunidad": "Reflekto",
-        "email": "kareng@tec.mx",
+        "email": "A01384274@tec.mx",
         "campusOrigen": "Campus Saltillo",
         "carrera": "Ingeniero Biomédico - IMD",
         "entrada": NaN
