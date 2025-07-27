@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-
 export default async function handler(req, res) {
   try {
     // 1. Validar API Key
