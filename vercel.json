@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "public/index.html",
+      "src": "public/**/*.html",
       "use": "@vercel/static"
     },
     {
@@ -13,15 +13,11 @@
   "routes": [
     {
       "src": "/api/estudiante",
-      "dest": "api/estudiante.js"
-    },
-    {
-      "src": "/",
-      "dest": "public/index.html"
+      "dest": "/api/estudiante.js"
     },
     {
       "src": "/(.*)",
-      "dest": "public/index.html"
+      "dest": "/public/$1"
     }
   ]
 }
