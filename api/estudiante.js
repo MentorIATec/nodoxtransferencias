@@ -50,6 +50,7 @@ export default async (req, res) => {
 
     // 6. Devolver datos seguros
     const safeData = {
+      matricula: estudiante.matricula,
       fullnameEstudiante: estudiante.fullnameEstudiante,
       nameEstudiante: estudiante.nameEstudiante,
       mentorFullname: estudiante.mentorFullname,
