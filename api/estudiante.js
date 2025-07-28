@@ -33,7 +33,7 @@ export default async (req, res) => {
     }
 
     // 4. Cargar datos desde el Gist (con caché)
-    const gistUrl = "https://gist.githubusercontent.com/MentorIATec/294ad6050de3384eb8806360294e49b3/raw/ece924d75bc974c5e146f0d14291f8854dd55f24/estudiantes.json";
+    const gistUrl = "https://gist.githubusercontent.com/MentorIATec/294ad6050de3384eb8806360294e49b3/raw/3a517ea140633d9d592a712d786f68c6cd56b771/estudiantes.json";
     const response = await fetch(gistUrl);
     if (!response.ok) throw new Error('Error cargando datos');
     
