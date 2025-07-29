@@ -26,7 +26,7 @@
             object-fit: cover;
             max-height: 230px;
         }
-        h2 {
+h2 {
             margin: 26px 0 12px 0;
             color: #0062cc;
             font-size: 1.45em;
@@ -65,34 +65,43 @@
             text-decoration: underline;
             font-size: 0.99em;
         }
-        @media (max-width: 600px) {
-            .container { max-width: 99vw; border-radius: 0; }
-            .place-image { border-radius: 0; max-height: 36vw;}
-            p, .source-ref { margin-left: 7vw; margin-right: 7vw;}
+@media (max-width: 600px) {
+            .container {
+                max-width: 99vw;
+                border-radius: 0;
+            }
+            .place-image {
+                border-radius: 0;
+                max-height: 36vw;
+            }
+            p, .source-ref {
+                margin-left: 7vw;
+                margin-right: 7vw;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="public/vista-pabellon-la-carreta-tec.jpg"
-             alt="Vista del Pabellón La Carreta, Campus Monterrey"
-             class="place-image">
+        <!-- Imagen corregida para GitHub Pages -->
+        <img src="./vista-pabellon-la-carreta-tec.jpg" alt="Vista del Pabellón La Carreta, Campus Monterrey" class="place-image">
+
         <h2>Ubicación del Evento</h2>
         <p>
-            El evento de <strong>Bienvenida de Transferencias</strong> se llevará a cabo en el <strong>Pabellón “La Carreta”</strong>, dentro del Campus Monterrey.<br><br>
+            El evento de <strong>Bienvenida de Transferencias</strong> se llevará a cabo en el <strong>Pabellón "La Carreta"</strong>, dentro del Campus Monterrey.<br><br>
             El pabellón está ubicado cerca de la entrada de Av. Luis Elizondo, al sur-este del campus, entre los edificios de Aulas I y Aulas II.<br>
             Sigue la señalización desde la entrada, ¡no hay pierde!
         </p>
-        <a class="campus-map-btn"
-           href="public/mapa-campusmonterrey-es-v12.jpg"
-           target="_blank" rel="noopener">
-           🗺️ Ver mapa del campus
+
+        <!-- Enlace al mapa del campus local -->
+        <a class="campus-map-btn" href="./mapa-campusmonterrey-es-v12.jpg" target="_blank" rel="noopener">
+            🗺️ Ver mapa del campus
         </a>
-        <a class="campus-map-btn"
-           href="https://www.google.com/maps/dir/25.787662,-100.2974443/25.651437,-100.290163/@25.7201059,-100.3755135,12z/data=!3m1!4b1!4m5!4m4!1m1!4e1!1m0!3e0!11m1!6b1?entry=ttu&g_ep=EgoyMDI1MDcxNS4xIKXMDSoASAFQAw%3D%3D"
-           target="_blank" rel="noopener">
-           📍 Abrir en Google Maps
+
+        <a class="campus-map-btn" href="https://www.google.com/maps/dir/25.787662,-100.2974443/25.651437,-100.290163/@25.7201059,-100.3755135,12z/data=!3m1!4b1!4m5!4m4!1m1!4e1!1m0!3e0!11m1!6b1?entry=ttu&g_ep=EgoyMDI1MDcxNS4xIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener">
+            📍 Abrir en Google Maps
         </a>
+
         <div class="source-ref">
             Imagen obtenida de <a href="https://distritotec.tec.mx/es/proyectos/pabellon-la-carreta" target="_blank" rel="noopener">Distrito Tec</a>
         </div>
