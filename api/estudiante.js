@@ -32,35 +32,39 @@ export default async (req, res) => {
       return res.status(400).json({ error: 'Matrícula inválida' });
     }
 
-    // 4. Cargar datos desde el Gist (con caché)
-    const gistUrl = "https://gist.githubusercontent.com/MentorIATec/294ad6050de3384eb8806360294e49b3/raw/626a0573adcdac7a643eabba4f32f8890be19e08/estudiantes.json";
-    const response = await fetch(gistUrl);
-    if (!response.ok) throw new Error('Error cargando datos');
-    
-    const estudiantes = await response.json();
-    
-    // 5. Buscar estudiante
-    const estudiante = estudiantes.find(e => 
-      e.matricula.trim().toUpperCase() === matricula.toUpperCase()
-    );
-
-    if (!estudiante) {
-      return res.status(404).json({ error: 'Estudiante no encontrado' });
+    // 4. Consultar Apps Script Web App (Sheets privado)
+    const webAppUrl = process.env.APPS_SCRIPT_WEBAPP_URL;
+    const webAppKey = process.env.APPS_SCRIPT_API_KEY;
+    if (!webAppUrl || !webAppKey) {
+      return res.status(500).json({ error: 'Configuración incompleta del servidor' });
     }
 
-    // 6. Devolver datos seguros
-    const safeData = {
-      matricula: estudiante.matricula,
-      fullnameEstudiante: estudiante.fullnameEstudiante,
-      nameEstudiante: estudiante.nameEstudiante,
-      mentorFullname: estudiante.mentorFullname,
-      mentorNickname: estudiante.mentorNickname,
-      comunidad: estudiante.comunidad,
-      campusOrigen: estudiante.campusOrigen,
-      whatsappMentor: estudiante.whatsappMentor
-    };
-    
-    return res.status(200).json(safeData);
+    const response = await fetch(webAppUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: webAppKey, matricula })
+    });
+
+    if (!response.ok) {
+      return res.status(502).json({ error: 'Error consultando fuente de datos' });
+    }
+
+    const data = await response.json();
+    if (data.status && data.status !== 200) {
+      const status = data.status === 404 ? 404 : 400;
+      return res.status(status).json({ error: data.error || 'Error en consulta' });
+    }
+
+    return res.status(200).json({
+      matricula: data.matricula,
+      fullnameEstudiante: data.fullnameEstudiante,
+      nameEstudiante: data.nameEstudiante,
+      mentorFullname: data.mentorFullname,
+      mentorNickname: data.mentorNickname,
+      comunidad: data.comunidad,
+      campusOrigen: data.campusOrigen,
+      whatsappMentor: data.whatsappMentor
+    });
 
   } catch (error) {
     console.error('🔥 Error en API:', error);

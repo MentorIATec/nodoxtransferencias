@@ -4,6 +4,8 @@ Guía rápida para usar el script de correos automáticos de Campus Check-in.
 
 ## Archivo principal
 - `automation/apps-script-emails.js`
+## Lookup API (Sheets privado)
+- `automation/apps-script-lookup.js`
 ## Templates de correo (HTML)
 - `templates/confirmacion-si.html`
 - `templates/confirmacion-no.html`
@@ -28,6 +30,17 @@ Guía rápida para usar el script de correos automáticos de Campus Check-in.
 6) Copia el contenido de cada archivo desde `templates/` al HTML correspondiente.
 7) Guarda y autoriza los permisos la primera vez.
 8) Si usarás variantes B, crea los archivos con sufijo `-B` (ej. `confirmacion-si-B`).
+
+## Apps Script Web App (Lookup por matrícula)
+1) Crea un nuevo proyecto de Apps Script ligado al Spreadsheet privado.
+2) Copia el contenido de `automation/apps-script-lookup.js`.
+3) Actualiza `LOOKUP_CONFIG.API_KEY` con un valor secreto.
+4) Implementa como **Web App** (Ejecutar como: tú mismo, Acceso: cualquiera con el enlace).
+5) Guarda la URL del Web App para usarla en Vercel.
+
+## Variables de entorno (Vercel)
+- `APPS_SCRIPT_WEBAPP_URL`: URL del Web App de lookup.
+- `APPS_SCRIPT_API_KEY`: secreto que validará el Web App.
 
 ## Activar el sistema
 1) Ejecuta la función `configurarTriggerAutomatico`.
