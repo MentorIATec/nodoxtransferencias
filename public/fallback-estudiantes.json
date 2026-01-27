@@ -1,0 +1,22 @@
+[
+  {
+    "matricula": "A00000000",
+    "fullnameEstudiante": "Prueba FJ26",
+    "nameEstudiante": "Prueba",
+    "mentorFullname": "Mentor Prueba",
+    "mentorNickname": "Mentor",
+    "comunidad": "Comunidad Prueba",
+    "campusOrigen": "Campus Prueba",
+    "whatsappMentor": "+5210000000000"
+  },
+  {
+    "matricula": "A00000001",
+    "fullnameEstudiante": "Test FJ26",
+    "nameEstudiante": "Test",
+    "mentorFullname": "Mentora Prueba",
+    "mentorNickname": "Mentora",
+    "comunidad": "Krei",
+    "campusOrigen": "Campus Monterrey",
+    "whatsappMentor": "+5210000000001"
+  }
+]

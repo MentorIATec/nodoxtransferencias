@@ -42,7 +42,7 @@ Guía rápida para usar el script de correos automáticos de Campus Check-in.
 ## Variables de entorno (Vercel)
 - `APPS_SCRIPT_WEBAPP_URL`: URL del Web App de lookup.
 - `APPS_SCRIPT_API_KEY`: secreto que validará el Web App.
-- `FALLBACK_JSON_URL` (opcional): URL de respaldo si el Web App falla.
+- `FALLBACK_JSON_URL` (opcional): URL de respaldo si el Web App falla. Ejemplo: `https://transfersmty.vercel.app/fallback-estudiantes.json`
 
 ## Activar el sistema
 1) Ejecuta la función `configurarTriggerAutomatico`.
