@@ -39,20 +39,50 @@ export default async (req, res) => {
       return res.status(500).json({ error: 'Configuración incompleta del servidor' });
     }
 
-    const response = await fetch(webAppUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: webAppKey, matricula })
-    });
+    let data;
+    try {
+      const response = await fetch(webAppUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: webAppKey, matricula })
+      });
 
-    if (!response.ok) {
-      return res.status(502).json({ error: 'Error consultando fuente de datos' });
-    }
+      if (!response.ok) throw new Error('WebApp error');
+      data = await response.json();
 
-    const data = await response.json();
-    if (data.status && data.status !== 200) {
-      const status = data.status === 404 ? 404 : 400;
-      return res.status(status).json({ error: data.error || 'Error en consulta' });
+      if (data.status && data.status !== 200) {
+        const status = data.status === 404 ? 404 : 400;
+        return res.status(status).json({ error: data.error || 'Error en consulta' });
+      }
+    } catch (err) {
+      const fallbackUrl = process.env.FALLBACK_JSON_URL;
+      if (!fallbackUrl) {
+        return res.status(502).json({ error: 'Error consultando fuente de datos' });
+      }
+
+      const fallbackResp = await fetch(fallbackUrl);
+      if (!fallbackResp.ok) {
+        return res.status(502).json({ error: 'Fallback no disponible' });
+      }
+
+      const estudiantes = await fallbackResp.json();
+      const estudiante = estudiantes.find(e =>
+        e.matricula && e.matricula.trim().toUpperCase() === matricula.toUpperCase()
+      );
+      if (!estudiante) {
+        return res.status(404).json({ error: 'Estudiante no encontrado' });
+      }
+
+      data = {
+        matricula: estudiante.matricula,
+        fullnameEstudiante: estudiante.fullnameEstudiante,
+        nameEstudiante: estudiante.nameEstudiante,
+        mentorFullname: estudiante.mentorFullname,
+        mentorNickname: estudiante.mentorNickname,
+        comunidad: estudiante.comunidad,
+        campusOrigen: estudiante.campusOrigen,
+        whatsappMentor: estudiante.whatsappMentor
+      };
     }
 
     return res.status(200).json({

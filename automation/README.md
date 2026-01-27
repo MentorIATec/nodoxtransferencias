@@ -37,10 +37,12 @@ Guía rápida para usar el script de correos automáticos de Campus Check-in.
 3) Actualiza `LOOKUP_CONFIG.API_KEY` con un valor secreto.
 4) Implementa como **Web App** (Ejecutar como: tú mismo, Acceso: cualquiera con el enlace).
 5) Guarda la URL del Web App para usarla en Vercel.
+6) Prueba el health check: `WEB_APP_URL?key=TU_API_KEY`
 
 ## Variables de entorno (Vercel)
 - `APPS_SCRIPT_WEBAPP_URL`: URL del Web App de lookup.
 - `APPS_SCRIPT_API_KEY`: secreto que validará el Web App.
+- `FALLBACK_JSON_URL` (opcional): URL de respaldo si el Web App falla.
 
 ## Activar el sistema
 1) Ejecuta la función `configurarTriggerAutomatico`.

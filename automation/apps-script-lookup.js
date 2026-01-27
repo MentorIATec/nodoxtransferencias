@@ -87,6 +87,14 @@ function doPost(e) {
   }
 }
 
+function doGet(e) {
+  const key = e && e.parameter ? e.parameter.key : '';
+  if (key !== LOOKUP_CONFIG.API_KEY) {
+    return jsonResponse({ error: 'Acceso no autorizado' }, 401);
+  }
+  return jsonResponse({ ok: true }, 200);
+}
+
 function parseBody(e) {
   if (!e || !e.postData || !e.postData.contents) return null;
   try {

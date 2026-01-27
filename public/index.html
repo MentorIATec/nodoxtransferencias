@@ -852,6 +852,9 @@ async function buscarEstudiante() {
         // Manejar errores HTTP
         if (!response.ok) {
             let errorMsg = 'Error en la búsqueda';
+            if (response.status === 404) {
+                errorMsg = 'No encontramos tu matrícula. Verifica que esté escrita correctamente o contacta al Comité de Transferencias.';
+            }
             try {
             const errorData = await response.json();
             errorMsg = errorData.error || errorMsg;
