@@ -49,8 +49,8 @@ CONFIG = {
     horario: "9:00 a.m. - 12:00 p.m.",
     lugar: "Auditorio Luis Elizondo",
     campus: "Campus Monterrey",
-    mapas_url: "https://transfersmty.vercel.app/mapa-evento.html",
-    confirmacion_url: "https://transfersmty.vercel.app"
+    mapas_url: "https://transferencias-fj26.vercel.app/mapa-evento.html",
+    confirmacion_url: "https://transferencias-fj26.vercel.app"
   },
   TEMPLATES: {
     VARIANT: "B"

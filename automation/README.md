@@ -42,7 +42,7 @@ Guía rápida para usar el script de correos automáticos de Campus Check-in.
 ## Variables de entorno (Vercel)
 - `APPS_SCRIPT_WEBAPP_URL`: URL del Web App de lookup.
 - `APPS_SCRIPT_API_KEY`: secreto que validará el Web App.
-- `FALLBACK_JSON_URL` (opcional): URL de respaldo si el Web App falla. Ejemplo: `https://transfersmty.vercel.app/fallback-estudiantes.json`
+- `FALLBACK_JSON_URL` (opcional): URL de respaldo si el Web App falla. Ejemplo: `https://transferencias-fj26.vercel.app/fallback-estudiantes.json`
 
 ## Activar el sistema
 1) Ejecuta la función `configurarTriggerAutomatico`.
@@ -92,7 +92,7 @@ Completa en `CONFIG.FORM`:
 ## Checklist FJ26 (Febrero-Junio 2026)
 - Evento: Viernes 6 de febrero de 2026, 9:00 a.m. - 12:00 p.m.
 - Lugar: Auditorio Luis Elizondo, Campus Monterrey
-- Mapa: https://transfersmty.vercel.app/mapa-evento.html
+- Mapa: https://transferencias-fj26.vercel.app/mapa-evento.html
 - Hoja principal: `Respuestas de formulario1`
 - Hoja mentores: `Datos mentor`
 - Revisar que las columnas coincidan con `CONFIG.COLUMNAS`

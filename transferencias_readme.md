@@ -2,7 +2,7 @@
 > Ver [DOCUMENTATION.md](DOCUMENTATION.md) para documentación completa
 
 ## Estado: ✅ LISTO PARA FJ26
-- **🚀 Sistema de invitación activo**: https://transfersmty.vercel.app
+- **🚀 Sistema de invitación activo**: https://transferencias-fj26.vercel.app
 - **📧 Emails automatizados configurados**: Power Automate + Apps Script  
 - **📱 Integración WhatsApp operativa**: Contacto directo con mentores
 - **📊 Google Forms integrado**: Confirmaciones en tiempo real
@@ -37,7 +37,7 @@ cd transferencias-fj26
 # Deploy a Vercel (zero config)
 vercel --prod
 
-# ¡Listo! Sistema funcionando en: https://transfersmty.vercel.app
+# ¡Listo! Sistema funcionando en: https://transferencias-fj26.vercel.app
 ```
 
 ### **📊 Configuración de Datos**
@@ -263,8 +263,8 @@ vercel --prod
 ## 🔗 **Enlaces Importantes**
 
 ### **🌐 Producción**
-- **Frontend**: https://transfersmty.vercel.app
-- **Mapa Evento**: https://transfersmty.vercel.app/mapa-evento.html
+- **Frontend**: https://transferencias-fj26.vercel.app
+- **Mapa Evento**: https://transferencias-fj26.vercel.app/mapa-evento.html
 - **Google Forms**: Integrado en frontend
 
 ### **⚙️ Administración**

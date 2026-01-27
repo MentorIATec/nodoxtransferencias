@@ -56,7 +56,7 @@ Apps Script: Confirmaciones automáticas (activo)
 
 ### **🏗️ Arquitectura del Sistema**
 ```
-📱 Frontend (transfersmty.vercel.app)
+📱 Frontend (transferencias-fj26.vercel.app)
     ↓ [Búsqueda en Gist Secret]
 🔒 GitHub Gist Secret (estudiantes.json protegido)
     ↓ [API fetch con autenticación]
@@ -81,8 +81,8 @@ Apps Script: Confirmaciones automáticas (activo)
 - **Assets**: Fotos de mentores integradas
 
 ### **🌐 URLs del Sistema**
-- **Frontend Principal**: https://transfersmty.vercel.app
-- **Mapa del Evento**: https://transfersmty.vercel.app/mapa-evento.html
+- **Frontend Principal**: https://transferencias-fj26.vercel.app
+- **Mapa del Evento**: https://transferencias-fj26.vercel.app/mapa-evento.html
 - **Google Forms**: Integrado en el frontend
 - **Repository**: GitHub (privado)
 
@@ -663,7 +663,7 @@ const EVENT_CONFIG = {
 
 #### **Paso 1: Recepción de Invitación**
 - **📧 Email de invitación** con diseño atractivo
-- **📱 Link directo** a transfersmty.vercel.app
+- **📱 Link directo** a transferencias-fj26.vercel.app
 - **🎯 Call-to-action claro**: "Ir a Campus Check-in"
 
 #### **Paso 2: Acceso al Sistema**
@@ -899,8 +899,8 @@ Cada comunidad tiene su identidad visual única aplicada automáticamente:
 - **GitHub**: Para control de versiones y colaboración
 
 ### **📊 Recursos del Sistema**
-- **Frontend**: https://transfersmty.vercel.app
-- **Mapa**: https://transfersmty.vercel.app/mapa-evento.html
+- **Frontend**: https://transferencias-fj26.vercel.app
+- **Mapa**: https://transferencias-fj26.vercel.app/mapa-evento.html
 - **Repository**: GitHub (privado - MentorIATecnodoxtransferencias)
 - **Forms**: Google Forms integrado
 - **Analytics**: Vercel Dashboard + Google Analytics
