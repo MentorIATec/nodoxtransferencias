@@ -8,21 +8,21 @@
 ![Integration](https://img.shields.io/badge/integration-Google%20Forms-green.svg)
 ![Email](https://img.shields.io/badge/automation-Power%20Automate-blue.svg)
 
-## 📅 **CRONOGRAMA REAL DE IMPLEMENTACIÓN**
+## 📅 **CRONOGRAMA DE IMPLEMENTACIÓN**
 
-### **🚀 Cronología Ejecutada - AD25**
-- **29 de Julio 2025**: 📧 Envío masivo de invitación inicial (745 estudiantes)
-- **04 de Agosto 2025**: ⏰ Recordatorio automático 4 días antes (Power Automate)
-- **06 de Agosto 2025**: 📊 Día actual - Sistema operativo al 100%
-- **07 de Agosto 2025**: ⏰ Recordatorio final 1 día antes (Power Automate)
-- **08 de Agosto 2025**: 🎯 **Evento de Bienvenida** + Campus Check-in | Evento
+### **🚀 Cronología Planeada - FJ26**
+- **30 de enero de 2026**: 📧 Envío masivo de invitación inicial (745 estudiantes)
+- **02 de febrero de 2026**: ⏰ Recordatorio automático 4 días antes (Power Automate)
+- **03 de febrero de 2026**: 📊 Sistema operativo al 100%
+- **05 de febrero de 2026**: ⏰ Recordatorio final 1 día antes (Power Automate)
+- **06 de febrero de 2026**: 🎯 **Evento de Bienvenida** + Campus Check-in | Evento
 
 ### **📧 Implementación de Email Automation**
 **Configuración Power Automate**:
 ```
-Flow 1: Recordatorio 4 de agosto (ejecutado)
+Flow 1: Recordatorio 2 de febrero (programado)
   ↓ [Target: Estudiantes sin confirmar]
-Flow 2: Recordatorio 7 de agosto (programado) 
+Flow 2: Recordatorio 5 de febrero (programado) 
   ↓ [Target: Todos los invitados]
 Apps Script: Confirmaciones automáticas (activo)
   ↓ [Trigger: Nueva respuesta en Google Forms]
@@ -32,7 +32,7 @@ Apps Script: Confirmaciones automáticas (activo)
 
 ## 🎯 **DESCRIPCIÓN DEL PROYECTO**
 
-**Campus Check-in | Pre-Registro** es el sistema de invitación y preregistro que complementa a Campus Check-in | Evento, diseñado específicamente para gestionar la comunicación previa al evento de Bienvenida de Transferencias del semestre Agosto-Diciembre 2025.
+**Campus Check-in | Pre-Registro** es el sistema de invitación y preregistro que complementa a Campus Check-in | Evento, diseñado específicamente para gestionar la comunicación previa al evento de Bienvenida de Transferencias del semestre Febrero-Junio 2026.
 
 ### **🏆 Propósito del Sistema**
 - **📧 Invitación automatizada** a estudiantes transferidos
@@ -102,7 +102,7 @@ MentorIATecnodoxtransferencias/ (Repositorio GitHub)
 │   └── confirmacion_asistencia.html        # ✅ Template confirmación
 ├── 📁 assets/
 │   ├── logo-tec.svg                 # 🏛️ Logo institucional
-│   ├── vista-pabellon-la-carreta.jpg       # 📸 Imagen del venue
+│   ├── vista-auditorio-luis-elizondo.jpg   # 📸 Imagen del venue
 │   └── branding-comunidades.css    # 🎨 Estilos por comunidad
 ├── 📁 automation/
 │   ├── apps-script-emails.js       # 📧 Google Apps Script
@@ -117,7 +117,7 @@ MentorIATecnodoxtransferencias/ (Repositorio GitHub)
 ### **📊 Métricas del Proyecto**
 - **Total de Archivos**: 15+ archivos principales
 - **Líneas de Código**: ~800 líneas (HTML + JS + CSS)
-- **Estudiantes Soportados**: 745 transferidos AD25
+- **Estudiantes Soportados**: 745 transferidos FJ26
 - **Comunidades**: 10 con branding único
 - **Mentores**: 25+ mentores asignados
 - **Integraciones**: 4 servicios (Vercel + Google + WhatsApp + Email)
@@ -135,7 +135,7 @@ MentorIATecnodoxtransferencias/ (Repositorio GitHub)
 - **Sin Costo Adicional**: Solución gratuita con GitHub
 
 ### **📊 Distribución Total por Comunidades**
-**Estudiantes Transferidos AD25**: 745 estudiantes
+**Estudiantes Transferidos FJ26**: 745 estudiantes
 
 | Comunidad | Estudiantes | Mentores | Color |
 |-----------|-------------|----------|-------|
@@ -227,7 +227,7 @@ function buscarEstudiante() {
   if (estudiante) {
     mostrarInformacionEstudiante(estudiante);
   } else {
-    mostrarError('⚠️ Matrícula no encontrada en transferencias AD25');
+    mostrarError('⚠️ Matrícula no encontrada en transferencias FJ26');
   }
 }
 ```
@@ -372,7 +372,7 @@ function onFormSubmit(e) {
     "type": "recurrence",
     "interval": "1",
     "frequency": "Day",
-    "startTime": "2025-08-04T08:00:00Z"
+    "startTime": "2026-02-02T08:00:00Z"
   },
   "condition": {
     "check": "evento_date - current_date = 4 days",
@@ -394,7 +394,7 @@ function onFormSubmit(e) {
     "type": "recurrence", 
     "interval": "1",
     "frequency": "Day",
-    "startTime": "2025-08-07T08:00:00Z"
+    "startTime": "2026-02-05T08:00:00Z"
   },
   "action": {
     "send_email": {
@@ -530,9 +530,9 @@ J: Estado correo enviado (control)
 **package.json**:
 ```json
 {
-  "name": "transferencias-ad25",
+  "name": "transferencias-fj26",
   "version": "2.5.0",
-  "description": "Sistema de preregistro para Bienvenida de Transferencias AD25",
+  "description": "Sistema de preregistro para Bienvenida de Transferencias FJ26",
   "main": "index.html",
   "scripts": {
     "dev": "vercel dev",
@@ -555,12 +555,12 @@ J: Estado correo enviado (control)
 ```javascript
 // Configuración del evento (actualizable)
 const EVENT_CONFIG = {
-  fecha: "Viernes 8 de agosto",
-  horario: "8:30 a.m. - 12:00 p.m.",
-  lugar: "Pabellón \"La Carreta\"",
+  fecha: "Viernes 6 de febrero de 2026",
+  horario: "9:00 a.m. - 12:00 p.m.",
+  lugar: "Auditorio Luis Elizondo",
   campus: "Campus Monterrey",
-  año: "2025",
-  semestre: "AD25"
+  año: "2026",
+  semestre: "FJ26"
 };
 ```
 
@@ -577,10 +577,10 @@ const EVENT_CONFIG = {
 - **Mobile Performance**: 95+ score Lighthouse
 
 ### **📊 Métricas de Uso del Sistema**
-- **Total Invitados**: 745 estudiantes transferidos AD25
-- **Email Inicial Enviado**: 29 de julio de 2025
-- **Días de Campaña**: 8 días (29 jul - 6 ago)
-- **Evento Target**: Viernes 8 de agosto de 2025
+- **Total Invitados**: 745 estudiantes transferidos FJ26
+- **Email Inicial Enviado**: 30 de enero de 2026
+- **Días de Campaña**: 8 días (30 ene - 6 feb)
+- **Evento Target**: Viernes 6 de febrero de 2026
 - **Tasa de Apertura Email**: 85%+ esperada
 - **Tasa de Confirmación**: 70%+ esperada (520+ estudiantes)
 - **Tasa de Contacto Mentor**: 60%+ esperada
@@ -600,7 +600,7 @@ const EVENT_CONFIG = {
 
 ### **📍 Información del Venue**
 **Archivo**: `mapa-evento.html`
-**Ubicación**: Pabellón "La Carreta", Campus Monterrey
+**Ubicación**: Auditorio Luis Elizondo, Campus Monterrey
 **Características**:
 - **Diseño mobile-first** para consulta rápida
 - **Integración Google Maps** con direcciones
@@ -609,8 +609,8 @@ const EVENT_CONFIG = {
 
 **Elementos incluidos**:
 ```html
-<!-- Imagen del pabellón -->
-<img src="vista-pabellon-la-carreta-tec.jpg" alt="Vista del Pabellón La Carreta">
+<!-- Imagen del venue -->
+<img src="assets/vista-auditorio-luis-elizondo.jpg" alt="Vista del Auditorio Luis Elizondo">
 
 <!-- Botones de navegación -->
 <a href="mapa-campusmonterrey-es-v12.jpg">🗺️ Ver mapa del campus</a>
@@ -730,7 +730,7 @@ const EVENT_CONFIG = {
 ## 📧 **DOCUMENTACIÓN DE EMAILS**
 
 ### **📨 Plantilla de Invitación Inicial**
-**Archivo**: `Invitación Transferencias AD25.emltpl`
+**Archivo**: `Invitación Transferencias FJ26.emltpl`
 **Formato**: Base64 encoded HTML email
 **Remitente**: kareng@tec.mx
 **Nombre Display**: Mentoría Estudiantil
@@ -764,15 +764,15 @@ const EVENT_CONFIG = {
 
 ### **📅 Timeline de Comunicación Real**
 ```
-29 Jul: 📧 Email de invitación inicial masivo (745 estudiantes)
+30 Ene: 📧 Email de invitación inicial masivo (745 estudiantes)
     ↓ [Sistema activo desde día 1]
-04 Ago: ⏰ Recordatorio automático (Power Automate)
+02 Feb: ⏰ Recordatorio automático (Power Automate)
     ↓ [Solo no confirmados]
-07 Ago: ⏰ Recordatorio final (Power Automate)
+05 Feb: ⏰ Recordatorio final (Power Automate)
     ↓ [Todos los invitados]
-08 Ago: 🎯 Evento + Campus Check-in | Evento
+06 Feb: 🎯 Evento + Campus Check-in | Evento
     ↓ [Durante evento presencial]
-09 Ago: 📊 Reporte de resultados y seguimiento
+07 Feb: 📊 Reporte de resultados y seguimiento
 ```
 
 ### **🤖 Automatización Power Automate**
@@ -785,23 +785,23 @@ const EVENT_CONFIG = {
 **Condiciones de envío Power Automate**:
 ```javascript
 // Pseudocódigo de lógica Power Automate ejecutada
-// 4 de agosto - Recordatorio ejecutado automáticamente
-if (current_date === '2025-08-04') {
+// 2 de febrero - Recordatorio ejecutado automáticamente
+if (current_date === '2026-02-02') {
   send_email_to(students.filter(s => s.confirmed !== true));
 }
 
-// 7 de agosto - Recordatorio final programado
-if (current_date === '2025-08-07') {
+// 5 de febrero - Recordatorio final programado
+if (current_date === '2026-02-05') {
   send_email_to(students.all_745_transferidos);
 }
 ```
 
-### **📊 Estado Actual del Sistema (6 de agosto 2025)**
-- **⚡ Sistema Activo**: 8 días operando (desde 29 julio)
-- **📧 Email Masivo**: 745 invitaciones enviadas (29 julio)
+### **📊 Estado Actual del Sistema (27 de enero de 2026)**
+- **⚡ Sistema Activo**: Preparación y monitoreo activo
+- **📧 Email Masivo**: Programado para 30 de enero
 - **📊 Respuestas Recibidas**: Tracking en tiempo real via Google Sheets
-- **⏰ Recordatorio Ejecutado**: 4 de agosto automático (Power Automate)
-- **🎯 Próximo Evento**: Mañana viernes 8 de agosto
+- **⏰ Recordatorio Programado**: 2 de febrero (Power Automate)
+- **🎯 Próximo Evento**: Viernes 6 de febrero de 2026
 - **🔒 Datos Seguros**: Migración a Gist Secret completada
 
 ---
@@ -810,7 +810,7 @@ if (current_date === '2025-08-07') {
 
 ### **🖼️ Imágenes Incluidas**
 - **logo-tec.svg**: Logo institucional vectorial
-- **vista-pabellon-la-carreta.jpg**: Foto del venue del evento
+- **vista-auditorio-luis-elizondo.jpg**: Foto del venue del evento
 - **mapa-campusmonterrey-es-v12.jpg**: Mapa oficial del campus
 
 ### **🎨 Branding Dinámico**
@@ -914,7 +914,7 @@ Cada comunidad tiene su identidad visual única aplicada automáticamente:
 #### **📧 Envío de Invitaciones Iniciales**
 1. **Validar datos**: Verificar estudiantes.json actualizado
 2. **Configurar emails**: Personalizar templates con datos del evento
-3. **Envío masivo**: Usar Gmail + lista de transferidos AD25
+3. **Envío masivo**: Usar Gmail + lista de transferidos FJ26
 4. **Tracking**: Monitorear opens y clicks en emails
 
 #### **⏰ Configuración de Recordatorios**
@@ -967,12 +967,12 @@ Cada comunidad tiene su identidad visual única aplicada automáticamente:
 // Estructura preparada para expansión
 const CAMPUS_CONFIG = {
   'MTY': {
-    eventName: 'Bienvenida Transferencias AD25',
-    venue: 'Pabellón La Carreta',
+    eventName: 'Bienvenida Transferencias FJ26',
+    venue: 'Auditorio Luis Elizondo',
     timezone: 'America/Monterrey'
   },
   'GDL': {
-    eventName: 'Bienvenida Transferencias AD25 GDL', 
+    eventName: 'Bienvenida Transferencias FJ26 GDL', 
     venue: 'Auditorio Campus Guadalajara',
     timezone: 'America/Mexico_City'
   }
@@ -1037,13 +1037,13 @@ function aplicarBrandingComunidad()         // CSS dinámico
 ```javascript
 // Configuración centralizada fácil de modificar
 const EVENT_CONFIG = {
-  eventName: "Bienvenida de Transferencias AD25",
-  date: "Viernes 8 de agosto",
-  time: "8:30 a.m. - 12:00 p.m.",
-  venue: "Pabellón \"La Carreta\"",
+  eventName: "Bienvenida de Transferencias FJ26",
+  date: "Viernes 6 de febrero de 2026",
+  time: "9:00 a.m. - 12:00 p.m.",
+  venue: "Auditorio Luis Elizondo",
   campus: "Campus Monterrey",
-  semester: "AD25",
-  year: "2025"
+  semester: "FJ26",
+  year: "2026"
 };
 ```
 
@@ -1111,14 +1111,14 @@ El sistema cumple todos los objetivos del programa de mentoría:
 
 ---
 
-**✨ PROYECTO CAMPUS CHECK-IN | PRE-REGISTRO - COMPLETADO EXITOSAMENTE ✨**
+**✨ PROYECTO CAMPUS CHECK-IN | PRE-REGISTRO - ACTUALIZADO PARA FJ26 ✨**
 
 *Desarrollado como parte del ecosistema MentorIA Tools*  
 *Por Karen Ariadna Guzmán Vega - Mentoría y Bienestar Estudiantil*  
 *Tecnológico de Monterrey, Campus Monterrey*
 
-📅 **Fecha de Finalización**: 6 de Agosto de 2025  
-🚀 **Estado**: Sistema en producción, 745 estudiantes gestionados, evento mañana 8 de agosto  
+📅 **Fecha de Actualización**: 27 de enero de 2026  
+🚀 **Estado**: Sistema listo para FJ26, evento el viernes 6 de febrero de 2026  
 📋 **Documentación**: Completa y preparada para replicación  
 🔗 **Complementa**: Campus Check-in | Evento para experiencia integral
 📦 **Repositorio**: MentorIATecnodoxtransferencias

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recordatorio Bienvenida de Transferencias</title>
+</head>
+<body style="margin:0; padding:0; background:#f2f4f7;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f2f4f7;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="width:600px; max-width:600px; background:#ffffff; border:1px solid #e6e8ec; border-radius:12px; overflow:hidden;">
+          <tr>
+            <td>
+              <img src="https://transfersmty.vercel.app/assets/FJ26.png" width="600" alt="Bienvenida de Transferencias" style="display:block; width:100%; height:auto; border:0;">
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 32px 20px 32px;">
+              <h1 style="margin:0 0 10px 0; font-size:22px; line-height:1.25; color:#0b1f3a;">Recordatorio de asistencia</h1>
+              <p style="margin:0 0 16px 0; font-size:16px; color:#2b2f38;">Hola <?= datos.nombre ?>,</p>
+              <p style="margin:0 0 16px 0; font-size:16px; color:#2b2f38;">Queremos recordarte que el evento es pronto. Confirma tu asistencia.</p>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #e6e8ec; border-radius:8px;">
+                <tr>
+                  <td style="padding:10px 14px; font-size:14px; color:#5b616b; border-bottom:1px solid #e6e8ec; width:35%;">Fecha</td>
+                  <td style="padding:10px 14px; font-size:14px; color:#0b1f3a; border-bottom:1px solid #e6e8ec;"><?= CONFIG.EVENTO.fecha ?></td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 14px; font-size:14px; color:#5b616b; border-bottom:1px solid #e6e8ec;">Horario</td>
+                  <td style="padding:10px 14px; font-size:14px; color:#0b1f3a; border-bottom:1px solid #e6e8ec;"><?= CONFIG.EVENTO.horario ?></td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 14px; font-size:14px; color:#5b616b;">Lugar</td>
+                  <td style="padding:10px 14px; font-size:14px; color:#0b1f3a;"><?= CONFIG.EVENTO.lugar ?></td>
+                </tr>
+              </table>
+
+              <table role="presentation" align="center" cellspacing="0" cellpadding="0" style="margin:22px auto 0 auto;">
+                <tr>
+                  <td bgcolor="#0b1f3a" style="border-radius:8px;">
+                    <a href="<?= CONFIG.EVENTO.confirmacion_url ?>" style="display:inline-block; padding:12px 20px; color:#ffffff; text-decoration:none; font-weight:bold; font-size:14px;">Confirmar asistencia</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:18px 24px; background:#f8f9fb; text-align:center; font-family:Arial, sans-serif;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td style="text-align:left;">
+                    <p style="margin:0; font-size:12px; color:#6b7280;">
+                      <strong>Comité de Transferencias Monterrey</strong><br>
+                      Mentoría y Bienestar Estudiantil<br>
+                      Tecnológico de Monterrey • Campus Monterrey
+                    </p>
+                  </td>
+                  <td align="right" style="width:72px;">
+                    <img src="https://transfersmty.vercel.app/assets/Ejemplo%20de%20modelo%20de%20sticker.png" width="64" alt="Transferencias MTY" style="display:block; border:0;">
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

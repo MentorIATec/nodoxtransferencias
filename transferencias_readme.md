@@ -1,7 +1,7 @@
-# Transferencias AD25 - Sistema de Preregistro
+# Transferencias FJ26 - Sistema de Preregistro
 > Ver [DOCUMENTATION.md](DOCUMENTATION.md) para documentación completa
 
-## Estado: ✅ FUNCIONANDO AL 100%
+## Estado: ✅ LISTO PARA FJ26
 - **🚀 Sistema de invitación activo**: https://transfersmty.vercel.app
 - **📧 Emails automatizados configurados**: Power Automate + Apps Script  
 - **📱 Integración WhatsApp operativa**: Contacto directo con mentores
@@ -13,11 +13,11 @@
 
 ## 🎯 **Descripción del Proyecto**
 
-Sistema de **invitación y preregistro** para la Bienvenida de Transferencias AD25 del Campus Monterrey. Complementa perfectamente a [Campus Check-in v2.1](https://github.com/MentorIATec/campus-checkin) creando un flujo integral desde la invitación hasta el registro del día del evento.
+Sistema de **invitación y preregistro** para la Bienvenida de Transferencias FJ26 del Campus Monterrey. Complementa perfectamente a [Campus Check-in v2.1](https://github.com/MentorIATec/campus-checkin) creando un flujo integral desde la invitación hasta el registro del día del evento.
 
 ### **🔗 Flujo Integrado**
 ```
-📧 Transferencias AD25        ←  ESTE REPO
+📧 Transferencias FJ26        ←  ESTE REPO
     ↓ [Pre-evento]
 🎯 Campus Check-in v2.1      ←  Repo complementario  
     ↓ [Día del evento]
@@ -31,8 +31,8 @@ Sistema de **invitación y preregistro** para la Bienvenida de Transferencias AD
 ### **🚀 Deploy Inmediato**
 ```bash
 # Clonar repositorio
-git clone https://github.com/MentorIATec/transferencias-ad25.git
-cd transferencias-ad25
+git clone https://github.com/MentorIATec/transferencias-fj26.git
+cd transferencias-fj26
 
 # Deploy a Vercel (zero config)
 vercel --prod
@@ -51,7 +51,7 @@ vercel --prod
 ## 🎨 **Características Principales**
 
 ### **👥 Gestión de Estudiantes**
-- ✅ **24 estudiantes transferidos** registrados para AD25
+- ✅ **24 estudiantes transferidos** registrados para FJ26
 - ✅ **11 mentores asignados** con fotos y contactos
 - ✅ **10 comunidades estudiantiles** con branding único
 - ✅ **12+ campus de origen** representados
@@ -98,10 +98,10 @@ Cada comunidad tiene su identidad visual única:
 ## 📁 **Estructura del Repositorio**
 
 ```
-📁 transferencias-ad25/
+📁 transferencias-fj26/
 ├── 📄 index.html                    # Frontend principal
 ├── 📄 estudiantes.json              # Base de datos local (24 estudiantes)
-├── 📄 mapa-evento.html              # Ubicación del Pabellón La Carreta
+├── 📄 mapa-evento.html              # Ubicación del Auditorio Luis Elizondo
 ├── 📁 templates/
 │   ├── invitacion_transferencias.html      # Template email inicial
 │   ├── recordatorio_transferencias.html    # Template recordatorio
@@ -121,13 +121,13 @@ Cada comunidad tiene su identidad visual única:
 
 ---
 
-## 🎯 **Información del Evento AD25**
+## 🎯 **Información del Evento FJ26**
 
 ### **📅 Detalles del Evento**
-- **Nombre**: Bienvenida de Transferencias AD25
-- **Fecha**: Viernes 8 de agosto de 2025
-- **Horario**: 8:30 a.m. - 12:00 p.m.
-- **Ubicación**: Pabellón "La Carreta", Campus Monterrey
+- **Nombre**: Bienvenida de Transferencias FJ26
+- **Fecha**: Viernes 6 de febrero de 2026
+- **Horario**: 9:00 a.m. - 12:00 p.m.
+- **Ubicación**: Auditorio Luis Elizondo, Campus Monterrey
 - **Modalidad**: Presencial + componente virtual
 
 ### **🌟 Actividades Incluidas**
@@ -139,7 +139,7 @@ Cada comunidad tiene su identidad visual única:
 - ✅ Networking con otros transferidos
 
 ### **👥 Distribución de Participantes**
-- **24 estudiantes transferidos** confirmados para AD25
+- **24 estudiantes transferidos** confirmados para FJ26
 - **11 mentores estudiantiles** participando
 - **10 comunidades representadas** en el evento
 - **12+ campus de origen** diversos
@@ -149,7 +149,7 @@ Cada comunidad tiene su identidad visual única:
 ## 📧 **Sistema de Emails Implementado**
 
 ### **📨 Email de Invitación Inicial**
-- **Template**: `Invitación Transferencias AD25.emltpl`
+- **Template**: `Invitación Transferencias FJ26.emltpl`
 - **Formato**: HTML con diseño responsive
 - **Personalización**: Nombre del estudiante dinámico
 - **CTAs**: Link directo al sistema de preregistro
@@ -213,7 +213,7 @@ Cada comunidad tiene su identidad visual única:
 # Actualizar datos de estudiantes
 git pull origin main
 # Editar estudiantes.json
-git add . && git commit -m "Update estudiantes AD25"
+git add . && git commit -m "Update estudiantes FJ26"
 git push origin main
 vercel --prod
 
@@ -296,7 +296,7 @@ vercel --prod
 
 ## 🏆 **Reconocimientos**
 
-**Transferencias AD25** forma parte del ecosistema **MentorIA Tools**, desarrollado para automatizar y optimizar la experiencia de mentoría estudiantil en el Tecnológico de Monterrey.
+**Transferencias FJ26** forma parte del ecosistema **MentorIA Tools**, desarrollado para automatizar y optimizar la experiencia de mentoría estudiantil en el Tecnológico de Monterrey.
 
 ### **🎯 Impacto**
 - **20+ horas ahorradas** por evento vs coordinación manual
