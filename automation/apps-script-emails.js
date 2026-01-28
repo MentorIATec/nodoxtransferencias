@@ -180,6 +180,7 @@ function onOpen() {
     .addItem('Activar modo producción','activarModoProduccion')
     .addItem('Desactivar modo producción','desactivarModoProduccion')
     .addItem('Detener envíos masivos','detenerEnviosMasivos')
+    .addItem('Pre-check Asignaciones','precheckAsignaciones')
     .addItem('Enviar aviso general 1','enviarAvisoGeneral1')
     .addItem('Enviar aviso general 2','enviarAvisoGeneral2')
     .addItem('Enviar aviso general 3','enviarAvisoGeneral3')
@@ -913,6 +914,11 @@ function enviarAvisoAsignaciones(templateBase, asunto, options) {
         logEnvio(templateBase, '', 'ERROR', 'Email vacío');
         continue;
       }
+      if (!esEmailValido(datosBase.email)) {
+        errores++;
+        logEnvio(templateBase, datosBase.email, 'ERROR', 'Email inválido');
+        continue;
+      }
 
       const contactoMentor = datosBase.mentor && datosBase.mentor.celular
         ? `<p style="margin: 8px 0;"><strong>WhatsApp:</strong> ${datosBase.mentor.celular}</p>`
@@ -1002,6 +1008,68 @@ function solicitarNumero(ui, titulo, mensaje, fallback) {
   if (resp.getSelectedButton() !== ui.Button.OK) return fallback;
   const value = parseInt(resp.getResponseText().trim(), 10);
   return Number.isFinite(value) ? value : fallback;
+}
+
+function esEmailValido(email) {
+  if (!email) return false;
+  const value = email.toString().trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(value);
+}
+
+function precheckAsignaciones() {
+  const ui = SpreadsheetApp.getUi();
+  const ss = getSpreadsheet();
+  const sheet = ss.getSheetByName(CONFIG.ASIGNACIONES_SHEET);
+  if (!sheet) {
+    ui.alert('No se encontró la hoja Asignaciones.');
+    return;
+  }
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) {
+    ui.alert('No hay datos en Asignaciones.');
+    return;
+  }
+
+  const data = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
+  let total = 0;
+  let validos = 0;
+  let vacios = 0;
+  let invalidos = 0;
+  const emails = new Map();
+  const matriculas = new Map();
+
+  data.forEach(row => {
+    total++;
+    const email = String(row[CONFIG.COLUMNAS_ASIGNACIONES.EMAIL - 1] || '').trim().toLowerCase();
+    const matricula = String(row[CONFIG.COLUMNAS_ASIGNACIONES.MATRICULA - 1] || '').trim().toUpperCase();
+    if (!email) {
+      vacios++;
+    } else if (!esEmailValido(email)) {
+      invalidos++;
+    } else {
+      validos++;
+      emails.set(email, (emails.get(email) || 0) + 1);
+    }
+    if (matricula) {
+      matriculas.set(matricula, (matriculas.get(matricula) || 0) + 1);
+    }
+  });
+
+  const duplicadosEmail = Array.from(emails.values()).filter(v => v > 1).length;
+  const duplicadosMatricula = Array.from(matriculas.values()).filter(v => v > 1).length;
+
+  ui.alert(
+    'Pre-check Asignaciones',
+    `Total filas: ${total}\n` +
+      `Emails válidos: ${validos}\n` +
+      `Emails vacíos: ${vacios}\n` +
+      `Emails inválidos: ${invalidos}\n` +
+      `Duplicados email: ${duplicadosEmail}\n` +
+      `Duplicados matrícula: ${duplicadosMatricula}`,
+    ui.ButtonSet.OK
+  );
 }
 
 function logEnvio(templateBase, email, status, detalle) {
