@@ -45,7 +45,8 @@ CONFIG = {
     MATRICULA: 1,          // A - Matricula
     MENTOR_NOMBRE: 11,     // K - Mentor(a) Asignado(a) FJ26
     NOMBRES: 14,           // N - Nombres
-    APELLIDOS: 15          // O - Apellidos
+    APELLIDOS: 15,         // O - Apellidos
+    EMAIL: 17              // Q - Email
   },
   EVENTO: {
     nombre: "Bienvenida de Transferencias",
@@ -78,7 +79,9 @@ CONFIG = {
     MENTOREO: "mentoreo.mty@servicios.tec.mx",
     INLINE_IMAGES: {
       fj26_header: "https://transferencias-fj26.vercel.app/assets/FJ26.png",
-      fj26_sticker: "https://transferencias-fj26.vercel.app/assets/Ejemplo%20de%20modelo%20de%20sticker.png"
+      fj26_sticker: "https://transferencias-fj26.vercel.app/assets/Ejemplo%20de%20modelo%20de%20sticker.png",
+      ayc_banner: "https://transferencias-fj26.vercel.app/assets/Banner%20AyC.jpg",
+      ayc_cartelera: "https://transferencias-fj26.vercel.app/assets/Cartelera%20AyC%20AD25.jpg"
     },
     FIRMA: `─────────────────────────────────────────────────
 Comité de Transferencias Monterrey
@@ -153,6 +156,10 @@ function onOpen() {
     .addItem('Enviar reporte de errores','enviarReporteErroresDiarios')
     .addItem('Validar mentores vs Asignaciones','validarMentoresAsignaciones')
     .addItem('Enviar lote prueba','enviarLotePruebaGuiado')
+    .addItem('Enviar invitación a Asignaciones','enviarInvitacionATodos')
+    .addItem('Enviar aviso general 1','enviarAvisoGeneral1')
+    .addItem('Enviar aviso general 2','enviarAvisoGeneral2')
+    .addItem('Enviar aviso general 3','enviarAvisoGeneral3')
     .addItem('Generar README','generarReadme')
     .addToUi();
 }
@@ -751,7 +758,7 @@ function enviarCorreoPruebaOverride(fila, templateBase, asunto, destinatarioOver
     : '';
   const { nombreCorto, saludo } = construirSaludo(datosCompletos);
   const whatsappMentor = datosCompletos.mentor && datosCompletos.mentor.celular
-    ? `https://wa.me/${String(datosCompletos.mentor.celular).replace(/\\D/g, '')}?text=Hola ${datosCompletos.mentor.nickname ? datosCompletos.mentor.nickname : datosCompletos.mentorNombre}, soy ${nombreCorto} (${datosCompletos.matricula}) de la comunidad ${datosCompletos.comunidad}.`
+    ? `https://wa.me/${String(datosCompletos.mentor.celular).replace(/\D/g, '')}?text=Hola ${datosCompletos.mentor.nickname ? datosCompletos.mentor.nickname : datosCompletos.mentorNombre}, soy ${nombreCorto} (${datosCompletos.matricula}) de la comunidad ${datosCompletos.comunidad}.`
     : '';
 
   const templateVars = {
@@ -768,6 +775,151 @@ function enviarCorreoPruebaOverride(fila, templateBase, asunto, destinatarioOver
   const html = renderTemplate(templateName(templateBase), templateVars);
   const subject = asunto || `Prueba ${templateBase} FJ26`;
   enviarCorreo(destinatarioOverride, subject, html, datosCompletos);
+}
+
+function obtenerDatosDesdeAsignaciones(row) {
+  const matricula = String(row[CONFIG.COLUMNAS_ASIGNACIONES.MATRICULA - 1] || '').trim();
+  const nombres = String(row[CONFIG.COLUMNAS_ASIGNACIONES.NOMBRES - 1] || '').trim();
+  const apellidos = String(row[CONFIG.COLUMNAS_ASIGNACIONES.APELLIDOS - 1] || '').trim();
+  const mentorAsignado = String(row[CONFIG.COLUMNAS_ASIGNACIONES.MENTOR_NOMBRE - 1] || '').trim();
+  const email = String(row[CONFIG.COLUMNAS_ASIGNACIONES.EMAIL - 1] || '').trim();
+
+  const mentorKey = normalizarTexto(mentorAsignado);
+  let mentorNombre = mentorAsignado;
+  let comunidadOverride = '';
+  if (CONFIG.MENTOR_EXCEPCIONES[mentorKey]) {
+    mentorNombre = CONFIG.MENTOR_EXCEPCIONES[mentorKey].mentor;
+    comunidadOverride = CONFIG.MENTOR_EXCEPCIONES[mentorKey].comunidad;
+  }
+
+  const datosMentor = buscarDatosMentor(mentorNombre);
+  const comunidad = comunidadOverride || (datosMentor ? datosMentor.comunidad : '');
+  const nombreCompleto = `${nombres} ${apellidos}`.trim();
+
+  return {
+    matricula,
+    nombre: nombres,
+    mentorNombre: mentorNombre,
+    comunidad,
+    email,
+    mentor: datosMentor ? {
+      nombreCompleto: datosMentor.nombreCompleto,
+      nickname: datosMentor.nickname,
+      celular: datosMentor.celular,
+      email: datosMentor.email,
+      instagram: datosMentor.instagram
+    } : {
+      nombreCompleto: mentorNombre,
+      nickname: mentorNombre.split(' ')[0] || mentorNombre,
+      celular: null,
+      email: null,
+      instagram: null
+    },
+    nombreCompleto
+  };
+}
+
+function enviarInvitacionATodos() {
+  enviarAvisoAsignaciones('email-invitacion', 'Bienvenida de Transferencias FJ26 · Vive tu primera experiencia en Campus Monterrey');
+}
+
+function enviarAvisoGeneral1() {
+  enviarAvisoAsignaciones('email-aviso-general-1', 'Aviso general 1 · Bienvenida de Transferencias FJ26');
+}
+
+function enviarAvisoGeneral2() {
+  enviarAvisoAsignaciones('email-aviso-general-2', 'Aviso general 2 · Prepárate para el clima en Monterrey');
+}
+
+function enviarAvisoGeneral3() {
+  enviarAvisoAsignaciones('email-aviso-general-3', 'Aviso general 3 · ¡Ya es mañana!');
+}
+
+function enviarAvisoAsignaciones(templateBase, asunto) {
+  const ui = SpreadsheetApp.getUi();
+  const confirmResp = ui.prompt(
+    'Confirmación de envío',
+    'Escribe ENVIAR para continuar con el envío masivo a Asignaciones.',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (confirmResp.getSelectedButton() !== ui.Button.OK) return;
+  if (confirmResp.getResponseText().trim().toUpperCase() !== 'ENVIAR') {
+    ui.alert('Confirmación no válida. Se canceló el envío.');
+    return;
+  }
+
+  const ss = getSpreadsheet();
+  const sheet = ss.getSheetByName(CONFIG.ASIGNACIONES_SHEET);
+  if (!sheet) {
+    ui.alert('No se encontró la hoja Asignaciones.');
+    return;
+  }
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) {
+    ui.alert('No hay datos en Asignaciones.');
+    return;
+  }
+
+  const data = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
+  let enviados = 0;
+  let errores = 0;
+
+  for (let i = 0; i < data.length; i++) {
+    try {
+      const datosBase = obtenerDatosDesdeAsignaciones(data[i]);
+      if (!datosBase.email) {
+        errores++;
+        continue;
+      }
+
+      const contactoMentor = datosBase.mentor && datosBase.mentor.celular
+        ? `<p style="margin: 8px 0;"><strong>WhatsApp:</strong> ${datosBase.mentor.celular}</p>`
+        : '';
+      const instagramMentor = datosBase.mentor && datosBase.mentor.instagram
+        ? `<p style="margin: 8px 0;"><strong>Instagram:</strong> @${datosBase.mentor.instagram}</p>`
+        : '';
+      const emailMentor = datosBase.mentor && datosBase.mentor.email
+        ? `<p style="margin: 8px 0;"><strong>Email:</strong> ${datosBase.mentor.email}</p>`
+        : '';
+      const { nombreCorto, saludo } = construirSaludo({
+        nombre: datosBase.nombre,
+        matricula: datosBase.matricula
+      });
+      const whatsappMentor = datosBase.mentor && datosBase.mentor.celular
+        ? `https://wa.me/${String(datosBase.mentor.celular).replace(/\D/g, '')}?text=Hola ${datosBase.mentor.nickname ? datosBase.mentor.nickname : datosBase.mentorNombre}, soy ${nombreCorto} (${datosBase.matricula}) de la comunidad ${datosBase.comunidad}.`
+        : '';
+
+      const templateVars = {
+        datos: {
+          ...datosBase,
+          nombre: datosBase.nombre,
+          mentorNombre: datosBase.mentorNombre
+        },
+        CONFIG,
+        contactoMentor,
+        instagramMentor,
+        emailMentor,
+        whatsappMentor,
+        nombreCorto,
+        saludo
+      };
+
+      const html = renderTemplate(templateName(templateBase), templateVars);
+      enviarCorreo(datosBase.email, asunto, html, datosBase);
+      enviados++;
+      Utilities.sleep(1000);
+    } catch (err) {
+      errores++;
+      console.error(`Error en fila ${i + 2}:`, err);
+    }
+  }
+
+  ui.alert(
+    'Envío masivo terminado',
+    `Template: ${templateBase}\nEnviados: ${enviados}\nErrores: ${errores}`,
+    ui.ButtonSet.OK
+  );
 }
 
 /**
