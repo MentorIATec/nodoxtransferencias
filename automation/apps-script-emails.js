@@ -119,9 +119,9 @@ function templateName(base) {
 function subjectDefault(templateBase) {
   const subjects = {
     "email-invitacion": "Bienvenida de Transferencias FJ26 · Vive tu primera experiencia en Campus Monterrey",
-    "email-aviso-general-1": "Bienvenida de Transferencias · Primera llamada ✨",
-    "email-aviso-general-2": "Bienvenida de Transferencias · Segunda llamada 🌦️",
-    "email-aviso-general-3": "Bienvenida de Transferencias · Tercera llamada, ¡mañana nos vemos! ⏰",
+    "email-aviso-general-1": "Bienvenida de Transferencias · Primera llamada",
+    "email-aviso-general-2": "Bienvenida de Transferencias · Segunda llamada",
+    "email-aviso-general-3": "Bienvenida de Transferencias · Tercera llamada, ¡mañana nos vemos!",
     "email-recordatorio-1": "Bienvenida de Transferencias · Recordatorio 1",
     "email-recordatorio-2": "Bienvenida de Transferencias · Recordatorio 2",
     "confirmacion-si": "Confirmación recibida · Te esperamos en Bienvenida de Transferencias",
@@ -1450,6 +1450,32 @@ function validarMentoresAsignaciones() {
     resumen.getRange(2, startCol, comunidadOut.length, 2).setValues(comunidadOut);
   }
 
+  // Resumen de confirmaciones (SI/NO) por mentor y comunidad
+  const confirmaciones = obtenerResumenConfirmaciones();
+  let rowOffset = Math.max(mentorRowsOut.length, comunidadOut.length) + 4;
+  resumen.getRange(rowOffset, 1, 1, 5).setValues([['Confirmaciones - Mentor', 'Total', 'SI', 'NO', '% SI']]);
+  const mentorConfirmRows = confirmaciones.porMentor
+    .map(([mentor, stats]) => [mentor, stats.total, stats.si, stats.no, stats.pctSi])
+    .sort((a, b) => b[1] - a[1]);
+  if (mentorConfirmRows.length) {
+    resumen.getRange(rowOffset + 1, 1, mentorConfirmRows.length, 5).setValues(mentorConfirmRows);
+  }
+
+  const comunidadOffset = rowOffset + mentorConfirmRows.length + 3;
+  resumen.getRange(comunidadOffset, 1, 1, 5).setValues([['Confirmaciones - Comunidad', 'Total', 'SI', 'NO', '% SI']]);
+  const comunidadConfirmRows = confirmaciones.porComunidad
+    .map(([comunidad, stats]) => [comunidad, stats.total, stats.si, stats.no, stats.pctSi])
+    .sort((a, b) => b[1] - a[1]);
+  if (comunidadConfirmRows.length) {
+    resumen.getRange(comunidadOffset + 1, 1, comunidadConfirmRows.length, 5).setValues(comunidadConfirmRows);
+  }
+
+  const totalOffset = comunidadOffset + comunidadConfirmRows.length + 3;
+  resumen.getRange(totalOffset, 1, 2, 2).setValues([
+    ['Total respuestas', confirmaciones.totales.total],
+    ['% de confirmación SI', confirmaciones.totales.pctSi]
+  ]);
+
   SpreadsheetApp.getUi().alert(
     'Validación completada',
     inconsistencias.length
@@ -1457,6 +1483,62 @@ function validarMentoresAsignaciones() {
       : 'No se encontraron inconsistencias.',
     SpreadsheetApp.getUi().ButtonSet.OK
   );
+}
+
+function obtenerResumenConfirmaciones() {
+  const sheet = getResponsesSheet();
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) {
+    return {
+      porMentor: [],
+      porComunidad: [],
+      totales: { total: 0, si: 0, no: 0, pctSi: '0%' }
+    };
+  }
+
+  const rows = sheet.getRange(2, 1, lastRow - 1, 10).getValues();
+  const mentorMap = new Map();
+  const comunidadMap = new Map();
+  let total = 0;
+  let si = 0;
+  let no = 0;
+
+  rows.forEach(row => {
+    const mentor = String(row[CONFIG.COLUMNAS.MENTOR_NOMBRE - 1] || '').trim() || 'Sin mentor';
+    const comunidad = String(row[CONFIG.COLUMNAS.COMUNIDAD - 1] || '').trim() || 'Sin comunidad';
+    const asiste = String(row[CONFIG.COLUMNAS.ASISTE - 1] || '').trim();
+    if (!asiste) return;
+    total++;
+    const esSi = esAsistenciaPositiva(asiste);
+    if (esSi) si++; else no++;
+
+    const mentorStats = mentorMap.get(mentor) || { total: 0, si: 0, no: 0 };
+    mentorStats.total++;
+    if (esSi) mentorStats.si++; else mentorStats.no++;
+    mentorMap.set(mentor, mentorStats);
+
+    const comunidadStats = comunidadMap.get(comunidad) || { total: 0, si: 0, no: 0 };
+    comunidadStats.total++;
+    if (esSi) comunidadStats.si++; else comunidadStats.no++;
+    comunidadMap.set(comunidad, comunidadStats);
+  });
+
+  const porMentor = Array.from(mentorMap.entries()).map(([mentor, stats]) => {
+    const pct = stats.total ? Math.round((stats.si / stats.total) * 100) : 0;
+    return [mentor, { ...stats, pctSi: `${pct}%` }];
+  });
+
+  const porComunidad = Array.from(comunidadMap.entries()).map(([comunidad, stats]) => {
+    const pct = stats.total ? Math.round((stats.si / stats.total) * 100) : 0;
+    return [comunidad, { ...stats, pctSi: `${pct}%` }];
+  });
+
+  const pctTotal = total ? Math.round((si / total) * 100) : 0;
+  return {
+    porMentor,
+    porComunidad,
+    totales: { total, si, no, pctSi: `${pctTotal}%` }
+  };
 }
 
 // NOTAS PARA EL ADMINISTRADOR:
