@@ -62,6 +62,7 @@ function doPost(e) {
     const ss = SpreadsheetApp.getActive();
     const asignaciones = ss.getSheetByName(LOOKUP_CONFIG.ASIGNACIONES_SHEET);
     const mentores = ss.getSheetByName(LOOKUP_CONFIG.MENTORES_SHEET);
+    const respuestas = ss.getSheetByName(LOOKUP_CONFIG.RESPONSES_SHEET);
     if (!asignaciones || !mentores) {
       return jsonResponse({ error: 'Hojas no encontradas' }, 500);
     }
@@ -109,7 +110,8 @@ function doPost(e) {
       campusOrigen: campus,
       whatsappMentor: mentorInfo.celular || '',
       mentorAsignadoOriginal: String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.MENTOR_ASIGNADO - 1] || '').trim(),
-      email: email
+      email: email,
+      yaRegistrado: respuestas ? yaRegistrado(respuestas, matricula) : false
     };
 
     return jsonResponse(response, 200);

@@ -82,7 +82,8 @@ export default async (req, res) => {
         comunidad: estudiante.comunidad,
         campusOrigen: estudiante.campusOrigen,
         whatsappMentor: estudiante.whatsappMentor,
-        email: estudiante.email || ''
+        email: estudiante.email || '',
+        yaRegistrado: false
       };
     }
 
@@ -95,7 +96,8 @@ export default async (req, res) => {
       comunidad: data.comunidad,
       campusOrigen: data.campusOrigen,
       whatsappMentor: data.whatsappMentor,
-      email: data.email || ''
+      email: data.email || '',
+      yaRegistrado: data.yaRegistrado === true
     });
 
   } catch (error) {

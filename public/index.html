@@ -961,8 +961,10 @@ function mostrarInformacionEstudiante(estudiante) {
         document.getElementById('studentInfo').style.opacity = 1;
 
         // Prevención de duplicados
-        const yaRegistrado = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
+        const yaRegistradoLocal = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
             localStorage.getItem('registroTransferido_' + estudiante.matricula) === '1';
+        const yaRegistradoServidor = estudiante.yaRegistrado === true;
+        const yaRegistrado = yaRegistradoLocal || yaRegistradoServidor;
         if (yaRegistrado) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'block';
@@ -1124,8 +1126,10 @@ function mostrarInformacionEvento() {
     document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
     resetAttendanceButtons();
     if (estudianteActual) {
-        const yaRegistrado = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
+        const yaRegistradoLocal = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
             localStorage.getItem('registroTransferido_' + estudianteActual.matricula) === '1';
+        const yaRegistradoServidor = estudianteActual.yaRegistrado === true;
+        const yaRegistrado = yaRegistradoLocal || yaRegistradoServidor;
         if (yaRegistrado) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'block';
