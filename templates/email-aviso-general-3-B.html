@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviso General 3 | Bienvenida de Transferencias</title>
+  <title>Bienvenida de Transferencias · Tercera llamada</title>
 </head>
 <body style="margin:0; padding:0; background:#f2f4f7;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f2f4f7;">
@@ -17,16 +17,21 @@
           </tr>
           <tr>
             <td style="padding:28px 32px 20px 32px;">
-              <h1 style="margin:0 0 10px 0; font-size:24px; line-height:1.25; color:#0b1f3a;">Aviso general 3 · ¡Ya es mañana!</h1>
+              <h1 style="margin:0 0 10px 0; font-size:24px; line-height:1.25; color:#0b1f3a;">Bienvenida de Transferencias · Tercera llamada, ¡mañana nos vemos! ⏰</h1>
               <p style="margin:0 0 16px 0; font-size:16px; color:#2b2f38;"><?= saludo ?></p>
               <p style="margin:0 0 18px 0; font-size:16px; color:#2b2f38;">
                 ¡Mañana es la Bienvenida de Transferencias! Tus mentores y mentoras ya te esperan para recibirte en Campus Monterrey.
               </p>
+
+              <p style="margin:0 0 6px 0; font-size:15px; color:#2b2f38;">
+                Instagram CVDP: <a href="https://www.instagram.com/cvdp.monterrey/" style="color:#0b1f3a; text-decoration:underline;">@cvdp.monterrey</a>
+              </p>
+              <img src="cid:cvdp_servicios" width="536" alt="Servicios CVDP" style="display:block; width:100%; height:auto; border:0; border-radius:8px; margin:8px 0 16px 0;">
               <p style="margin:0 0 18px 0; font-size:16px; color:#2b2f38;">
                 El área de <strong>CVDP</strong> (Centro de Vinculación y Desarrollo Profesional) estará presente para ayudarte a conocer oportunidades de desarrollo profesional y encontrar tu “fit” perfecto. Explora su perfil y prepara tus preguntas.
               </p>
 
-              <table role="presentation" align="center" cellspacing="0" cellpadding="0" style="margin:22px auto 8px auto;">
+              <table role="presentation" align="center" cellspacing="0" cellpadding="0" style="margin:16px auto 8px auto;">
                 <tr>
                   <td bgcolor="#0b1f3a" style="border-radius:8px;">
                     <a href="<?= CONFIG.EVENTO.confirmacion_url ?>" style="display:inline-block; padding:12px 20px; color:#ffffff; text-decoration:none; font-weight:bold; font-size:14px;">Registrar asistencia</a>
@@ -34,9 +39,18 @@
                 </tr>
               </table>
 
-              <p style="margin:10px 0 0 0; font-size:13px; color:#5b616b;">
-                Instagram CVDP: <a href="https://www.instagram.com/cvdp.monterrey/" style="color:#0b1f3a; text-decoration:underline;">@cvdp.monterrey</a>
+              <? if (whatsappMentor) { ?>
+              <p style="margin:16px 0 10px 0; font-size:15px; color:#2b2f38;">
+                ¿Dudas? Envíale un mensaje a tu mentor/a <strong><?= datos.mentorNombre ?></strong> por WhatsApp o guarda su contacto.
               </p>
+              <table role="presentation" align="center" cellspacing="0" cellpadding="0" style="margin:10px auto 0 auto;">
+                <tr>
+                  <td bgcolor="#25D366" style="border-radius:8px;">
+                    <a href="<?= whatsappMentor ?>" style="display:inline-block; padding:10px 16px; color:#ffffff; text-decoration:none; font-weight:bold; font-size:14px;">Contactar a mi mentor/a</a>
+                  </td>
+                </tr>
+              </table>
+              <? } ?>
             </td>
           </tr>
           <tr>

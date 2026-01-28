@@ -81,7 +81,9 @@ CONFIG = {
       fj26_header: "https://transferencias-fj26.vercel.app/assets/FJ26.png",
       fj26_sticker: "https://transferencias-fj26.vercel.app/assets/Ejemplo%20de%20modelo%20de%20sticker.png",
       ayc_banner: "https://transferencias-fj26.vercel.app/assets/Banner%20AyC.jpg",
-      ayc_cartelera: "https://transferencias-fj26.vercel.app/assets/Cartelera%20AyC%20AD25.jpg"
+      ayc_cartelera: "https://transferencias-fj26.vercel.app/assets/Cartelera%20AyC%20AD25.jpg",
+      clima_feb: "https://transferencias-fj26.vercel.app/clima%20en%20MTY%202feb%20a%206feb.png",
+      cvdp_servicios: "https://transferencias-fj26.vercel.app/assets/Servicios-CVDP-Nacionales.png"
     },
     FIRMA: `─────────────────────────────────────────────────
 Comité de Transferencias Monterrey
@@ -112,6 +114,24 @@ function renderTemplate(name, data) {
 
 function templateName(base) {
   return `${base}-${CONFIG.TEMPLATES.VARIANT}`;
+}
+
+function subjectDefault(templateBase) {
+  const subjects = {
+    "email-invitacion": "Bienvenida de Transferencias FJ26 · Vive tu primera experiencia en Campus Monterrey",
+    "email-aviso-general-1": "Bienvenida de Transferencias · Primera llamada ✨",
+    "email-aviso-general-2": "Bienvenida de Transferencias · Segunda llamada 🌦️",
+    "email-aviso-general-3": "Bienvenida de Transferencias · Tercera llamada, ¡mañana nos vemos! ⏰",
+    "email-recordatorio-1": "Bienvenida de Transferencias · Recordatorio 1",
+    "email-recordatorio-2": "Bienvenida de Transferencias · Recordatorio 2",
+    "confirmacion-si": "Confirmación recibida · Te esperamos en Bienvenida de Transferencias",
+    "confirmacion-no": "Confirmación recibida · Te acompañamos en tu llegada"
+  };
+  return subjects[templateBase] || `Bienvenida de Transferencias · ${templateBase}`;
+}
+
+function resolverAsunto(templateBase, override) {
+  return override && override.trim() ? override.trim() : subjectDefault(templateBase);
 }
 
 function normalizarTexto(value) {
@@ -640,7 +660,7 @@ function enviarCorreoPrueba(fila, templateBase, asunto) {
   };
 
   const html = renderTemplate(templateName(templateBase), templateVars);
-  const subject = asunto || `Prueba ${templateBase} FJ26`;
+  const subject = resolverAsunto(templateBase, asunto);
   enviarCorreo(datosCompletos.email, subject, html, datosCompletos);
 }
 
@@ -774,7 +794,7 @@ function enviarCorreoPruebaOverride(fila, templateBase, asunto, destinatarioOver
 
   const html = renderTemplate(templateName(templateBase), templateVars);
   const subject = asunto || `Prueba ${templateBase} FJ26`;
-  enviarCorreo(destinatarioOverride, subject, html, datosCompletos);
+  enviarCorreo(destinatarioOverride, resolverAsunto(templateBase, asunto), html, datosCompletos);
 }
 
 function obtenerDatosDesdeAsignaciones(row) {
@@ -820,19 +840,19 @@ function obtenerDatosDesdeAsignaciones(row) {
 }
 
 function enviarInvitacionATodos() {
-  enviarAvisoAsignaciones('email-invitacion', 'Bienvenida de Transferencias FJ26 · Vive tu primera experiencia en Campus Monterrey');
+  enviarAvisoAsignaciones('email-invitacion', subjectDefault('email-invitacion'));
 }
 
 function enviarAvisoGeneral1() {
-  enviarAvisoAsignaciones('email-aviso-general-1', 'Aviso general 1 · Bienvenida de Transferencias FJ26');
+  enviarAvisoAsignaciones('email-aviso-general-1', subjectDefault('email-aviso-general-1'));
 }
 
 function enviarAvisoGeneral2() {
-  enviarAvisoAsignaciones('email-aviso-general-2', 'Aviso general 2 · Prepárate para el clima en Monterrey');
+  enviarAvisoAsignaciones('email-aviso-general-2', subjectDefault('email-aviso-general-2'));
 }
 
 function enviarAvisoGeneral3() {
-  enviarAvisoAsignaciones('email-aviso-general-3', 'Aviso general 3 · ¡Ya es mañana!');
+  enviarAvisoAsignaciones('email-aviso-general-3', subjectDefault('email-aviso-general-3'));
 }
 
 function enviarAvisoAsignaciones(templateBase, asunto) {
@@ -906,7 +926,7 @@ function enviarAvisoAsignaciones(templateBase, asunto) {
       };
 
       const html = renderTemplate(templateName(templateBase), templateVars);
-      enviarCorreo(datosBase.email, asunto, html, datosBase);
+      enviarCorreo(datosBase.email, resolverAsunto(templateBase, asunto), html, datosBase);
       enviados++;
       Utilities.sleep(1000);
     } catch (err) {
