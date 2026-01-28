@@ -819,7 +819,7 @@ const CONFIG = {
         ENDPOINT: '/api/confirmacion',
         ENVIAR_CORREO: true,
         EMAIL_OVERRIDE: 'kareng@tec.mx',
-        USE_LOCAL_FLAG: false
+        USE_LOCAL_FLAG: true
     }
 };
 
@@ -981,7 +981,14 @@ async function confirmarAsistencia(asistira, event) {
     botones.forEach(btn => btn.disabled = true);
     boton.innerHTML = '<span class="loading"></span> Procesando...';
     try {
-        await enviarConfirmacion(asistira);
+        const resultado = await enviarConfirmacion(asistira);
+        if (resultado && resultado.alreadyRegistered) {
+            if (CONFIG.CONFIRMATION.USE_LOCAL_FLAG) {
+                localStorage.setItem('registroTransferido_' + estudianteActual.matricula, '1');
+            }
+            mostrarInformacionEvento();
+            return;
+        }
         await new Promise(resolve => setTimeout(resolve, 1500));
         document.getElementById('studentInfo').style.opacity = '0';
         setTimeout(() => {
@@ -1036,6 +1043,11 @@ async function enviarConfirmacion(asistira) {
       body: JSON.stringify(payload)
     });
 
+    if (response.status === 409) {
+      logDebug('Registro ya existe', { matricula: estudianteActual.matricula });
+      return { alreadyRegistered: true };
+    }
+
     if (!response.ok) {
       let errorMsg = 'Error al registrar confirmación';
       try {
@@ -1049,6 +1061,7 @@ async function enviarConfirmacion(asistira) {
 
     const data = await response.json();
     logDebug('Confirmación registrada', data);
+    return { ok: true };
   } catch (error) {
     console.error('Error al registrar confirmación:', error);
     logDebug('Error al registrar confirmación', { message: error.message });
@@ -1058,7 +1071,8 @@ async function enviarConfirmacion(asistira) {
 
 function contactarMentor() {
     if (!estudianteActual) return;
-    const mensaje = `¡Hola ${estudianteActual.mentorNickname}! 👋 Soy ${estudianteActual.fullnameEstudiante} y vengo de ${estudianteActual.campusOrigen}. Ya confirmé mi asistencia al evento de transferencias. ¡Nos vemos pronto! 🎓`;
+    const nombreCorto = obtenerNombreCorto(estudianteActual);
+    const mensaje = `¡Hola ${estudianteActual.mentorNickname}! 👋 Soy ${nombreCorto} (${estudianteActual.matricula}) y vengo de ${estudianteActual.campusOrigen}. Ya confirmé mi asistencia al evento de transferencias. ¡Nos vemos pronto! 🎓`;
     // AÑADIR VALIDACIÓN:
     if (!estudianteActual.whatsappMentor) {
         mostrarError('No se encontró contacto del mentor');
@@ -1071,10 +1085,22 @@ function contactarMentor() {
 
 function contactarMentorNoAsistencia() {
     if (!estudianteActual) return;
-    const mensaje = `¡Hola ${estudianteActual.mentorNickname}! 👋 Soy ${estudianteActual.fullnameEstudiante} y vengo de ${estudianteActual.campusOrigen}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una cita? 😊`;
+    const nombreCorto = obtenerNombreCorto(estudianteActual);
+    const mensaje = `¡Hola ${estudianteActual.mentorNickname}! 👋 Soy ${nombreCorto} (${estudianteActual.matricula}) y vengo de ${estudianteActual.campusOrigen}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una cita? 😊`;
     const numeroLimpio = estudianteActual.whatsappMentor.replace(/\D/g, '');
     const url = `https://wa.me/${numeroLimpio}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
+}
+
+function obtenerNombreCorto(estudiante) {
+    if (!estudiante) return '';
+    if (estudiante.nameEstudiante) {
+        return estudiante.nameEstudiante.trim().split(/\s+/)[0] || estudiante.nameEstudiante.trim();
+    }
+    const fullname = (estudiante.fullnameEstudiante || '').trim();
+    if (!fullname) return '';
+    const partes = fullname.includes(',') ? fullname.split(',').slice(1).join(',') : fullname;
+    return partes.trim().split(/\s+/)[0] || partes.trim();
 }
 
 document.addEventListener('DOMContentLoaded', function() {

@@ -12,13 +12,13 @@
         <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="width:600px; max-width:600px; background:#ffffff; border:1px solid #e6e8ec; border-radius:12px; overflow:hidden;">
           <tr>
             <td>
-              <img src="https://transferencias-fj26.vercel.app/assets/FJ26.png" width="600" alt="Bienvenida de Transferencias" style="display:block; width:100%; height:auto; border:0;">
+              <img src="cid:fj26_header" width="600" alt="Bienvenida de Transferencias" style="display:block; width:100%; height:auto; border:0;">
             </td>
           </tr>
           <tr>
             <td style="padding:28px 32px 20px 32px;">
               <h1 style="margin:0 0 10px 0; font-size:24px; line-height:1.25; color:#0b1f3a;">Confirmación recibida</h1>
-              <p style="margin:0 0 16px 0; font-size:16px; color:#2b2f38;">Hola <?= datos.nombre ?>,</p>
+              <p style="margin:0 0 16px 0; font-size:16px; color:#2b2f38;"><?= saludo ?></p>
               <p style="margin:0 0 18px 0; font-size:16px; color:#2b2f38;">Entendemos que no podrás asistir al evento. Estamos aquí para acompañarte en tu llegada al campus.</p>
 
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f5f7fb; border:1px solid #e6e8ec; border-radius:8px;">
@@ -50,7 +50,7 @@
               <table role="presentation" align="center" cellspacing="0" cellpadding="0" style="margin:12px auto 0 auto;">
                 <tr>
                   <td bgcolor="#1d4ed8" style="border-radius:8px;">
-                    <a href="mailto:<?= CONFIG.EMAIL.MENTOREO ?>?subject=Solicitud de cita - <?= datos.nombre ?>&body=Hola, soy <?= datos.nombre ?> (<?= datos.matricula ?>) y me gustaría agendar una cita presencial antes del inicio de clases. Mi mentor/a asignado/a es <?= datos.mentorNombre ?>."
+                    <a href="mailto:<?= CONFIG.EMAIL.MENTOREO ?>?subject=Solicitud de cita - <?= nombreCorto ?>&body=Hola, soy <?= nombreCorto ?> (<?= datos.matricula ?>) y me gustaría agendar una cita presencial antes del inicio de clases. Mi mentor/a asignado/a es <?= datos.mentorNombre ?>."
                        style="display:inline-block; padding:12px 20px; color:#ffffff; text-decoration:none; font-weight:bold; font-size:14px;">Solicitar cita con el Comité de Transferencias Monterrey</a>
                   </td>
                 </tr>
@@ -71,7 +71,7 @@
                     </p>
                   </td>
                   <td align="right" style="width:72px;">
-                    <img src="https://transferencias-fj26.vercel.app/assets/Ejemplo%20de%20modelo%20de%20sticker.png" width="64" alt="Transferencias MTY" style="display:block; border:0;">
+                    <img src="cid:fj26_sticker" width="64" alt="Transferencias MTY" style="display:block; border:0;">
                   </td>
                 </tr>
               </table>

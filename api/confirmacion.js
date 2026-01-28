@@ -57,6 +57,10 @@ export default async (req, res) => {
       body: JSON.stringify(payload)
     });
 
+    if (response.status === 409) {
+      return res.status(409).json({ error: 'Registro ya existe' });
+    }
+
     if (!response.ok) {
       return res.status(502).json({ error: 'Error al registrar confirmación' });
     }

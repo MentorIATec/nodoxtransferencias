@@ -76,6 +76,10 @@ CONFIG = {
     REMITENTE: "kareng@tec.mx",
     REMITENTE_NOMBRE: "Comité de Transferencias Monterrey",
     MENTOREO: "mentoreo.mty@servicios.tec.mx",
+    INLINE_IMAGES: {
+      fj26_header: "https://transferencias-fj26.vercel.app/assets/FJ26.png",
+      fj26_sticker: "https://transferencias-fj26.vercel.app/assets/Ejemplo%20de%20modelo%20de%20sticker.png"
+    },
     FIRMA: `─────────────────────────────────────────────────
 Comité de Transferencias Monterrey
 Mentoría y Bienestar Estudiantil
@@ -105,6 +109,37 @@ function renderTemplate(name, data) {
 
 function templateName(base) {
   return `${base}-${CONFIG.TEMPLATES.VARIANT}`;
+}
+
+function normalizarTexto(value) {
+  return value
+    ? value
+        .toString()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+    : "";
+}
+
+function obtenerNombreCorto(nombreCompleto) {
+  if (!nombreCompleto) return "";
+  const value = nombreCompleto.toString().trim();
+  const sinApellidos = value.includes(",") ? value.split(",").slice(1).join(",") : value;
+  const tokens = sinApellidos.trim().split(/\s+/);
+  return tokens[0] || sinApellidos.trim();
+}
+
+function construirSaludo(datos) {
+  const nombreCorto = obtenerNombreCorto(datos.nombre);
+  const matricula = datos.matricula ? datos.matricula.toString().trim() : "";
+  const saludo = nombreCorto ? `Hola ${nombreCorto} (${matricula}),` : `Hola (${matricula}),`;
+  return { nombreCorto, saludo };
+}
+
+function esAsistenciaPositiva(valor) {
+  const texto = normalizarTexto(valor);
+  return texto.startsWith("si") || texto.includes("si");
 }
 /**
  * Menú personalizado al abrir la hoja
@@ -352,7 +387,7 @@ function procesarEnvioCorreo(sheet, fila) {
       }
     };
 
-    const asistiráEvento = datos.asiste.toLowerCase().includes('sí') || datos.asiste.toLowerCase().includes('si');
+    const asistiráEvento = esAsistenciaPositiva(datos.asiste);
 
     let asunto, cuerpoHtml;
 
@@ -432,6 +467,7 @@ function validarDatos(datos) {
  * GENERAR CORREO - CONFIRMACIÓN SÍ ASISTE
  */
 function generarCorreoConfirmacion(datos) {
+  const { nombreCorto, saludo } = construirSaludo(datos);
   const contactoMentor = datos.mentor && datos.mentor.celular
     ? `<p style="margin: 8px 0;"><strong>WhatsApp:</strong> ${datos.mentor.celular}</p>`
     : '';
@@ -445,7 +481,7 @@ function generarCorreoConfirmacion(datos) {
     : '';
 
   const whatsappMentor = datos.mentor && datos.mentor.celular
-    ? `https://wa.me/${String(datos.mentor.celular).replace(/\D/g, '')}?text=Hola ${datos.mentor.nickname ? datos.mentor.nickname : datos.mentorNombre}, soy ${datos.nombre} de la comunidad ${datos.comunidad}.`
+    ? `https://wa.me/${String(datos.mentor.celular).replace(/\D/g, '')}?text=Hola ${datos.mentor.nickname ? datos.mentor.nickname : datos.mentorNombre}, soy ${nombreCorto} (${datos.matricula}) de la comunidad ${datos.comunidad}.`
     : '';
 
   return renderTemplate(templateName('confirmacion-si'), {
@@ -454,7 +490,9 @@ function generarCorreoConfirmacion(datos) {
     contactoMentor,
     instagramMentor,
     emailMentor,
-    whatsappMentor
+    whatsappMentor,
+    nombreCorto,
+    saludo
   });
 }
 
@@ -462,6 +500,7 @@ function generarCorreoConfirmacion(datos) {
  * GENERAR CORREO - NO ASISTE
  */
 function generarCorreoNoAsiste(datos) {
+  const { nombreCorto, saludo } = construirSaludo(datos);
   const contactoMentor = datos.mentor && datos.mentor.celular
     ? `<p style="margin: 8px 0;"><strong>WhatsApp:</strong> ${datos.mentor.celular}</p>`
     : '';
@@ -475,7 +514,7 @@ function generarCorreoNoAsiste(datos) {
     : '';
 
   const whatsappMentor = datos.mentor && datos.mentor.celular
-    ? `https://wa.me/${String(datos.mentor.celular).replace(/\D/g, '')}?text=Hola ${datos.mentor.nickname ? datos.mentor.nickname : datos.mentorNombre}, soy ${datos.nombre} de la comunidad ${datos.comunidad}. No podré asistir al evento pero me gustaría conocerte.`
+    ? `https://wa.me/${String(datos.mentor.celular).replace(/\D/g, '')}?text=Hola ${datos.mentor.nickname ? datos.mentor.nickname : datos.mentorNombre}, soy ${nombreCorto} (${datos.matricula}) de la comunidad ${datos.comunidad}. No podré asistir al evento pero me gustaría conocerte.`
     : '';
 
   return renderTemplate(templateName('confirmacion-no'), {
@@ -484,7 +523,9 @@ function generarCorreoNoAsiste(datos) {
     contactoMentor,
     instagramMentor,
     emailMentor,
-    whatsappMentor
+    whatsappMentor,
+    nombreCorto,
+    saludo
   });
 }
 
@@ -502,6 +543,21 @@ function enviarCorreo(destinatario, asunto, cuerpoHtml, datos) {
       attachments: [],
       noReply: false
     };
+
+    const inlineImages = {};
+    const inlineConfig = CONFIG.EMAIL.INLINE_IMAGES || {};
+    Object.keys(inlineConfig).forEach(key => {
+      const url = inlineConfig[key];
+      if (!url) return;
+      try {
+        inlineImages[key] = UrlFetchApp.fetch(url).getBlob().setName(key);
+      } catch (err) {
+        console.error(`Error cargando imagen inline ${key}:`, err);
+      }
+    });
+    if (Object.keys(inlineImages).length) {
+      opciones.inlineImages = inlineImages;
+    }
 
     GmailApp.sendEmail(destinatario, asunto, '', opciones);
 
@@ -559,8 +615,9 @@ function enviarCorreoPrueba(fila, templateBase, asunto) {
   const emailMentor = datosCompletos.mentor && datosCompletos.mentor.email
     ? `<p style="margin: 8px 0;"><strong>Email:</strong> ${datosCompletos.mentor.email}</p>`
     : '';
+  const { nombreCorto, saludo } = construirSaludo(datosCompletos);
   const whatsappMentor = datosCompletos.mentor && datosCompletos.mentor.celular
-    ? `https://wa.me/${String(datosCompletos.mentor.celular).replace(/\\D/g, '')}?text=Hola ${datosCompletos.mentor.nickname ? datosCompletos.mentor.nickname : datosCompletos.mentorNombre}, soy ${datosCompletos.nombre} de la comunidad ${datosCompletos.comunidad}.`
+    ? `https://wa.me/${String(datosCompletos.mentor.celular).replace(/\D/g, '')}?text=Hola ${datosCompletos.mentor.nickname ? datosCompletos.mentor.nickname : datosCompletos.mentorNombre}, soy ${nombreCorto} (${datosCompletos.matricula}) de la comunidad ${datosCompletos.comunidad}.`
     : '';
 
   const templateVars = {
@@ -569,7 +626,9 @@ function enviarCorreoPrueba(fila, templateBase, asunto) {
     contactoMentor,
     instagramMentor,
     emailMentor,
-    whatsappMentor
+    whatsappMentor,
+    nombreCorto,
+    saludo
   };
 
   const html = renderTemplate(templateName(templateBase), templateVars);

@@ -138,6 +138,10 @@ function registrarConfirmacion(body) {
     return jsonResponse({ error: 'Hoja de respuestas no encontrada' }, 500);
   }
 
+  if (yaRegistrado(sheet, matricula)) {
+    return jsonResponse({ error: 'Registro ya existe' }, 409);
+  }
+
   const now = new Date();
   const timestamp = formatTimestamp(now);
   const asistira = body.asistira === true || String(body.asistira || '').toLowerCase() === 'sí' || String(body.asistira || '').toLowerCase() === 'si'
@@ -176,6 +180,14 @@ function registrarConfirmacion(body) {
   }
 
   return jsonResponse({ ok: true, row: newRow }, 200);
+}
+
+function yaRegistrado(sheet, matricula) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return false;
+  const values = sheet.getRange(2, LOOKUP_CONFIG.COLS_RESPONSES.MATRICULA, lastRow - 1, 1).getValues();
+  const target = matricula.trim().toUpperCase();
+  return values.some(row => String(row[0] || '').trim().toUpperCase() === target);
 }
 
 function parseBody(e) {
