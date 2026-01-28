@@ -38,8 +38,8 @@ CONFIG = {
     INSTAGRAM: 7           // G - Instagram
   },
   MENTOR_EXCEPCIONES: {
-    'mentor pendiente pasio': 'Norman Ernesto Ramírez González',
-    'mentor(a) talenta pendiente': 'Zoé Nohemí Montoya Campos'
+    'mentor pendiente pasio': { mentor: 'Norman Ernesto Ramírez González', comunidad: 'Pasio' },
+    'mentor(a) talenta pendiente': { mentor: 'Zoé Nohemí Montoya Campos', comunidad: 'Talenta' }
   },
   COLUMNAS_ASIGNACIONES: {
     MATRICULA: 1,          // A - Matricula
@@ -1015,8 +1015,10 @@ function validarMentoresAsignaciones() {
   for (let i = 0; i < mentorAsignado.length; i++) {
     let mentorRaw = mentorAsignado[i];
     let mentorKey = normalizarNombre(mentorRaw);
+    let comunidadOverride = '';
     if (CONFIG.MENTOR_EXCEPCIONES[mentorKey]) {
-      mentorRaw = CONFIG.MENTOR_EXCEPCIONES[mentorKey];
+      mentorRaw = CONFIG.MENTOR_EXCEPCIONES[mentorKey].mentor;
+      comunidadOverride = CONFIG.MENTOR_EXCEPCIONES[mentorKey].comunidad;
       mentorKey = normalizarNombre(mentorRaw);
     }
     if (!mentorKey) continue;
@@ -1031,7 +1033,7 @@ function validarMentoresAsignaciones() {
     } else {
       const info = mentorInfoByKey.get(mentorKey);
       const mentorDisplay = info && info.nombre ? info.nombre : String(mentorRaw || '').trim();
-      const comunidad = info && info.comunidad ? info.comunidad : 'Sin comunidad';
+      const comunidad = comunidadOverride || (info && info.comunidad ? info.comunidad : 'Sin comunidad');
       conteoMentor.set(mentorDisplay, (conteoMentor.get(mentorDisplay) || 0) + 1);
       conteoComunidad.set(comunidad, (conteoComunidad.get(comunidad) || 0) + 1);
     }
