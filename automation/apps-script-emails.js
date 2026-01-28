@@ -176,7 +176,9 @@ function onOpen() {
     .addItem('Enviar reporte de errores','enviarReporteErroresDiarios')
     .addItem('Validar mentores vs Asignaciones','validarMentoresAsignaciones')
     .addItem('Enviar lote prueba','enviarLotePruebaGuiado')
-    .addItem('Enviar invitación a Asignaciones','enviarInvitacionATodos')
+    .addItem('Enviar invitación (Producción)','enviarInvitacionProduccion')
+    .addItem('Activar modo producción','activarModoProduccion')
+    .addItem('Desactivar modo producción','desactivarModoProduccion')
     .addItem('Enviar aviso general 1','enviarAvisoGeneral1')
     .addItem('Enviar aviso general 2','enviarAvisoGeneral2')
     .addItem('Enviar aviso general 3','enviarAvisoGeneral3')
@@ -843,6 +845,10 @@ function enviarInvitacionATodos() {
   enviarAvisoAsignaciones('email-invitacion', subjectDefault('email-invitacion'));
 }
 
+function enviarInvitacionProduccion() {
+  enviarAvisoAsignaciones('email-invitacion', subjectDefault('email-invitacion'), { requireProd: true });
+}
+
 function enviarAvisoGeneral1() {
   enviarAvisoAsignaciones('email-aviso-general-1', subjectDefault('email-aviso-general-1'));
 }
@@ -855,8 +861,13 @@ function enviarAvisoGeneral3() {
   enviarAvisoAsignaciones('email-aviso-general-3', subjectDefault('email-aviso-general-3'));
 }
 
-function enviarAvisoAsignaciones(templateBase, asunto) {
+function enviarAvisoAsignaciones(templateBase, asunto, options) {
+  const opts = options || {};
   const ui = SpreadsheetApp.getUi();
+  if (opts.requireProd && !isModoProduccion()) {
+    ui.alert('Modo producción desactivado', 'Activa el modo producción antes de enviar.', ui.ButtonSet.OK);
+    return;
+  }
   const confirmResp = ui.prompt(
     'Confirmación de envío',
     'Escribe ENVIAR para continuar con el envío masivo a Asignaciones.',
@@ -882,14 +893,18 @@ function enviarAvisoAsignaciones(templateBase, asunto) {
   }
 
   const data = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
+  const batchSize = solicitarNumero(ui, 'Tamaño de lote', '¿Cuántos correos por bloque? (ej: 150)', 150);
+  const pausaMs = solicitarNumero(ui, 'Pausa entre bloques', 'Milisegundos de pausa entre bloques (ej: 15000)', 15000);
   let enviados = 0;
   let errores = 0;
+  let procesados = 0;
 
   for (let i = 0; i < data.length; i++) {
     try {
       const datosBase = obtenerDatosDesdeAsignaciones(data[i]);
       if (!datosBase.email) {
         errores++;
+        logEnvio(templateBase, '', 'ERROR', 'Email vacío');
         continue;
       }
 
@@ -928,10 +943,16 @@ function enviarAvisoAsignaciones(templateBase, asunto) {
       const html = renderTemplate(templateName(templateBase), templateVars);
       enviarCorreo(datosBase.email, resolverAsunto(templateBase, asunto), html, datosBase);
       enviados++;
+      logEnvio(templateBase, datosBase.email, 'OK', '');
       Utilities.sleep(1000);
     } catch (err) {
       errores++;
+      logEnvio(templateBase, '', 'ERROR', err.message || 'Error');
       console.error(`Error en fila ${i + 2}:`, err);
+    }
+    procesados++;
+    if (batchSize && procesados % batchSize === 0) {
+      Utilities.sleep(pausaMs);
     }
   }
 
@@ -940,6 +961,44 @@ function enviarAvisoAsignaciones(templateBase, asunto) {
     `Template: ${templateBase}\nEnviados: ${enviados}\nErrores: ${errores}`,
     ui.ButtonSet.OK
   );
+}
+
+function activarModoProduccion() {
+  PropertiesService.getScriptProperties().setProperty('PROD_MODE', 'true');
+  SpreadsheetApp.getUi().alert('Modo producción activado');
+}
+
+function desactivarModoProduccion() {
+  PropertiesService.getScriptProperties().setProperty('PROD_MODE', 'false');
+  SpreadsheetApp.getUi().alert('Modo producción desactivado');
+}
+
+function isModoProduccion() {
+  return PropertiesService.getScriptProperties().getProperty('PROD_MODE') === 'true';
+}
+
+function solicitarNumero(ui, titulo, mensaje, fallback) {
+  const resp = ui.prompt(titulo, mensaje, ui.ButtonSet.OK_CANCEL);
+  if (resp.getSelectedButton() !== ui.Button.OK) return fallback;
+  const value = parseInt(resp.getResponseText().trim(), 10);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function logEnvio(templateBase, email, status, detalle) {
+  const ss = getSpreadsheet();
+  const sheetName = 'Log_Envios';
+  let sheet = ss.getSheetByName(sheetName);
+  if (!sheet) sheet = ss.insertSheet(sheetName);
+  if (sheet.getLastRow() === 0) {
+    sheet.getRange(1, 1, 1, 5).setValues([['Timestamp', 'Template', 'Email', 'Status', 'Detalle']]);
+  }
+  sheet.appendRow([
+    Utilities.formatDate(new Date(), 'America/Mexico_City', 'yyyy-MM-dd HH:mm:ss'),
+    templateBase,
+    email,
+    status,
+    detalle
+  ]);
 }
 
 /**
