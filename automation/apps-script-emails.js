@@ -440,11 +440,21 @@ function generarCorreoConfirmacion(datos) {
     ? `<p style="margin: 8px 0;"><strong>Instagram:</strong> @${datos.mentor.instagram}</p>`
     : '';
 
+  const emailMentor = datos.mentor && datos.mentor.email
+    ? `<p style="margin: 8px 0;"><strong>Email:</strong> ${datos.mentor.email}</p>`
+    : '';
+
+  const whatsappMentor = datos.mentor && datos.mentor.celular
+    ? `https://wa.me/${String(datos.mentor.celular).replace(/\D/g, '')}?text=Hola ${datos.mentor.nickname ? datos.mentor.nickname : datos.mentorNombre}, soy ${datos.nombre} de la comunidad ${datos.comunidad}.`
+    : '';
+
   return renderTemplate(templateName('confirmacion-si'), {
     datos,
     CONFIG,
     contactoMentor,
-    instagramMentor
+    instagramMentor,
+    emailMentor,
+    whatsappMentor
   });
 }
 

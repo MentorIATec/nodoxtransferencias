@@ -826,6 +826,10 @@ const CONFIG = {
 // Carga de datos
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('loadingOverlay').style.display = 'none'; 
+  const attendanceButtons = document.querySelectorAll('.attendance-options .btn');
+  attendanceButtons.forEach(btn => {
+    btn.dataset.originalHtml = btn.innerHTML;
+  });
 });
 
 // Búsqueda de estudiante
@@ -1091,6 +1095,7 @@ function mostrarInformacionEvento() {
     document.getElementById('studentInfo').classList.remove('hidden');
     document.getElementById('studentInfo').style.opacity = 1;
     document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
+    resetAttendanceButtons();
     if (estudianteActual) {
         const yaRegistrado = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
             localStorage.getItem('registroTransferido_' + estudianteActual.matricula) === '1';
@@ -1102,6 +1107,16 @@ function mostrarInformacionEvento() {
             document.getElementById('mensajeYaRegistrado').style.display = 'none';
         }
     }
+}
+
+function resetAttendanceButtons() {
+    const botones = document.querySelectorAll('.attendance-options .btn');
+    botones.forEach(btn => {
+        btn.disabled = false;
+        if (btn.dataset.originalHtml) {
+            btn.innerHTML = btn.dataset.originalHtml;
+        }
+    });
 }
 </script>
 </body>
