@@ -801,6 +801,10 @@ const CONFIG = {
         asistira: 'entry.52874123',
         timestamp: 'entry.829961349',
         correo: 'entry.1235512351',
+    },
+    DEBUG: false,
+    CONFIRMATION: {
+        USE_LOCAL_FLAG: false
     }
 };
 
@@ -893,6 +897,21 @@ function mostrarError(mensaje) {
     errorElement.classList.remove('hidden');
 }
 
+function logDebug(message, data) {
+    if (!CONFIG.DEBUG) return;
+    console.log('[DEBUG]', message, data || '');
+    let panel = document.getElementById('debugPanel');
+    if (!panel) {
+        panel = document.createElement('div');
+        panel.id = 'debugPanel';
+        panel.style.cssText = 'margin-top:12px;padding:10px;border:1px dashed #9aa0a6;font-size:12px;color:#333;background:#f8f9fa;border-radius:8px;';
+        document.getElementById('searchSection').appendChild(panel);
+    }
+    const line = document.createElement('div');
+    line.textContent = `${message}${data ? ' | ' + JSON.stringify(data) : ''}`;
+    panel.appendChild(line);
+}
+
 // Muestra SIEMPRE los datos, solo oculta las opciones si ya registró
 function mostrarInformacionEstudiante(estudiante) {
     const searchSection = document.getElementById('searchSection');
@@ -917,7 +936,8 @@ function mostrarInformacionEstudiante(estudiante) {
         document.getElementById('studentInfo').style.opacity = 1;
 
         // Prevención de duplicados
-        const yaRegistrado = localStorage.getItem('registroTransferido_' + estudiante.matricula) === '1';
+        const yaRegistrado = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
+            localStorage.getItem('registroTransferido_' + estudiante.matricula) === '1';
         if (yaRegistrado) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'block';
@@ -946,8 +966,10 @@ async function confirmarAsistencia(asistira, event) {
             } else {
                 document.getElementById('confirmationNo').classList.remove('hidden');
             }
-            // Guarda matrícula como registrada en localStorage
-            localStorage.setItem('registroTransferido_' + estudianteActual.matricula, '1');
+            // Guarda matrícula como registrada en localStorage (si está habilitado)
+            if (CONFIG.CONFIRMATION.USE_LOCAL_FLAG) {
+                localStorage.setItem('registroTransferido_' + estudianteActual.matricula, '1');
+            }
         }, 300);
     } catch (error) {
         botones.forEach(btn => btn.disabled = false);
@@ -977,6 +999,11 @@ async function enviarAGoogleForms(asistira) {
   formData.append(CONFIG.FORM_FIELDS.correo, correoGenerado);
 
   try {
+    logDebug('Enviando a Google Forms', {
+        url: CONFIG.GOOGLE_FORM_URL,
+        matricula: estudianteActual.matricula,
+        asistira: asistira ? 'Sí' : 'No'
+    });
     await fetch(CONFIG.GOOGLE_FORM_URL, {
       method: 'POST',
       headers: {
@@ -985,8 +1012,10 @@ async function enviarAGoogleForms(asistira) {
       body: formData.toString(),
       mode: 'no-cors'
     });
+    logDebug('Solicitud enviada (no-cors)', { status: 'unknown' });
   } catch (error) {
     console.error('Error al enviar a Google Forms:', error);
+    logDebug('Error al enviar a Google Forms', { message: error.message });
     throw error;
   }
 }
@@ -1031,7 +1060,8 @@ function mostrarInformacionEvento() {
     document.getElementById('studentInfo').style.opacity = 1;
     document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
     if (estudianteActual) {
-        const yaRegistrado = localStorage.getItem('registroTransferido_' + estudianteActual.matricula) === '1';
+        const yaRegistrado = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
+            localStorage.getItem('registroTransferido_' + estudianteActual.matricula) === '1';
         if (yaRegistrado) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'block';
