@@ -803,7 +803,6 @@
 let estudiantesData = [];
 let estudianteActual = null;
 
-// Configuración Google Forms
 const CONFIG = {
     GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSfiW5dCM6-eQoesb2c-l_srfZrl_0upjLZzOqTPs2sQ73FAgg/formResponse',
     FORM_FIELDS: {
@@ -817,6 +816,9 @@ const CONFIG = {
     },
     DEBUG: true,
     CONFIRMATION: {
+        ENDPOINT: '/api/confirmacion',
+        ENVIAR_CORREO: false,
+        EMAIL_OVERRIDE: '',
         USE_LOCAL_FLAG: false
     }
 };
@@ -975,7 +977,7 @@ async function confirmarAsistencia(asistira, event) {
     botones.forEach(btn => btn.disabled = true);
     boton.innerHTML = '<span class="loading"></span> Procesando...';
     try {
-        await enviarAGoogleForms(asistira);
+        await enviarConfirmacion(asistira);
         await new Promise(resolve => setTimeout(resolve, 1500));
         document.getElementById('studentInfo').style.opacity = '0';
         setTimeout(() => {
@@ -997,44 +999,55 @@ async function confirmarAsistencia(asistira, event) {
     }
 }
 
-async function enviarAGoogleForms(asistira) {
-  if (!CONFIG.GOOGLE_FORM_URL || !estudianteActual) return;
-  
-  const formData = new URLSearchParams();
-  formData.append(CONFIG.FORM_FIELDS.matricula, estudianteActual.matricula);
-  formData.append(CONFIG.FORM_FIELDS.nombre, estudianteActual.fullnameEstudiante);
-  formData.append(CONFIG.FORM_FIELDS.mentor, estudianteActual.mentorFullname);
-  formData.append(CONFIG.FORM_FIELDS.comunidad, estudianteActual.comunidad);
-  formData.append(CONFIG.FORM_FIELDS.asistira, asistira ? 'Sí' : 'No');
-  
-  const fechaHora = new Date().toLocaleString('es-MX', { 
+async function enviarConfirmacion(asistira) {
+  if (!CONFIG.CONFIRMATION.ENDPOINT || !estudianteActual) return;
+
+  const fechaHora = new Date().toLocaleString('es-MX', {
     timeZone: 'America/Mexico_City',
     dateStyle: 'short',
     timeStyle: 'medium'
   });
-  formData.append(CONFIG.FORM_FIELDS.timestamp, fechaHora);
-  
-  const correoGenerado = estudianteActual.matricula.toLowerCase() + '@tec.mx';
-  formData.append(CONFIG.FORM_FIELDS.correo, correoGenerado);
+
+  const correoGenerado = (CONFIG.CONFIRMATION.EMAIL_OVERRIDE || estudianteActual.email || (estudianteActual.matricula.toLowerCase() + '@tec.mx')).trim();
+
+  const payload = {
+    matricula: estudianteActual.matricula,
+    nombre: estudianteActual.fullnameEstudiante,
+    mentor: estudianteActual.mentorFullname,
+    comunidad: estudianteActual.comunidad,
+    asistira: asistira ? 'Sí' : 'No',
+    timestamp: fechaHora,
+    correo: correoGenerado,
+    enviarCorreo: CONFIG.CONFIRMATION.ENVIAR_CORREO === true
+  };
 
   try {
-    logDebug('Enviando a Google Forms', {
-        url: CONFIG.GOOGLE_FORM_URL,
-        matricula: estudianteActual.matricula,
-        asistira: asistira ? 'Sí' : 'No'
-    });
-    await fetch(CONFIG.GOOGLE_FORM_URL, {
+    logDebug('Enviando confirmación', payload);
+    const response = await fetch(CONFIG.CONFIRMATION.ENDPOINT, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/json',
+        'x-api-key': API_CONFIG.API_KEY
       },
-      body: formData.toString(),
-      mode: 'no-cors'
+      body: JSON.stringify(payload)
     });
-    logDebug('Solicitud enviada (no-cors)', { status: 'unknown' });
+
+    if (!response.ok) {
+      let errorMsg = 'Error al registrar confirmación';
+      try {
+        const errData = await response.json();
+        errorMsg = errData.error || errorMsg;
+      } catch (parseError) {
+        errorMsg = `${response.status} ${response.statusText}`;
+      }
+      throw new Error(errorMsg);
+    }
+
+    const data = await response.json();
+    logDebug('Confirmación registrada', data);
   } catch (error) {
-    console.error('Error al enviar a Google Forms:', error);
-    logDebug('Error al enviar a Google Forms', { message: error.message });
+    console.error('Error al registrar confirmación:', error);
+    logDebug('Error al registrar confirmación', { message: error.message });
     throw error;
   }
 }

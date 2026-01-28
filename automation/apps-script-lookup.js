@@ -7,6 +7,7 @@ const LOOKUP_CONFIG = {
   API_KEY: 'fj26_api_8wZ3nL1qY6hG0dR4sP2mV9tB5cX7kJ',
   ASIGNACIONES_SHEET: 'Asignaciones',
   MENTORES_SHEET: 'Datos mentor',
+  RESPONSES_SHEET: 'Respuestas de formulario1',
   MENTOR_EXCEPCIONES: {
     'mentor pendiente pasio': { mentor: 'Norman Ernesto Ramírez González', comunidad: 'Pasio' },
     'mentor(a) talenta pendiente': { mentor: 'Zoé Nohemí Montoya Campos', comunidad: 'Talenta' }
@@ -26,6 +27,18 @@ const LOOKUP_CONFIG = {
     EMAIL: 4, // D
     CELULAR: 5, // E
     COMUNIDAD: 6 // F
+  },
+  COLS_RESPONSES: {
+    TIMESTAMP: 1, // A
+    MATRICULA: 2, // B
+    EMAIL: 3, // C
+    NOMBRE: 4, // D
+    MENTOR: 5, // E
+    COMUNIDAD: 6, // F
+    ASISTE: 7, // G
+    FECHA_CONFIRMACION: 8, // H
+    EXTRA: 9, // I
+    STATUS: 10 // J
   }
 };
 
@@ -34,6 +47,11 @@ function doPost(e) {
     const body = parseBody(e);
     if (!body || body.api_key !== LOOKUP_CONFIG.API_KEY) {
       return jsonResponse({ error: 'Acceso no autorizado' }, 401);
+    }
+
+    const action = String(body.action || 'lookup').toLowerCase();
+    if (action === 'confirmacion') {
+      return registrarConfirmacion(body);
     }
 
     const matricula = String(body.matricula || '').trim().toUpperCase();
@@ -79,6 +97,7 @@ function doPost(e) {
     const fullname = String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.NOMBRE_COMPLETO - 1] || '').trim();
     const name = String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.NOMBRES - 1] || '').trim();
     const campus = String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.CAMPUS_ORIGEN - 1] || '').trim();
+    const email = String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.EMAIL - 1] || '').trim();
 
     const response = {
       matricula,
@@ -89,7 +108,8 @@ function doPost(e) {
       comunidad: comunidadOverride || mentorInfo.comunidad || '',
       campusOrigen: campus,
       whatsappMentor: mentorInfo.celular || '',
-      mentorAsignadoOriginal: String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.MENTOR_ASIGNADO - 1] || '').trim()
+      mentorAsignadoOriginal: String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.MENTOR_ASIGNADO - 1] || '').trim(),
+      email: email
     };
 
     return jsonResponse(response, 200);
@@ -104,6 +124,58 @@ function doGet(e) {
     return jsonResponse({ error: 'Acceso no autorizado' }, 401);
   }
   return jsonResponse({ ok: true }, 200);
+}
+
+function registrarConfirmacion(body) {
+  const matricula = String(body.matricula || '').trim().toUpperCase();
+  if (!/^[A-Z]\d{8}$/.test(matricula)) {
+    return jsonResponse({ error: 'Matrícula inválida' }, 400);
+  }
+
+  const ss = SpreadsheetApp.getActive();
+  const sheet = ss.getSheetByName(LOOKUP_CONFIG.RESPONSES_SHEET);
+  if (!sheet) {
+    return jsonResponse({ error: 'Hoja de respuestas no encontrada' }, 500);
+  }
+
+  const now = new Date();
+  const timestamp = formatTimestamp(now);
+  const asistira = body.asistira === true || String(body.asistira || '').toLowerCase() === 'sí' || String(body.asistira || '').toLowerCase() === 'si'
+    ? 'Sí'
+    : 'No';
+
+  const nombre = String(body.nombre || '').trim();
+  const mentor = String(body.mentor || '').trim();
+  const comunidad = String(body.comunidad || '').trim();
+  const correo = String(body.correo || `${matricula.toLowerCase()}@tec.mx`).trim();
+  const fechaConfirmacion = String(body.fecha_confirmacion || body.timestamp || timestamp).trim();
+  const status = String(body.status || 'PENDIENTE WEB').trim();
+
+  const row = [];
+  row[LOOKUP_CONFIG.COLS_RESPONSES.TIMESTAMP - 1] = now;
+  row[LOOKUP_CONFIG.COLS_RESPONSES.MATRICULA - 1] = matricula;
+  row[LOOKUP_CONFIG.COLS_RESPONSES.EMAIL - 1] = correo;
+  row[LOOKUP_CONFIG.COLS_RESPONSES.NOMBRE - 1] = nombre;
+  row[LOOKUP_CONFIG.COLS_RESPONSES.MENTOR - 1] = mentor;
+  row[LOOKUP_CONFIG.COLS_RESPONSES.COMUNIDAD - 1] = comunidad;
+  row[LOOKUP_CONFIG.COLS_RESPONSES.ASISTE - 1] = asistira;
+  row[LOOKUP_CONFIG.COLS_RESPONSES.FECHA_CONFIRMACION - 1] = fechaConfirmacion;
+  row[LOOKUP_CONFIG.COLS_RESPONSES.EXTRA - 1] = '';
+  row[LOOKUP_CONFIG.COLS_RESPONSES.STATUS - 1] = status;
+
+  sheet.appendRow(row);
+  const newRow = sheet.getLastRow();
+
+  const enviarCorreo = body.enviarCorreo === true || String(body.enviarCorreo || '').toLowerCase() === 'true';
+  if (enviarCorreo && typeof procesarEnvioCorreo === 'function') {
+    try {
+      procesarEnvioCorreo(sheet, newRow);
+    } catch (err) {
+      return jsonResponse({ ok: true, warning: 'Registro guardado, pero falló el envío de correo', detalle: err.message }, 200);
+    }
+  }
+
+  return jsonResponse({ ok: true, row: newRow }, 200);
 }
 
 function parseBody(e) {
@@ -151,4 +223,8 @@ function jsonResponse(obj, code) {
   const payload = Object.assign({ status: code }, obj);
   return ContentService.createTextOutput(JSON.stringify(payload))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function formatTimestamp(dateObj) {
+  return Utilities.formatDate(dateObj, 'America/Mexico_City', 'dd/MM/yy, HH:mm');
 }

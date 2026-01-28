@@ -71,6 +71,7 @@ Edita en `CONFIG.EVENTO` dentro del script:
 - `lugar`
 - `mapas_url`
 - `confirmacion_url`
+  - La confirmación se registra vía `/api/confirmacion` (Apps Script Web App) para evitar restricciones del Form.
 
 ## Validar mentores vs Asignaciones
 1) Asegura que la hoja `Asignaciones` tenga los datos importados del CSV.

@@ -81,7 +81,8 @@ export default async (req, res) => {
         mentorNickname: estudiante.mentorNickname,
         comunidad: estudiante.comunidad,
         campusOrigen: estudiante.campusOrigen,
-        whatsappMentor: estudiante.whatsappMentor
+        whatsappMentor: estudiante.whatsappMentor,
+        email: estudiante.email || ''
       };
     }
 
@@ -93,7 +94,8 @@ export default async (req, res) => {
       mentorNickname: data.mentorNickname,
       comunidad: data.comunidad,
       campusOrigen: data.campusOrigen,
-      whatsappMentor: data.whatsappMentor
+      whatsappMentor: data.whatsappMentor,
+      email: data.email || ''
     });
 
   } catch (error) {
