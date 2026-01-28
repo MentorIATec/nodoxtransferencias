@@ -155,11 +155,12 @@ function registrarConfirmacion(body) {
   const fechaConfirmacion = String(body.fecha_confirmacion || body.timestamp || timestamp).trim();
   const status = String(body.status || 'PENDIENTE WEB').trim();
 
+  const nombreCorto = obtenerNombreCorto(nombre);
   const row = [];
   row[LOOKUP_CONFIG.COLS_RESPONSES.TIMESTAMP - 1] = now;
   row[LOOKUP_CONFIG.COLS_RESPONSES.MATRICULA - 1] = matricula;
   row[LOOKUP_CONFIG.COLS_RESPONSES.EMAIL - 1] = correo;
-  row[LOOKUP_CONFIG.COLS_RESPONSES.NOMBRE - 1] = nombre;
+  row[LOOKUP_CONFIG.COLS_RESPONSES.NOMBRE - 1] = nombreCorto || nombre;
   row[LOOKUP_CONFIG.COLS_RESPONSES.MENTOR - 1] = mentor;
   row[LOOKUP_CONFIG.COLS_RESPONSES.COMUNIDAD - 1] = comunidad;
   row[LOOKUP_CONFIG.COLS_RESPONSES.ASISTE - 1] = asistira;
@@ -239,4 +240,12 @@ function jsonResponse(obj, code) {
 
 function formatTimestamp(dateObj) {
   return Utilities.formatDate(dateObj, 'America/Mexico_City', 'dd/MM/yy, HH:mm');
+}
+
+function obtenerNombreCorto(nombreCompleto) {
+  if (!nombreCompleto) return '';
+  const value = nombreCompleto.toString().trim();
+  const sinApellidos = value.includes(',') ? value.split(',').slice(1).join(',') : value;
+  const tokens = sinApellidos.trim().split(/\s+/);
+  return tokens[0] || sinApellidos.trim();
 }

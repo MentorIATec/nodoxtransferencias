@@ -1021,9 +1021,10 @@ async function enviarConfirmacion(asistira) {
 
   const correoGenerado = (CONFIG.CONFIRMATION.EMAIL_OVERRIDE || estudianteActual.email || (estudianteActual.matricula.toLowerCase() + '@tec.mx')).trim();
 
+  const nombreCorto = obtenerNombreCorto(estudianteActual);
   const payload = {
     matricula: estudianteActual.matricula,
-    nombre: estudianteActual.fullnameEstudiante,
+    nombre: nombreCorto || estudianteActual.nameEstudiante || estudianteActual.fullnameEstudiante,
     mentor: estudianteActual.mentorFullname,
     comunidad: estudianteActual.comunidad,
     asistira: asistira ? 'Sí' : 'No',
