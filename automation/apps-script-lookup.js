@@ -88,7 +88,8 @@ function doPost(e) {
       mentorNickname: mentorInfo.nickname || (mentorNombre.split(' ')[0] || mentorNombre),
       comunidad: comunidadOverride || mentorInfo.comunidad || '',
       campusOrigen: campus,
-      whatsappMentor: mentorInfo.celular || ''
+      whatsappMentor: mentorInfo.celular || '',
+      mentorAsignadoOriginal: String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.MENTOR_ASIGNADO - 1] || '').trim()
     };
 
     return jsonResponse(response, 200);
