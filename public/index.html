@@ -352,6 +352,19 @@
             margin-bottom: 10px;
         }
         
+        .mentor-temporal {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.85);
+            color: #1b1b1b;
+        }
+        
         /* Colores dinámicos de comunidades */
         .comunidad-talenta { background: linear-gradient(135deg, var(--talenta), #d10078) !important; }
         .comunidad-revo { background: linear-gradient(135deg, var(--revo), #b07189) !important; }
@@ -926,9 +939,11 @@ function mostrarInformacionEstudiante(estudiante) {
         const mentorNameElem = document.getElementById('mentorName');
         const mentorOriginal = (estudiante.mentorAsignadoOriginal || '').toLowerCase();
         const esMentorTemporal = mentorOriginal.includes('pendiente');
-        mentorNameElem.textContent = esMentorTemporal
-            ? `${estudiante.mentorFullname} (temporal)`
-            : estudiante.mentorFullname;
+        if (esMentorTemporal) {
+            mentorNameElem.innerHTML = `${estudiante.mentorFullname} <span class="mentor-temporal">Temporal</span>`;
+        } else {
+            mentorNameElem.textContent = estudiante.mentorFullname;
+        }
         mentorNameElem.className = `mentor-comunidad comunidad-${comunidadKey}`;
         document.getElementById('communityName').textContent = estudiante.comunidad;
         document.getElementById('mentorConfirm').textContent = estudiante.mentorFullname;
