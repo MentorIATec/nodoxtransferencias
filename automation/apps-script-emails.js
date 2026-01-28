@@ -179,6 +179,7 @@ function onOpen() {
     .addItem('Enviar invitación (Producción)','enviarInvitacionProduccion')
     .addItem('Activar modo producción','activarModoProduccion')
     .addItem('Desactivar modo producción','desactivarModoProduccion')
+    .addItem('Detener envíos masivos','detenerEnviosMasivos')
     .addItem('Enviar aviso general 1','enviarAvisoGeneral1')
     .addItem('Enviar aviso general 2','enviarAvisoGeneral2')
     .addItem('Enviar aviso general 3','enviarAvisoGeneral3')
@@ -892,6 +893,7 @@ function enviarAvisoAsignaciones(templateBase, asunto, options) {
     return;
   }
 
+  resetEnvioDetenido();
   const data = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
   const batchSize = solicitarNumero(ui, 'Tamaño de lote', '¿Cuántos correos por bloque? (ej: 150)', 150);
   const pausaMs = solicitarNumero(ui, 'Pausa entre bloques', 'Milisegundos de pausa entre bloques (ej: 15000)', 15000);
@@ -900,6 +902,10 @@ function enviarAvisoAsignaciones(templateBase, asunto, options) {
   let procesados = 0;
 
   for (let i = 0; i < data.length; i++) {
+    if (isEnvioDetenido()) {
+      ui.alert('Envío detenido', 'Se detuvo el envío masivo por solicitud.', ui.ButtonSet.OK);
+      break;
+    }
     try {
       const datosBase = obtenerDatosDesdeAsignaciones(data[i]);
       if (!datosBase.email) {
@@ -956,6 +962,7 @@ function enviarAvisoAsignaciones(templateBase, asunto, options) {
     }
   }
 
+  registrarResumenEnvio(templateBase, enviados, errores, procesados);
   ui.alert(
     'Envío masivo terminado',
     `Template: ${templateBase}\nEnviados: ${enviados}\nErrores: ${errores}`,
@@ -975,6 +982,19 @@ function desactivarModoProduccion() {
 
 function isModoProduccion() {
   return PropertiesService.getScriptProperties().getProperty('PROD_MODE') === 'true';
+}
+
+function detenerEnviosMasivos() {
+  PropertiesService.getScriptProperties().setProperty('STOP_MASS_SEND', 'true');
+  SpreadsheetApp.getUi().alert('Se marcará la detención en el siguiente ciclo.');
+}
+
+function isEnvioDetenido() {
+  return PropertiesService.getScriptProperties().getProperty('STOP_MASS_SEND') === 'true';
+}
+
+function resetEnvioDetenido() {
+  PropertiesService.getScriptProperties().setProperty('STOP_MASS_SEND', 'false');
 }
 
 function solicitarNumero(ui, titulo, mensaje, fallback) {
@@ -999,6 +1019,21 @@ function logEnvio(templateBase, email, status, detalle) {
     status,
     detalle
   ]);
+}
+
+function registrarResumenEnvio(templateBase, enviados, errores, procesados) {
+  const ss = getSpreadsheet();
+  const sheetName = 'Log_Envios';
+  let sheet = ss.getSheetByName(sheetName);
+  if (!sheet) return;
+  const row = [
+    Utilities.formatDate(new Date(), 'America/Mexico_City', 'yyyy-MM-dd HH:mm:ss'),
+    templateBase,
+    'RESUMEN',
+    `OK=${enviados} ERR=${errores} TOTAL=${procesados}`,
+    ''
+  ];
+  sheet.appendRow(row);
 }
 
 /**
