@@ -152,6 +152,7 @@ function onOpen() {
     .addItem('Ver estadísticas','verEstadisticasCorreos')
     .addItem('Enviar reporte de errores','enviarReporteErroresDiarios')
     .addItem('Validar mentores vs Asignaciones','validarMentoresAsignaciones')
+    .addItem('Enviar lote prueba','enviarLotePruebaGuiado')
     .addItem('Generar README','generarReadme')
     .addToUi();
 }
@@ -634,6 +635,139 @@ function enviarCorreoPrueba(fila, templateBase, asunto) {
   const html = renderTemplate(templateName(templateBase), templateVars);
   const subject = asunto || `Prueba ${templateBase} FJ26`;
   enviarCorreo(datosCompletos.email, subject, html, datosCompletos);
+}
+
+/**
+ * ENVÍO GUIADO DE LOTE DE PRUEBA
+ * Permite probar distintos templates (invitación / recordatorios / confirmaciones)
+ * sin afectar a toda la base.
+ */
+function enviarLotePruebaGuiado() {
+  const ui = SpreadsheetApp.getUi();
+  const templateResp = ui.prompt(
+    'Enviar lote prueba',
+    'Template base (ej: email-invitacion, email-recordatorio-1, email-recordatorio-2, confirmacion-si, confirmacion-no):',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (templateResp.getSelectedButton() !== ui.Button.OK) return;
+  const templateBase = templateResp.getResponseText().trim();
+  if (!templateBase) return;
+
+  const cantidadResp = ui.prompt('Cantidad', '¿Cuántas filas quieres enviar? (ej: 3)', ui.ButtonSet.OK_CANCEL);
+  if (cantidadResp.getSelectedButton() !== ui.Button.OK) return;
+  const cantidad = parseInt(cantidadResp.getResponseText().trim(), 10);
+  if (!cantidad || cantidad < 1) {
+    ui.alert('Cantidad inválida');
+    return;
+  }
+
+  const filaResp = ui.prompt('Fila inicio', '¿Desde qué fila? (ej: 2)', ui.ButtonSet.OK_CANCEL);
+  if (filaResp.getSelectedButton() !== ui.Button.OK) return;
+  const filaInicio = parseInt(filaResp.getResponseText().trim(), 10);
+  if (!filaInicio || filaInicio < 2) {
+    ui.alert('Fila de inicio inválida');
+    return;
+  }
+
+  const destinatarioResp = ui.prompt(
+    'Destinatario de prueba',
+    'Email destino (deja vacío para usar el correo de cada fila):',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (destinatarioResp.getSelectedButton() !== ui.Button.OK) return;
+  const destinatarioOverride = destinatarioResp.getResponseText().trim();
+
+  const asuntoResp = ui.prompt(
+    'Asunto',
+    'Asunto del correo (deja vacío para asunto default):',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (asuntoResp.getSelectedButton() !== ui.Button.OK) return;
+  const asunto = asuntoResp.getResponseText().trim();
+
+  let enviados = 0;
+  let errores = 0;
+  for (let i = 0; i < cantidad; i++) {
+    const fila = filaInicio + i;
+    try {
+      if (destinatarioOverride) {
+        enviarCorreoPruebaOverride(fila, templateBase, asunto, destinatarioOverride);
+      } else {
+        enviarCorreoPrueba(fila, templateBase, asunto);
+      }
+      enviados++;
+      Utilities.sleep(1000);
+    } catch (err) {
+      errores++;
+      console.error(`Error en fila ${fila}:`, err);
+    }
+  }
+
+  ui.alert(
+    'Lote de prueba terminado',
+    `Template: ${templateBase}\nEnviados: ${enviados}\nErrores: ${errores}`,
+    ui.ButtonSet.OK
+  );
+}
+
+function enviarCorreoPruebaOverride(fila, templateBase, asunto, destinatarioOverride) {
+  const sheet = getResponsesSheet();
+  const ultimaFila = sheet.getLastRow();
+  if (fila < 2 || fila > ultimaFila) {
+    throw new Error(`Fila inválida: ${fila}. Última fila: ${ultimaFila}`);
+  }
+
+  const datos = obtenerDatosFila(sheet, fila);
+  if (!validarDatos(datos)) {
+    throw new Error('Los datos de la fila no son válidos para la prueba');
+  }
+
+  const datosMentor = buscarDatosMentor(datos.mentorNombre);
+  const datosCompletos = {
+    ...datos,
+    mentor: datosMentor ? {
+      nombreCompleto: datosMentor.nombreCompleto,
+      nickname: datosMentor.nickname,
+      celular: datosMentor.celular,
+      email: datosMentor.email,
+      instagram: datosMentor.instagram
+    } : {
+      nombreCompleto: datos.mentorNombre,
+      nickname: datos.mentorNombre.split(' ')[0],
+      celular: null,
+      email: null,
+      instagram: null
+    }
+  };
+
+  const contactoMentor = datosCompletos.mentor && datosCompletos.mentor.celular
+    ? `<p style="margin: 8px 0;"><strong>WhatsApp:</strong> ${datosCompletos.mentor.celular}</p>`
+    : '';
+  const instagramMentor = datosCompletos.mentor && datosCompletos.mentor.instagram
+    ? `<p style="margin: 8px 0;"><strong>Instagram:</strong> @${datosCompletos.mentor.instagram}</p>`
+    : '';
+  const emailMentor = datosCompletos.mentor && datosCompletos.mentor.email
+    ? `<p style="margin: 8px 0;"><strong>Email:</strong> ${datosCompletos.mentor.email}</p>`
+    : '';
+  const { nombreCorto, saludo } = construirSaludo(datosCompletos);
+  const whatsappMentor = datosCompletos.mentor && datosCompletos.mentor.celular
+    ? `https://wa.me/${String(datosCompletos.mentor.celular).replace(/\\D/g, '')}?text=Hola ${datosCompletos.mentor.nickname ? datosCompletos.mentor.nickname : datosCompletos.mentorNombre}, soy ${nombreCorto} (${datosCompletos.matricula}) de la comunidad ${datosCompletos.comunidad}.`
+    : '';
+
+  const templateVars = {
+    datos: datosCompletos,
+    CONFIG,
+    contactoMentor,
+    instagramMentor,
+    emailMentor,
+    whatsappMentor,
+    nombreCorto,
+    saludo
+  };
+
+  const html = renderTemplate(templateName(templateBase), templateVars);
+  const subject = asunto || `Prueba ${templateBase} FJ26`;
+  enviarCorreo(destinatarioOverride, subject, html, datosCompletos);
 }
 
 /**
