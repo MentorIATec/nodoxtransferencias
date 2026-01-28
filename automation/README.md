@@ -12,6 +12,9 @@ Guía rápida para usar el script de correos automáticos de Campus Check-in.
 - `templates/email-invitacion.html`
 - `templates/email-recordatorio-1.html`
 - `templates/email-recordatorio-2.html`
+- `templates/email-aviso-general-1.html`
+- `templates/email-aviso-general-2.html`
+- `templates/email-aviso-general-3.html`
 ## Variantes A/B
 - Versión A: `*-A.html` (azul principal #1d4ed8)
 - Versión B: `*-B.html` (azul oscuro #0b1f3a)
@@ -53,6 +56,28 @@ Guía rápida para usar el script de correos automáticos de Campus Check-in.
 ## Probar envío
 - Ejecuta `testearConFilaEspecifica` (usa la fila 2 de la hoja).
 
+## Lote de prueba guiado
+- Menú: **Campus Check‑In → Enviar lote prueba**
+- Escribe el template base (sin `-B` ni `.html`), por ejemplo:
+  - `email-invitacion`
+  - `email-recordatorio-1`
+  - `email-aviso-general-2`
+- Si no pones asunto, se usa el asunto final (sin “Prueba”).
+
+## Envío masivo (Producción)
+- Activa primero: **Campus Check‑In → Activar modo producción**
+- Envía: **Campus Check‑In → Enviar invitación (Producción)**
+- Define tamaño de lote y pausa entre bloques.
+- Para detener: **Campus Check‑In → Detener envíos masivos**
+- Log: hoja `Log_Envios` con detalle y resumen.
+
+## Pre-check Asignaciones
+- Menú: **Campus Check‑In → Pre-check Asignaciones**
+- Revisa:
+  - Total filas
+  - Emails válidos / vacíos / inválidos
+  - Duplicados de email y matrícula
+
 ## Procesar manualmente
 - Ejecuta `procesarFilasPendientes` para enviar todos los correos pendientes.
 
@@ -78,6 +103,7 @@ Edita en `CONFIG.EVENTO` dentro del script:
 2) Ejecuta `validarMentoresAsignaciones`.
 3) Revisa la hoja `Validacion_Mentores` con los nombres no encontrados.
 4) Revisa la hoja `Resumen_Mentores_Comunidades` para el conteo por mentor y comunidad.
+5) La misma hoja incluye confirmaciones **SI/NO** por mentor y comunidad, y % total.
 
 ## Pruebas de correo
 - Enviar correo de prueba desde fila con template:
@@ -90,12 +116,21 @@ Completa en `CONFIG.FORM`:
 - `GOOGLE_FORM_URL`: URL `formResponse`
 - `FORM_FIELDS`: IDs `entry.*` del formulario
 
+## Assets e imágenes inline
+- El correo incrusta imágenes con `cid:` desde `CONFIG.EMAIL.INLINE_IMAGES`.
+- Assets usados para avisos generales:
+  - `public/assets/Banner AyC.jpg`
+  - `public/assets/Cartelera AyC AD25.jpg`
+  - `public/clima en MTY 2feb a 6feb.png`
+  - `public/assets/Servicios-CVDP-Nacionales.png`
+
 ## Checklist FJ26 (Febrero-Junio 2026)
 - Evento: Viernes 6 de febrero de 2026, 9:00 a.m. - 12:00 p.m.
 - Lugar: Auditorio Luis Elizondo, Campus Monterrey
 - Mapa: https://transferencias-fj26.vercel.app/mapa-evento.html
 - Hoja principal: `Respuestas de formulario1`
 - Hoja mentores: `Datos mentor`
+- Hoja log envíos: `Log_Envios`
 - Revisar que las columnas coincidan con `CONFIG.COLUMNAS`
 - Ejecutar `configurarTriggerAutomatico`
 - Probar con `testearConFilaEspecifica`
