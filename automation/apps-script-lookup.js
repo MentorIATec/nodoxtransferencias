@@ -7,6 +7,10 @@ const LOOKUP_CONFIG = {
   API_KEY: 'REPLACE_WITH_SECRET_KEY',
   ASIGNACIONES_SHEET: 'Asignaciones',
   MENTORES_SHEET: 'Datos mentor',
+  MENTOR_EXCEPCIONES: {
+    'mentor pendiente pasio': 'Norman Ernesto Ramírez González',
+    'mentor(a) talenta pendiente': 'Zoé Nohemí Montoya Campos'
+  },
   COLS_ASIGNACIONES: {
     MATRICULA: 1,  // A
     CAMPUS_ORIGEN: 2, // B
@@ -63,7 +67,11 @@ function doPost(e) {
       return jsonResponse({ error: 'Estudiante no encontrado' }, 404);
     }
 
-    const mentorNombre = String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.MENTOR_ASIGNADO - 1] || '').trim();
+    let mentorNombre = String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.MENTOR_ASIGNADO - 1] || '').trim();
+    const mentorKey = normalizar(mentorNombre);
+    if (LOOKUP_CONFIG.MENTOR_EXCEPCIONES[mentorKey]) {
+      mentorNombre = LOOKUP_CONFIG.MENTOR_EXCEPCIONES[mentorKey];
+    }
     const mentorInfo = buscarMentor(mentores, mentorNombre);
 
     const fullname = String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.NOMBRE_COMPLETO - 1] || '').trim();

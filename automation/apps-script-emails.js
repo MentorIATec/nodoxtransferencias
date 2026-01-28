@@ -37,6 +37,10 @@ CONFIG = {
     COMUNIDAD: 6,          // F - Comunidad
     INSTAGRAM: 7           // G - Instagram
   },
+  MENTOR_EXCEPCIONES: {
+    'mentor pendiente pasio': 'Norman Ernesto Ramírez González',
+    'mentor(a) talenta pendiente': 'Zoé Nohemí Montoya Campos'
+  },
   COLUMNAS_ASIGNACIONES: {
     MATRICULA: 1,          // A - Matricula
     MENTOR_NOMBRE: 11,     // K - Mentor(a) Asignado(a) FJ26
@@ -1009,8 +1013,12 @@ function validarMentoresAsignaciones() {
   const conteoComunidad = new Map();
 
   for (let i = 0; i < mentorAsignado.length; i++) {
-    const mentorRaw = mentorAsignado[i];
-    const mentorKey = normalizarNombre(mentorRaw);
+    let mentorRaw = mentorAsignado[i];
+    let mentorKey = normalizarNombre(mentorRaw);
+    if (CONFIG.MENTOR_EXCEPCIONES[mentorKey]) {
+      mentorRaw = CONFIG.MENTOR_EXCEPCIONES[mentorKey];
+      mentorKey = normalizarNombre(mentorRaw);
+    }
     if (!mentorKey) continue;
 
     if (!mentoresSet.has(mentorKey)) {
