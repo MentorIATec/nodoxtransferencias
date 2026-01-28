@@ -895,6 +895,7 @@ function enviarAvisoAsignaciones(templateBase, asunto, options) {
   }
 
   resetEnvioDetenido();
+  const enviadosPrevios = obtenerEnviadosPrevios(templateBase);
   const data = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
   const batchSize = solicitarNumero(ui, 'Tamaño de lote', '¿Cuántos correos por bloque? (ej: 150)', 150);
   const pausaMs = solicitarNumero(ui, 'Pausa entre bloques', 'Milisegundos de pausa entre bloques (ej: 15000)', 15000);
@@ -917,6 +918,10 @@ function enviarAvisoAsignaciones(templateBase, asunto, options) {
       if (!esEmailValido(datosBase.email)) {
         errores++;
         logEnvio(templateBase, datosBase.email, 'ERROR', 'Email inválido');
+        continue;
+      }
+      if (enviadosPrevios.has(datosBase.email.toLowerCase())) {
+        logEnvio(templateBase, datosBase.email, 'SKIP', 'Ya enviado');
         continue;
       }
 
@@ -956,6 +961,7 @@ function enviarAvisoAsignaciones(templateBase, asunto, options) {
       enviarCorreo(datosBase.email, resolverAsunto(templateBase, asunto), html, datosBase);
       enviados++;
       logEnvio(templateBase, datosBase.email, 'OK', '');
+      enviadosPrevios.add(datosBase.email.toLowerCase());
       Utilities.sleep(1000);
     } catch (err) {
       errores++;
@@ -1102,6 +1108,26 @@ function registrarResumenEnvio(templateBase, enviados, errores, procesados) {
     ''
   ];
   sheet.appendRow(row);
+}
+
+function obtenerEnviadosPrevios(templateBase) {
+  const ss = getSpreadsheet();
+  const sheet = ss.getSheetByName('Log_Envios');
+  if (!sheet) return new Set();
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return new Set();
+  const rows = sheet.getRange(2, 1, lastRow - 1, 4).getValues();
+  const enviados = new Set();
+  rows.forEach(row => {
+    const template = String(row[1] || '').trim();
+    const email = String(row[2] || '').trim().toLowerCase();
+    const status = String(row[3] || '').trim().toUpperCase();
+    if (!email) return;
+    if (template === templateBase && status === 'OK') {
+      enviados.add(email);
+    }
+  });
+  return enviados;
 }
 
 /**
