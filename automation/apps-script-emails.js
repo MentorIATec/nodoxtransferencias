@@ -118,9 +118,9 @@ function templateName(base) {
 
 function subjectDefault(templateBase) {
   const subjects = {
-    "email-invitacion": "Bienvenida de Transferencias FJ26 · Vive tu primera experiencia en Campus Monterrey",
-    "email-aviso-general-1": "Bienvenida de Transferencias · Primera llamada",
-    "email-aviso-general-2": "Bienvenida de Transferencias · Segunda llamada",
+    "email-invitacion": "Tu experiencia en Campus Monterrey comienza aquí",
+    "email-aviso-general-1": "Tu mentor/a te espera en Campus Monterrey",
+    "email-aviso-general-2": "Esta semana Monterrey te recibe con este clima",
     "email-aviso-general-3": "Bienvenida de Transferencias · Tercera llamada, ¡mañana nos vemos!",
     "email-recordatorio-1": "Bienvenida de Transferencias · Recordatorio 1",
     "email-recordatorio-2": "Bienvenida de Transferencias · Recordatorio 2",
