@@ -945,15 +945,16 @@ function mostrarInformacionEstudiante(estudiante) {
         const mentorNameElem = document.getElementById('mentorName');
         const mentorOriginal = (estudiante.mentorAsignadoOriginal || '').toLowerCase();
         const esMentorTemporal = mentorOriginal.includes('pendiente');
+        const mentorDisplayName = estudiante.mentorDisplayName || estudiante.mentorFullname;
         if (esMentorTemporal) {
-            mentorNameElem.innerHTML = `${estudiante.mentorFullname} <span class="mentor-temporal">Temporal</span>`;
+            mentorNameElem.innerHTML = `${mentorDisplayName} <span class="mentor-temporal">Temporal</span>`;
         } else {
-            mentorNameElem.textContent = estudiante.mentorFullname;
+            mentorNameElem.textContent = mentorDisplayName;
         }
         mentorNameElem.className = `mentor-comunidad comunidad-${comunidadKey}`;
         document.getElementById('communityName').textContent = estudiante.comunidad;
-        document.getElementById('mentorConfirm').textContent = estudiante.mentorFullname;
-        document.getElementById('mentorNoConfirm').textContent = estudiante.mentorFullname;
+        document.getElementById('mentorConfirm').textContent = mentorDisplayName;
+        document.getElementById('mentorNoConfirm').textContent = mentorDisplayName;
         const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
         document.getElementById('communityBox').className = 'info-box info-box-colored comunidad-' + comunidadKey;
         document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-' + comunidadKey;

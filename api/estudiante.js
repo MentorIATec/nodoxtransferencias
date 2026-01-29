@@ -92,6 +92,7 @@ export default async (req, res) => {
       fullnameEstudiante: data.fullnameEstudiante,
       nameEstudiante: data.nameEstudiante,
       mentorFullname: data.mentorFullname,
+      mentorDisplayName: data.mentorDisplayName || '',
       mentorNickname: data.mentorNickname,
       comunidad: data.comunidad,
       campusOrigen: data.campusOrigen,

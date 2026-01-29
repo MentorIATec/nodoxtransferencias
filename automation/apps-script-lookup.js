@@ -12,6 +12,9 @@ const LOOKUP_CONFIG = {
     'mentor pendiente pasio': { mentor: 'Norman Ernesto Ramírez González', comunidad: 'Pasio' },
     'mentor(a) talenta pendiente': { mentor: 'Zoé Nohemí Montoya Campos', comunidad: 'Talenta' }
   },
+  MENTOR_DISPLAY_OVERRIDES: {
+    'christopher jean-philippe josette michaux': 'Christopher Michaux'
+  },
   COLS_ASIGNACIONES: {
     MATRICULA: 1,  // A
     CAMPUS_ORIGEN: 2, // B
@@ -93,6 +96,7 @@ function doPost(e) {
       mentorNombre = LOOKUP_CONFIG.MENTOR_EXCEPCIONES[mentorKey].mentor;
       comunidadOverride = LOOKUP_CONFIG.MENTOR_EXCEPCIONES[mentorKey].comunidad;
     }
+    const displayOverride = LOOKUP_CONFIG.MENTOR_DISPLAY_OVERRIDES[mentorKey] || '';
     const mentorInfo = buscarMentor(mentores, mentorNombre);
 
     const fullname = String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.NOMBRE_COMPLETO - 1] || '').trim();
@@ -105,6 +109,7 @@ function doPost(e) {
       fullnameEstudiante: fullname || `${name} ${String(row[LOOKUP_CONFIG.COLS_ASIGNACIONES.APELLIDOS - 1] || '').trim()}`.trim(),
       nameEstudiante: name,
       mentorFullname: mentorInfo.nombre || mentorNombre,
+      mentorDisplayName: displayOverride || (mentorInfo.nombre || mentorNombre),
       mentorNickname: mentorInfo.nickname || (mentorNombre.split(' ')[0] || mentorNombre),
       comunidad: comunidadOverride || mentorInfo.comunidad || '',
       campusOrigen: campus,
