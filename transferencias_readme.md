@@ -209,6 +209,19 @@ Cada comunidad tiene su identidad visual única:
 - **Operations**: Mentoría y Bienestar Estudiantil
 
 ### **🔄 Mantenimiento**
+### **🔒 Cerrar registro por cupo**
+Usa el switch `REGISTRO_CERRADO` para pausar nuevas confirmaciones sin romper el lookup de mentor/a.
+
+**Cómo activarlo (Vercel):**
+1. Project → Settings → Environment Variables
+2. Agrega `REGISTRO_CERRADO` con valor `true` (o `1`) en Preview/Production
+3. Redeploy
+
+**Comportamiento:**
+- `/api/estudiante` sigue respondiendo (lookup activo)
+- `/api/confirmacion` devuelve 403 “Registro cerrado por cupo”
+- El frontend oculta los detalles del evento y muestra solo el aviso de cupo cerrado
+
 ```bash
 # Actualizar datos de estudiantes
 git pull origin main

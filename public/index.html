@@ -935,6 +935,14 @@ function logDebug(message, data) {
 }
 
 // Muestra SIEMPRE los datos, solo oculta las opciones si ya registró
+
+function aplicarVistaRegistroCerrado(activo) {
+    const eventInfo = document.querySelector('.event-info');
+    const tipBox = document.querySelector('.tip-box');
+    if (eventInfo) eventInfo.style.display = activo ? 'none' : '';
+    if (tipBox) tipBox.style.display = activo ? 'none' : '';
+}
+
 function mostrarInformacionEstudiante(estudiante) {
     const searchSection = document.getElementById('searchSection');
     searchSection.style.opacity = '0';
@@ -974,14 +982,17 @@ function mostrarInformacionEstudiante(estudiante) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'none';
             document.getElementById('mensajeCupoCerrado').style.display = 'block';
+            aplicarVistaRegistroCerrado(true);
         } else if (yaRegistrado) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'block';
             document.getElementById('mensajeCupoCerrado').style.display = 'none';
+            aplicarVistaRegistroCerrado(false);
         } else {
             document.getElementById('attendanceOptions').style.display = '';
             document.getElementById('mensajeYaRegistrado').style.display = 'none';
             document.getElementById('mensajeCupoCerrado').style.display = 'none';
+            aplicarVistaRegistroCerrado(false);
         }
     }, 300);
 }
@@ -1006,6 +1017,7 @@ async function confirmarAsistencia(asistira, event) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'none';
             document.getElementById('mensajeCupoCerrado').style.display = 'block';
+            aplicarVistaRegistroCerrado(true);
             return;
         }
         await new Promise(resolve => setTimeout(resolve, 1500));
@@ -1163,14 +1175,17 @@ function mostrarInformacionEvento() {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'none';
             document.getElementById('mensajeCupoCerrado').style.display = 'block';
+            aplicarVistaRegistroCerrado(true);
         } else if (yaRegistrado) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'block';
             document.getElementById('mensajeCupoCerrado').style.display = 'none';
+            aplicarVistaRegistroCerrado(false);
         } else {
             document.getElementById('attendanceOptions').style.display = '';
             document.getElementById('mensajeYaRegistrado').style.display = 'none';
             document.getElementById('mensajeCupoCerrado').style.display = 'none';
+            aplicarVistaRegistroCerrado(false);
         }
     }
 }
