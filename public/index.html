@@ -758,6 +758,9 @@
             <div id="mensajeYaRegistrado" style="display:none; margin:18px 0; color:#0062cc; font-weight:bold; text-align:center;">
                 ✅ Ya registraste tu respuesta. No es necesario hacerlo de nuevo.
             </div>
+            <div id="mensajeCupoCerrado" style="display:none; margin:18px 0; color:#b00020; font-weight:bold; text-align:center;">
+                ⛔ Cupo cerrado. Gracias por tu interés. Si ya tienes mentor/a, puedes contactarlo/a por WhatsApp.
+            </div>
             <button class="btn btn-whatsapp" onclick="contactarMentor()">
                 💬 Contactar a mi mentor/a por WhatsApp
             </button>
@@ -961,17 +964,24 @@ function mostrarInformacionEstudiante(estudiante) {
         document.getElementById('studentInfo').classList.remove('hidden');
         document.getElementById('studentInfo').style.opacity = 1;
 
-        // Prevención de duplicados
+        // Prevención de duplicados y cupo cerrado
         const yaRegistradoLocal = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
             localStorage.getItem('registroTransferido_' + estudiante.matricula) === '1';
         const yaRegistradoServidor = estudiante.yaRegistrado === true;
         const yaRegistrado = yaRegistradoLocal || yaRegistradoServidor;
-        if (yaRegistrado) {
+        const registroCerrado = estudiante.registroCerrado === true;
+        if (registroCerrado) {
+            document.getElementById('attendanceOptions').style.display = 'none';
+            document.getElementById('mensajeYaRegistrado').style.display = 'none';
+            document.getElementById('mensajeCupoCerrado').style.display = 'block';
+        } else if (yaRegistrado) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'block';
+            document.getElementById('mensajeCupoCerrado').style.display = 'none';
         } else {
             document.getElementById('attendanceOptions').style.display = '';
             document.getElementById('mensajeYaRegistrado').style.display = 'none';
+            document.getElementById('mensajeCupoCerrado').style.display = 'none';
         }
     }, 300);
 }
@@ -990,6 +1000,12 @@ async function confirmarAsistencia(asistira, event) {
                 localStorage.setItem('registroTransferido_' + estudianteActual.matricula, '1');
             }
             mostrarInformacionEvento();
+            return;
+        }
+        if (resultado && resultado.closed) {
+            document.getElementById('attendanceOptions').style.display = 'none';
+            document.getElementById('mensajeYaRegistrado').style.display = 'none';
+            document.getElementById('mensajeCupoCerrado').style.display = 'block';
             return;
         }
         await new Promise(resolve => setTimeout(resolve, 1500));
@@ -1050,6 +1066,17 @@ async function enviarConfirmacion(asistira) {
     if (response.status === 409) {
       logDebug('Registro ya existe', { matricula: estudianteActual.matricula });
       return { alreadyRegistered: true };
+    }
+
+    if (response.status === 403) {
+      let errorMsg = 'Registro cerrado por cupo';
+      try {
+        const errData = await response.json();
+        errorMsg = errData.error || errorMsg;
+      } catch (parseError) {
+        errorMsg = `${response.status} ${response.statusText}`;
+      }
+      return { closed: true, error: errorMsg };
     }
 
     if (!response.ok) {
@@ -1131,12 +1158,19 @@ function mostrarInformacionEvento() {
             localStorage.getItem('registroTransferido_' + estudianteActual.matricula) === '1';
         const yaRegistradoServidor = estudianteActual.yaRegistrado === true;
         const yaRegistrado = yaRegistradoLocal || yaRegistradoServidor;
-        if (yaRegistrado) {
+        const registroCerrado = estudianteActual.registroCerrado === true;
+        if (registroCerrado) {
+            document.getElementById('attendanceOptions').style.display = 'none';
+            document.getElementById('mensajeYaRegistrado').style.display = 'none';
+            document.getElementById('mensajeCupoCerrado').style.display = 'block';
+        } else if (yaRegistrado) {
             document.getElementById('attendanceOptions').style.display = 'none';
             document.getElementById('mensajeYaRegistrado').style.display = 'block';
+            document.getElementById('mensajeCupoCerrado').style.display = 'none';
         } else {
             document.getElementById('attendanceOptions').style.display = '';
             document.getElementById('mensajeYaRegistrado').style.display = 'none';
+            document.getElementById('mensajeCupoCerrado').style.display = 'none';
         }
     }
 }

@@ -19,6 +19,12 @@ export default async (req, res) => {
       return res.status(401).json({ error: 'Acceso no autorizado' });
     }
 
+    const registroCerrado = String(process.env.REGISTRO_CERRADO || '').toLowerCase();
+    if (['1', 'true', 'yes', 'si'].includes(registroCerrado)) {
+      return res.status(403).json({ error: 'Registro cerrado por cupo' });
+    }
+
+
     let body;
     try {
       body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;

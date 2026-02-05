@@ -17,6 +17,10 @@ export default async (req, res) => {
       return res.status(401).json({ error: 'Acceso no autorizado' });
     }
 
+    const registroCerrado = String(process.env.REGISTRO_CERRADO || '').toLowerCase();
+    const registroCerradoFlag = ['1', 'true', 'yes', 'si'].includes(registroCerrado);
+
+
     // 2. Parsear el cuerpo de la solicitud
     let body;
     try {
@@ -98,7 +102,8 @@ export default async (req, res) => {
       campusOrigen: data.campusOrigen,
       whatsappMentor: data.whatsappMentor,
       email: data.email || '',
-      yaRegistrado: data.yaRegistrado === true
+      yaRegistrado: data.yaRegistrado === true,
+      registroCerrado: registroCerradoFlag
     });
 
   } catch (error) {
