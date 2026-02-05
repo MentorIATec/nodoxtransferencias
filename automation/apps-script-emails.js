@@ -113,6 +113,7 @@ function renderTemplate(name, data) {
 }
 
 function templateName(base) {
+  if (base === 'email-recordatorio-confirmados') return base;
   return `${base}-${CONFIG.TEMPLATES.VARIANT}`;
 }
 
@@ -184,6 +185,7 @@ function onOpen() {
     .addItem('Enviar aviso general 1','enviarAvisoGeneral1')
     .addItem('Enviar aviso general 2','enviarAvisoGeneral2')
     .addItem('Enviar aviso general 3','enviarAvisoGeneral3')
+    .addItem('Enviar recordatorio confirmados','enviarRecordatorioConfirmados')
     .addItem('Generar README','generarReadme')
     .addToUi();
 }
@@ -861,6 +863,126 @@ function enviarAvisoGeneral2() {
 
 function enviarAvisoGeneral3() {
   enviarAvisoAsignaciones('email-aviso-general-3', subjectDefault('email-aviso-general-3'));
+}
+
+function enviarRecordatorioConfirmados() {
+  enviarAvisoConfirmados('email-recordatorio-confirmados', subjectDefault('email-recordatorio-confirmados'));
+}
+
+function enviarAvisoConfirmados(templateBase, asunto, options) {
+  const opts = options || {};
+  const ui = SpreadsheetApp.getUi();
+  if (opts.requireProd && !isModoProduccion()) {
+    ui.alert('Modo producción desactivado', 'Activa el modo producción antes de enviar.', ui.ButtonSet.OK);
+    return;
+  }
+  const confirmResp = ui.prompt(
+    'Confirmación de envío',
+    'Escribe ENVIAR para continuar con el envío masivo a confirmados (SI).',
+    ui.ButtonSet.OK_CANCEL
+  );
+  if (confirmResp.getSelectedButton() !== ui.Button.OK) return;
+  if (confirmResp.getResponseText().trim().toUpperCase() !== 'ENVIAR') {
+    ui.alert('Confirmación no válida. Se canceló el envío.');
+    return;
+  }
+
+  const sheet = getResponsesSheet();
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) {
+    ui.alert('No hay datos en Respuestas.');
+    return;
+  }
+
+  resetEnvioDetenido();
+  const enviadosPrevios = obtenerEnviadosPrevios(templateBase);
+  const batchSize = solicitarNumero(ui, 'Tamaño de lote', '¿Cuántos correos por bloque? (ej: 150)', 150);
+  const pausaMs = solicitarNumero(ui, 'Pausa entre bloques', 'Milisegundos de pausa entre bloques (ej: 15000)', 15000);
+  let enviados = 0;
+  let errores = 0;
+  let procesados = 0;
+
+  for (let row = 2; row <= lastRow; row++) {
+    if (isEnvioDetenido()) {
+      ui.alert('Envío detenido', 'Se detuvo el envío masivo por solicitud.', ui.ButtonSet.OK);
+      break;
+    }
+    try {
+      const datos = obtenerDatosFila(sheet, row);
+      if (!validarDatos(datos)) {
+        errores++;
+        logEnvio(templateBase, '', 'ERROR', 'Datos inválidos');
+        continue;
+      }
+      if (!esAsistenciaPositiva(datos.asiste)) {
+        continue; // solo confirmados SI
+      }
+      if (!datos.email) {
+        errores++;
+        logEnvio(templateBase, '', 'ERROR', 'Email vacío');
+        continue;
+      }
+      if (!esEmailValido(datos.email)) {
+        errores++;
+        logEnvio(templateBase, datos.email, 'ERROR', 'Email inválido');
+        continue;
+      }
+      if (enviadosPrevios.has(datos.email.toLowerCase())) {
+        logEnvio(templateBase, datos.email, 'SKIP', 'Ya enviado');
+        continue;
+      }
+
+      const datosMentor = buscarDatosMentor(datos.mentorNombre);
+      const datosCompletos = {
+        ...datos,
+        mentor: datosMentor ? {
+          nombreCompleto: datosMentor.nombreCompleto,
+          nickname: datosMentor.nickname,
+          celular: datosMentor.celular,
+          email: datosMentor.email,
+          instagram: datosMentor.instagram
+        } : {
+          nombreCompleto: datos.mentorNombre,
+          nickname: datos.mentorNombre.split(' ')[0] || datos.mentorNombre,
+          celular: null,
+          email: null,
+          instagram: null
+        }
+      };
+
+      const { nombreCorto, saludo } = construirSaludo(datosCompletos);
+      const templateVars = {
+        datos: datosCompletos,
+        CONFIG,
+        nombreCorto,
+        saludo
+      };
+
+      const html = renderTemplate(templateName(templateBase), templateVars);
+      enviarCorreo(datosCompletos.email, resolverAsunto(templateBase, asunto), html, datosCompletos);
+      enviados++;
+      logEnvio(templateBase, datosCompletos.email, 'OK', '');
+      enviadosPrevios.add(datosCompletos.email.toLowerCase());
+      Utilities.sleep(1000);
+    } catch (err) {
+      errores++;
+      logEnvio(templateBase, '', 'ERROR', err.message || 'Error');
+      console.error(`Error en fila ${row}:`, err);
+    }
+    procesados++;
+    if (batchSize && procesados % batchSize === 0) {
+      Utilities.sleep(pausaMs);
+    }
+  }
+
+  registrarResumenEnvio(templateBase, enviados, errores, procesados);
+  ui.alert(
+    'Envío masivo terminado',
+    `Template: ${templateBase}
+Enviados: ${enviados}
+Errores: ${errores}`,
+    ui.ButtonSet.OK
+  );
 }
 
 function enviarAvisoAsignaciones(templateBase, asunto, options) {
