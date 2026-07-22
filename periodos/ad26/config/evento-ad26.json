@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "period": "AD26",
   "eventId": "bienvenida-transferencias-ad26",
-  "status": "planning",
+  "status": "testing",
   "event": {
     "name": "Bienvenida de Transferencias",
     "date": "2026-08-07",

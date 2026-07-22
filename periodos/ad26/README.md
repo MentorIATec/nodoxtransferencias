@@ -12,7 +12,9 @@ carpeta contiene solamente archivos especificos del periodo.
 - Horario: 3:00 p.m. a 5:30 p.m.
 - Lugar: Centro de Congresos, Campus Monterrey
 - Capacidad: 400 respuestas unicas de asistencia "Si"
-- Estado actual: preparacion; lista de estudiantes pendiente
+- Estado actual: integracion en pruebas; lista definitiva de estudiantes pendiente
+- Frontend: https://transferencias-ad26.vercel.app
+- Apps Script: Web App desplegado y conectado mediante variables protegidas
 
 ## Estructura
 
@@ -32,10 +34,21 @@ carpeta contiene solamente archivos especificos del periodo.
 5. Admitir estudiantes de Salud sin mentor, mostrando `Comunidad Salud`.
 6. Mantener una sola aplicacion reutilizable y configurar cada periodo por datos.
 
+## Integracion validada
+
+- Lookup privado por matricula desde Vercel.
+- Estudiantes de Mentoria con mentor, comunidad y WhatsApp.
+- Estudiantes de Salud con comunidad Salud y sin mentor.
+- Registro SI/NO en `Respuestas` y rechazo de duplicados en servidor.
+- Cupo de 400 respuestas SI unicas, protegido con `LockService`.
+- Registro real cerrado mientras `REGISTRO_ABIERTO=FALSE`.
+
 ## Proximos pasos
 
-1. Copiar `automation/apps-script-ad26.js` a un proyecto Apps Script nuevo.
-2. Ejecutar `prepararEstructuraAd26` y guardar el secreto en Script Properties.
-3. Adaptar las APIs y el frontend para leer esta configuracion.
+1. Ejecutar `reiniciarRespuestasPruebaAd26` para retirar las dos respuestas de QA.
+2. Recibir la sabana definitiva y copiarla sin modificaciones a `Importacion_Raw`.
+3. Ejecutar el pipeline de normalizacion y revisar las hojas de errores y resumen.
 4. Agregar el banner AD26 y crear la plantilla inicial de invitacion.
-5. Ejecutar el checklist de `qa/checklist-pruebas.md` antes de produccion.
+5. Completar los casos pendientes de `qa/checklist-pruebas.md`.
+6. Abrir el registro solamente despues de la aprobacion final, cambiando
+   `REGISTRO_ABIERTO` a `TRUE` y `MODO_PRUEBA` a `FALSE`.
