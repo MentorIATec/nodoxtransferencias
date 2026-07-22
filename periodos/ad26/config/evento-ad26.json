@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "period": "AD26",
+  "eventId": "bienvenida-transferencias-ad26",
+  "status": "planning",
+  "event": {
+    "name": "Bienvenida de Transferencias",
+    "date": "2026-08-07",
+    "timezone": "America/Monterrey",
+    "startTime": "15:00",
+    "endTime": "17:30",
+    "venue": "Centro de Congresos",
+    "campus": "Campus Monterrey",
+    "venueInfoUrl": "https://dirige.tec.mx/monterrey/centrocongresos"
+  },
+  "capacity": {
+    "maxAffirmativeResponses": 400,
+    "countUniqueBy": "matricula",
+    "responseChangePolicy": "admin_only",
+    "fullMessage": "El cupo para esta experiencia de bienvenida esta completo. Te invitamos a seguir disfrutando las oportunidades de bienvenida, integracion y vida estudiantil que Campus Monterrey tiene para ti."
+  },
+  "data": {
+    "spreadsheetId": "1T8RDxQlqDITOEJfAqBN032RXm4shKUTAdyZAwyL39TJ_c-CaWalkAD7M",
+    "scriptId": null,
+    "webAppUrl": null,
+    "sheets": {
+      "rawImport": "Importacion_Raw",
+      "assignments": "Asignaciones",
+      "mentors": "Datos mentor",
+      "responses": "Respuestas",
+      "configuration": "Configuracion",
+      "sendLog": "Log_Envios",
+      "summary": "Resumen",
+      "errors": "Errores"
+    }
+  },
+  "email": {
+    "sender": "kareng@tec.mx",
+    "fallbackReplyTo": "mentoreo.mty@servicios.tec.mx",
+    "useMentorEmailAsReplyTo": true
+  },
+  "frontend": {
+    "suggestedDomain": "transferencias-ad26.vercel.app",
+    "healthRowsVisible": false
+  },
+  "populations": {
+    "mentoria": {
+      "mentorRequired": true
+    },
+    "salud": {
+      "mentorRequired": false,
+      "communityLabel": "Salud",
+      "replyTo": "mentoreo.mty@servicios.tec.mx"
+    }
+  }
+}
