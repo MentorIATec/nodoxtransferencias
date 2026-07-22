@@ -43,6 +43,9 @@ assert.strictEqual(sourceMap.mentor_nombre, 7);
 assert.strictEqual(context.normalizeMatricula_(' a00123456 '), 'A00123456');
 assert.strictEqual(context.normalizeAnswer_('Sí'), 'SI');
 assert.strictEqual(context.normalizeAnswer_('No'), 'NO');
+assert.strictEqual(context.isTestMatricula_('a00000001'), true);
+assert.strictEqual(context.isTestMatricula_('A00000002'), true);
+assert.strictEqual(context.isTestMatricula_('A00000003'), false);
 
 const responseHeaders = [
   'response_id', 'event_id', 'timestamp', 'matricula', 'asistira',

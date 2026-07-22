@@ -26,6 +26,21 @@ del navegador.
 6. Corrige todos los errores bloqueantes.
 7. Ejecuta `procesarImportacionAd26` para publicar `Asignaciones`.
 
+## Datos de prueba antes de recibir la lista
+
+1. Mantén `REGISTRO_ABIERTO=FALSE` y `MODO_PRUEBA=TRUE`.
+2. Ejecuta `cargarDatosPruebaAd26` desde el menu `Transferencias AD26`.
+3. Usa `A00000001` para probar una persona con mentor.
+4. Usa `A00000002` para probar una persona de Salud sin mentor.
+5. La funcion usa `kareng@tec.mx` como correo de ambos fixtures; no envia
+   mensajes por si sola.
+6. Para repetir una confirmacion, ejecuta `reiniciarRespuestasPruebaAd26`.
+7. Antes de cargar la lista real, ejecuta `eliminarDatosPruebaAd26`.
+
+Mientras el modo de prueba esta activo y el registro real cerrado, solo las dos
+matriculas fixture pueden registrar una respuesta. `abrirRegistroAd26` desactiva
+automaticamente el modo de prueba.
+
 ## Desplegar como Web App
 
 1. `Implementar > Nueva implementacion > Aplicacion web`.

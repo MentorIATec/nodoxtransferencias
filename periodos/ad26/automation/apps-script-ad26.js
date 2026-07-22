@@ -17,7 +17,7 @@
 const AD26_CONFIG = Object.freeze({
   PERIOD: 'AD26',
   EVENT_ID: 'bienvenida-transferencias-ad26',
-  DEFAULT_SPREADSHEET_ID: '1T8RDxQlqDITOEJfAqBN032RXm4shKUTAdyZAwyL39TJ_c-CaWalkAD7M',
+  DEFAULT_SPREADSHEET_ID: '1jHE0OAX7EXTyo5Try8Jh5J_xwP0g_PEztxxiQBuGwZU',
   DEFAULT_CAPACITY: 400,
   TIMEZONE: 'America/Monterrey',
   EVENT_DATE: '2026-08-07',
@@ -81,12 +81,37 @@ const AD26_HEADER_ALIASES = Object.freeze({
   activo: ['activo', 'activa', 'estatus', 'status']
 });
 
+const AD26_TEST_FIXTURES = Object.freeze({
+  mentorId: 'TEST-MENTOR-AD26',
+  matriculas: Object.freeze(['A00000001', 'A00000002']),
+  mentor: Object.freeze([
+    'TEST-MENTOR-AD26', 'Mentora Prueba AD26', 'Mentora Prueba', 'Mentora',
+    'kareng@tec.mx', '520000000000', 'Krei', true
+  ]),
+  assignments: Object.freeze([
+    Object.freeze([
+      'A00000001', 'Prueba Mentoria', 'AD26', 'kareng@tec.mx', 'Campus Puebla',
+      'Ingenieria', 'Krei', 'MENTORIA', 'TEST-MENTOR-AD26',
+      'Mentora Prueba AD26', true, 'AD26-TEST', null
+    ]),
+    Object.freeze([
+      'A00000002', 'Prueba Salud', 'AD26', 'kareng@tec.mx',
+      'Campus Ciudad de Mexico', 'Escuela de Medicina y Ciencias de la Salud',
+      'Salud', 'SALUD', '', '', true, 'AD26-TEST', null
+    ])
+  ])
+});
+
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Transferencias AD26')
     .addItem('1. Preparar estructura', 'prepararEstructuraAd26')
     .addItem('2. Previsualizar importacion', 'previsualizarImportacionAd26')
     .addItem('3. Procesar importacion', 'procesarImportacionAd26')
+    .addSeparator()
+    .addItem('Cargar datos de prueba', 'cargarDatosPruebaAd26')
+    .addItem('Reiniciar respuestas de prueba', 'reiniciarRespuestasPruebaAd26')
+    .addItem('Eliminar datos de prueba', 'eliminarDatosPruebaAd26')
     .addSeparator()
     .addItem('Diagnostico', 'diagnosticarAd26')
     .addItem('Probar lookup', 'probarLookupAd26')
@@ -110,6 +135,89 @@ function prepararEstructuraAd26() {
 
   SpreadsheetApp.flush();
   notify_('Estructura AD26 preparada. El registro permanece cerrado.');
+}
+
+function cargarDatosPruebaAd26() {
+  const ss = getAd26Spreadsheet_();
+  prepararEstructuraAd26();
+
+  const settingsSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.SETTINGS);
+  const settings = readSettings_(settingsSheet);
+  if (parseBoolean_(settings.REGISTRO_ABIERTO)) {
+    throw new Error('Cierra el registro real antes de cargar fixtures de prueba.');
+  }
+
+  const mentorSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.MENTORS);
+  const assignmentSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.ASSIGNMENTS);
+  const importedAt = new Date();
+  const assignments = AD26_TEST_FIXTURES.assignments.map(row => {
+    const copy = Array.from(row);
+    copy[AD26_HEADERS.ASSIGNMENTS.indexOf('fecha_importacion')] = importedAt;
+    return copy;
+  });
+
+  upsertRowsByKey_(
+    mentorSheet,
+    AD26_HEADERS.MENTORS,
+    'mentor_id',
+    [Array.from(AD26_TEST_FIXTURES.mentor)]
+  );
+  upsertRowsByKey_(
+    assignmentSheet,
+    AD26_HEADERS.ASSIGNMENTS,
+    'matricula',
+    assignments
+  );
+
+  setSetting_('REGISTRO_ABIERTO', 'FALSE');
+  setSetting_('MODO_PRUEBA', 'TRUE');
+  PropertiesService.getScriptProperties()
+    .setProperty('AD26_TEST_MATRICULA', AD26_TEST_FIXTURES.matriculas[0]);
+  SpreadsheetApp.flush();
+  notify_(
+    'Datos de prueba listos.\n\n' +
+    'Mentoria: A00000001\n' +
+    'Salud sin mentor: A00000002\n\n' +
+    'El registro real sigue cerrado; solo estas matriculas pueden responder.'
+  );
+}
+
+function reiniciarRespuestasPruebaAd26() {
+  const ss = getAd26Spreadsheet_();
+  const deleted = deleteRowsByValues_(
+    requireSheet_(ss, AD26_CONFIG.SHEETS.RESPONSES),
+    'matricula',
+    AD26_TEST_FIXTURES.matriculas
+  );
+  SpreadsheetApp.flush();
+  notify_(`Respuestas de prueba eliminadas: ${deleted}. Ya puedes repetir el flujo.`);
+}
+
+function eliminarDatosPruebaAd26() {
+  const ss = getAd26Spreadsheet_();
+  const deletedResponses = deleteRowsByValues_(
+    requireSheet_(ss, AD26_CONFIG.SHEETS.RESPONSES),
+    'matricula',
+    AD26_TEST_FIXTURES.matriculas
+  );
+  const deletedAssignments = deleteRowsByValues_(
+    requireSheet_(ss, AD26_CONFIG.SHEETS.ASSIGNMENTS),
+    'matricula',
+    AD26_TEST_FIXTURES.matriculas
+  );
+  const deletedMentors = deleteRowsByValues_(
+    requireSheet_(ss, AD26_CONFIG.SHEETS.MENTORS),
+    'mentor_id',
+    [AD26_TEST_FIXTURES.mentorId]
+  );
+
+  setSetting_('MODO_PRUEBA', 'FALSE');
+  PropertiesService.getScriptProperties().deleteProperty('AD26_TEST_MATRICULA');
+  SpreadsheetApp.flush();
+  notify_(
+    `Fixtures eliminados: ${deletedAssignments} asignaciones, ` +
+    `${deletedMentors} mentores y ${deletedResponses} respuestas.`
+  );
 }
 
 function previsualizarImportacionAd26() {
@@ -311,6 +419,7 @@ function lookupStudent_(body) {
   const settings = readSettings_(requireSheet_(ss, AD26_CONFIG.SHEETS.SETTINGS));
   const existing = findExistingResponse_(ss, matricula);
   const capacity = capacitySnapshot_(ss, settings);
+  const testAccess = isTestMatricula_(matricula) && parseBoolean_(settings.MODO_PRUEBA);
   const mentor = assignment.population === 'SALUD'
     ? null
     : findMentorForAssignment_(ss, assignment);
@@ -332,7 +441,8 @@ function lookupStudent_(body) {
       } : null
     },
     registration: {
-      open: parseBoolean_(settings.REGISTRO_ABIERTO),
+      open: parseBoolean_(settings.REGISTRO_ABIERTO) || testAccess,
+      mode: testAccess ? 'TEST' : 'PRODUCTION',
       alreadyResponded: Boolean(existing),
       response: existing ? existing.answer : null
     },
@@ -357,7 +467,8 @@ function registerResponse_(body) {
   try {
     const ss = getAd26Spreadsheet_();
     const settings = readSettings_(requireSheet_(ss, AD26_CONFIG.SHEETS.SETTINGS));
-    if (!parseBoolean_(settings.REGISTRO_ABIERTO)) {
+    const testAccess = isTestMatricula_(matricula) && parseBoolean_(settings.MODO_PRUEBA);
+    if (!parseBoolean_(settings.REGISTRO_ABIERTO) && !testAccess) {
       return jsonResponse_({ error: 'El registro aun no esta abierto', code: 'REGISTRATION_CLOSED' }, 403);
     }
 
@@ -464,8 +575,9 @@ function abrirRegistroAd26() {
     notify_('No se realizaron cambios.');
     return;
   }
+  setSetting_('MODO_PRUEBA', 'FALSE');
   setSetting_('REGISTRO_ABIERTO', 'TRUE');
-  notify_('Registro AD26 abierto.');
+  notify_('Registro AD26 abierto. El modo de prueba fue desactivado.');
 }
 
 function cerrarRegistroAd26() {
@@ -517,6 +629,7 @@ function ensureSettings_(sheet) {
     ['PERIODO', AD26_CONFIG.PERIOD, 'Periodo activo'],
     ['EVENT_ID', AD26_CONFIG.EVENT_ID, 'Identificador estable del evento'],
     ['REGISTRO_ABIERTO', 'FALSE', 'Switch operativo; iniciar siempre cerrado'],
+    ['MODO_PRUEBA', 'TRUE', 'Permite responder solo a las matriculas fixture con el registro real cerrado'],
     ['CUPO_MAXIMO', String(AD26_CONFIG.DEFAULT_CAPACITY), 'Maximo de respuestas SI unicas'],
     ['FECHA_EVENTO', AD26_CONFIG.EVENT_DATE, 'Fecha ISO'],
     ['HORA_INICIO', AD26_CONFIG.START_TIME, 'Hora local'],
@@ -553,6 +666,49 @@ function setSetting_(key, value) {
     }
   }
   sheet.appendRow([key, value, 'Agregado manualmente']);
+}
+
+function isTestMatricula_(matricula) {
+  return AD26_TEST_FIXTURES.matriculas.includes(normalizeMatricula_(matricula));
+}
+
+function upsertRowsByKey_(sheet, headers, keyHeader, rows) {
+  const keyIndex = headers.indexOf(keyHeader);
+  if (keyIndex < 0) throw new Error(`No existe la llave ${keyHeader}.`);
+
+  const data = sheet.getDataRange().getValues();
+  const existingRows = new Map();
+  for (let index = 1; index < data.length; index++) {
+    const key = normalizeText_(data[index][keyIndex]);
+    if (key) existingRows.set(key, index + 1);
+  }
+
+  rows.forEach(row => {
+    const key = normalizeText_(row[keyIndex]);
+    const rowNumber = existingRows.get(key);
+    if (rowNumber) {
+      sheet.getRange(rowNumber, 1, 1, headers.length).setValues([row]);
+    } else {
+      sheet.appendRow(row);
+    }
+  });
+}
+
+function deleteRowsByValues_(sheet, keyHeader, values) {
+  const data = sheet.getDataRange().getValues();
+  if (data.length < 2) return 0;
+  const headers = headerMap_(data[0]);
+  const keyIndex = headers[keyHeader];
+  if (keyIndex === undefined) throw new Error(`No existe la columna ${keyHeader} en ${sheet.getName()}.`);
+
+  const expected = new Set(values.map(normalizeText_));
+  let deleted = 0;
+  for (let index = data.length - 1; index >= 1; index--) {
+    if (!expected.has(normalizeText_(data[index][keyIndex]))) continue;
+    sheet.deleteRow(index + 1);
+    deleted++;
+  }
+  return deleted;
 }
 
 function buildSourceMap_(headers) {

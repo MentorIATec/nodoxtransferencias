@@ -1,7 +1,7 @@
 # Esquema del Google Sheet AD26
 
 Spreadsheet configurado:
-`1T8RDxQlqDITOEJfAqBN032RXm4shKUTAdyZAwyL39TJ_c-CaWalkAD7M`
+`1jHE0OAX7EXTyo5Try8Jh5J_xwP0g_PEztxxiQBuGwZU`
 
 La sabana recibida de Coordinacion debe pegarse sin cambios en `Importacion_Raw`.
 Un pipeline de normalizacion construira `Asignaciones`; el frontend y Apps Script
