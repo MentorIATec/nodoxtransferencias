@@ -50,6 +50,18 @@ automaticamente el modo de prueba.
 5. Guardar la misma llave en Vercel como `APPS_SCRIPT_API_KEY`.
 6. Registrar `scriptId` y `webAppUrl` en `config/evento-ad26.json` sin incluir secretos.
 
+Para AD26, el navegador llama solamente a `/api/estudiante` y
+`/api/confirmacion`. La llave permanece en las variables protegidas de Vercel y
+no se incluye en `public/index.html`.
+
+Variables FJ26 que ya no deben configurarse en el proyecto nuevo:
+
+- `API_KEY_BASIC`
+- `FALLBACK_JSON_URL`
+- `REGISTRO_CERRADO`
+
+El estado de apertura y el cupo se leen siempre desde el Spreadsheet AD26.
+
 ## Endpoints
 
 - Health publico: `GET ?action=health`

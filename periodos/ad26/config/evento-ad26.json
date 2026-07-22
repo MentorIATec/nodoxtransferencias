@@ -22,7 +22,7 @@
   "data": {
     "spreadsheetId": "1jHE0OAX7EXTyo5Try8Jh5J_xwP0g_PEztxxiQBuGwZU",
     "scriptId": null,
-    "webAppUrl": null,
+    "webAppUrl": "https://script.google.com/macros/s/AKfycbxIzGu8uDBEJ_dwt01mzDjxyrf0QeX8eCB7k8LVUP3-Ilz9YF1dnqqE5umuuelAGkOl/exec",
     "sheets": {
       "rawImport": "Importacion_Raw",
       "assignments": "Asignaciones",

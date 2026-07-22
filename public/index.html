@@ -379,6 +379,7 @@
         .comunidad-forta { background: linear-gradient(135deg, var(--forta), #750063) !important; }
         .comunidad-spirita { background: linear-gradient(135deg, var(--spirita), #4f0c7a) !important; }
         .comunidad-ekvilibro { background: linear-gradient(135deg, var(--ekvilibro), #5fc33d) !important; }
+        .comunidad-salud { background: linear-gradient(135deg, #007f78, #005a55) !important; }
         
         .detail-list {
             list-style: none;
@@ -633,7 +634,7 @@
     <div class="header">
         <div class="emoji-header">🎉🎓✨</div>
         <h1>Bienvenida de Transferencias</h1>
-        <p class="subtitle">¡Tu historia en Monterrey empieza hoy!</p>
+        <p class="subtitle">Tu nueva etapa en Campus Monterrey comienza aquí</p>
     </div>
         
     <div class="content">
@@ -641,7 +642,7 @@
         <div id="searchSection" class="search-section">
             <p class="welcome-text">
                 ¡Hola! 👋 Esperamos que estés teniendo un gran día.<br>
-                Queremos invitarte a la <strong>Bienvenida de Transferencias</strong> en el Campus Monterrey.
+                Queremos invitarte a la <strong>Bienvenida de Transferencias AD26</strong> en Campus Monterrey.
             </p>
             <label for="matricula">Para continuar, ingresa tu matrícula:</label>
             <div class="input-group">
@@ -671,7 +672,7 @@
             <div class="info-grid">
                 <div id="mentorBox" class="info-box info-box-colored">
                     <div class="mentor-icon">👥</div>
-                    <h4>Tu Mentor/a</h4>
+                    <h4 id="mentorLabel">Tu Mentor/a</h4>
                     <p id="mentorName"></p>
                 </div>
                 <div id="communityBox" class="info-box info-box-colored">
@@ -686,16 +687,16 @@
                 <ul class="detail-list">
                     <li>
                         <span class="icon">📅</span>
-                        <strong>Fecha:</strong> &nbsp;Viernes 6 de febrero de 2026
+                        <strong>Fecha:</strong> &nbsp;<span id="eventDate">Viernes 7 de agosto de 2026</span>
                     </li>
                     <li>
                         <span class="icon">⏰</span>
-                        <strong>Horario:</strong> &nbsp;9:00 a.m. - 12:00 p.m.
+                        <strong>Horario:</strong> &nbsp;<span id="eventTime">3:00 p.m. - 5:30 p.m.</span>
                     </li>
                     <li>
                         <span class="icon">📍</span>
-                        <strong>Lugar:</strong> &nbsp;Auditorio Luis Elizondo
-                        <a href="/mapa-evento.html" target="_blank" style="
+                        <strong>Lugar:</strong> &nbsp;<span id="eventVenue">Centro de Congresos</span>
+                        <a id="eventMapLink" href="https://dirige.tec.mx/monterrey/centrocongresos" target="_blank" rel="noopener" style="
                             display: inline-block;
                             margin-top: 10px;
                             background: #0062cc;
@@ -716,10 +717,10 @@
                     <h4>🌟 En este evento podrás:</h4>
                     <ul>
                         <li><span>✅</span> Conocer a tu mentor/a y comunidad</li>
-                        <li><span>✅</span> Disfrutar de un rico desayuno 🥐☕</li>
-                        <li><span>✅</span> Hacer un tour por el campus 🏫</li>
-                        <li><span>✅</span> Visitar estands de servicios y actividades</li>
-                        <li><span>✅</span> ¡Habrá algunos regalos! 🎁</li>
+                        <li><span>✅</span> Realizar un recorrido guiado por el campus</li>
+                        <li><span>✅</span> Ubicar espacios clave antes del inicio de clases</li>
+                        <li><span>✅</span> Conocer servicios y oportunidades estudiantiles</li>
+                        <li><span>✅</span> Conectar con estudiantes de otros campus</li>
                     </ul>
                 </div>
                 
@@ -741,17 +742,17 @@
             
             <div class="tip-box">
                 <span class="emoji">💡</span>
-                <p><strong>Tip:</strong> ¡No olvides llevar tu termo para mantenerte hidratado! 💙♻️</p>
+                <p><strong>Tip:</strong> Lleva ropa cómoda y tu termo para disfrutar el recorrido por el campus.</p>
             </div>
             
             <div class="attendance-options" id="attendanceOptions">
                 <h4>Selecciona una opción:</h4>
                 <div class="options-grid">
                     <button class="btn btn-success" onclick="confirmarAsistencia(true, event)">
-                        ✓ ¡Sí asistiré!
+                        Sí, quiero asistir
                     </button>
                     <button class="btn btn-secondary" onclick="confirmarAsistencia(false, event)">
-                        😔 No podré asistir
+                        No podré asistir
                     </button>
                 </div>
             </div>
@@ -759,9 +760,12 @@
                 ✅ Ya registraste tu respuesta. No es necesario hacerlo de nuevo.
             </div>
             <div id="mensajeCupoCerrado" style="display:none; margin:18px 0; color:#b00020; font-weight:bold; text-align:center;">
-                ⛔ Cupo cerrado. Gracias por tu interés. Si ya tienes mentor/a, puedes contactarlo/a por WhatsApp.
+                El cupo para esta experiencia está completo. Te invitamos a seguir disfrutando las oportunidades de bienvenida que Campus Monterrey tiene para ti.
             </div>
-            <button class="btn btn-whatsapp" onclick="contactarMentor()">
+            <div id="mensajeRegistroNoDisponible" style="display:none; margin:18px 0; color:#6c5b00; font-weight:bold; text-align:center;">
+                El registro todavía no está abierto. Regresa cuando recibas la invitación oficial.
+            </div>
+            <button class="btn btn-whatsapp mentor-contact" onclick="contactarMentor()">
                 💬 Contactar a mi mentor/a por WhatsApp
             </button>
         </div>
@@ -770,11 +774,11 @@
         <div id="confirmationYes" class="success-message hidden">
             <div class="success-icon">✓</div>
             <h2 style="color: #28a745; margin-bottom: 15px;">¡Excelente! Te esperamos 🎉</h2>
-            <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
+            <p id="confirmationYesText" style="color: #666; margin-bottom: 20px; font-size: 18px;">
                 Hemos confirmado tu asistencia al evento.<br>
                 No olvides contactar a tu mentor/a <span id="mentorConfirm"></span> por WhatsApp.
             </p>
-            <button class="btn btn-whatsapp" onclick="contactarMentor()">
+            <button class="btn btn-whatsapp mentor-contact" onclick="contactarMentor()">
                 💬 Enviar mensaje a mi mentor/a
             </button>
             <br>
@@ -787,11 +791,11 @@
         <div id="confirmationNo" class="success-message hidden">
             <div class="success-icon" style="background: #6c757d;">😊</div>
             <h2 style="color: #6c757d; margin-bottom: 15px;">¡No te preocupes!</h2>
-            <p style="color: #666; margin-bottom: 20px; font-size: 18px;">
+            <p id="confirmationNoText" style="color: #666; margin-bottom: 20px; font-size: 18px;">
                 Aunque no puedas asistir al evento, tu mentor/a <span id="mentorNoConfirm"></span> está aquí para apoyarte.<br>
                 Te recomendamos contactarlo/a para conocerse y resolver cualquier duda sobre tu llegada al campus.
             </p>
-            <button class="btn btn-whatsapp" onclick="contactarMentorNoAsistencia()">
+            <button class="btn btn-whatsapp mentor-contact" onclick="contactarMentorNoAsistencia()">
                 💬 Contactar a mi mentor/a por WhatsApp
             </button>
             <br>
@@ -807,22 +811,10 @@ let estudiantesData = [];
 let estudianteActual = null;
 
 const CONFIG = {
-    GOOGLE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSfiW5dCM6-eQoesb2c-l_srfZrl_0upjLZzOqTPs2sQ73FAgg/formResponse',
-    FORM_FIELDS: {
-        matricula: 'entry.1607137015',
-        nombre: 'entry.1566331032',
-        mentor: 'entry.710554786',
-        comunidad: 'entry.1007914499',
-        asistira: 'entry.52874123',
-        timestamp: 'entry.829961349',
-        correo: 'entry.1235512351',
-    },
     DEBUG: false,
     CONFIRMATION: {
         ENDPOINT: '/api/confirmacion',
-        ENVIAR_CORREO: true,
-        EMAIL_OVERRIDE: '',
-        USE_LOCAL_FLAG: true
+        USE_LOCAL_FLAG: false
     }
 };
 
@@ -838,8 +830,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Búsqueda de estudiante
 const API_CONFIG = {
     ENABLED: true,
-    ENDPOINT: "/api/estudiante",
-    API_KEY: "fj26_api_8wZ3nL1qY6hG0dR4sP2mV9tB5cX7kJ"
+    ENDPOINT: "/api/estudiante"
 };
 
 async function buscarEstudiante() {
@@ -868,10 +859,7 @@ async function buscarEstudiante() {
         // Hacer la petición a la API
         const response = await fetch(API_CONFIG.ENDPOINT, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': API_CONFIG.API_KEY
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ matricula })
         });
 
@@ -891,7 +879,8 @@ async function buscarEstudiante() {
         }
 
         // Obtener los datos del estudiante
-        const estudiante = await response.json();
+        const lookup = await response.json();
+        const estudiante = normalizarRespuestaLookup(lookup);
         
         // Si la API devuelve un objeto vacío, considerar como no encontrado
         if (!estudiante || Object.keys(estudiante).length === 0) {
@@ -911,6 +900,34 @@ async function buscarEstudiante() {
         btnBuscar.innerHTML = originalText;
         btnBuscar.disabled = false;
     }
+}
+
+function normalizarRespuestaLookup(lookup) {
+    if (!lookup || !lookup.student || !lookup.registration || !lookup.event) {
+        throw new Error('El servicio devolvió una respuesta incompleta');
+    }
+    const student = lookup.student;
+    const mentor = student.mentor || null;
+    return {
+        matricula: student.matricula,
+        nameEstudiante: student.names,
+        fullnameEstudiante: student.names,
+        mentorFullname: mentor ? mentor.displayName : '',
+        mentorNickname: mentor ? mentor.nickname : '',
+        comunidad: student.community,
+        campusOrigen: student.campusOrigin,
+        escuela: student.school,
+        tipoPoblacion: student.populationType,
+        hasMentor: student.hasMentor === true,
+        whatsappMentor: mentor ? mentor.whatsapp : '',
+        yaRegistrado: lookup.registration.alreadyResponded === true,
+        respuestaRegistrada: lookup.registration.response || null,
+        registroAbierto: lookup.registration.open === true,
+        modoRegistro: lookup.registration.mode || 'PRODUCTION',
+        registroCerrado: lookup.capacity && lookup.capacity.full === true,
+        capacidad: lookup.capacity,
+        evento: lookup.event
+    };
 }
 
 function mostrarError(mensaje) {
@@ -954,12 +971,17 @@ function mostrarInformacionEstudiante(estudiante) {
         
         const comunidadKey = estudiante.comunidad.trim().toLowerCase();
         const mentorNameElem = document.getElementById('mentorName');
+        const mentorBox = document.getElementById('mentorBox');
         const mentorOriginal = (estudiante.mentorAsignadoOriginal || '').toLowerCase();
         const esMentorTemporal = mentorOriginal.includes('pendiente');
         const mentorDisplayName = estudiante.mentorDisplayName || estudiante.mentorFullname;
-        if (esMentorTemporal) {
+        if (!estudiante.hasMentor) {
+            mentorBox.style.display = 'none';
+        } else if (esMentorTemporal) {
+            mentorBox.style.display = '';
             mentorNameElem.innerHTML = `${mentorDisplayName} <span class="mentor-temporal">Temporal</span>`;
         } else {
+            mentorBox.style.display = '';
             mentorNameElem.textContent = mentorDisplayName;
         }
         mentorNameElem.className = `mentor-comunidad comunidad-${comunidadKey}`;
@@ -968,33 +990,74 @@ function mostrarInformacionEstudiante(estudiante) {
         document.getElementById('mentorNoConfirm').textContent = mentorDisplayName;
         const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
         document.getElementById('communityBox').className = 'info-box info-box-colored comunidad-' + comunidadKey;
-        document.getElementById('mentorBox').className = 'info-box info-box-colored comunidad-' + comunidadKey;
+        mentorBox.className = 'info-box info-box-colored comunidad-' + comunidadKey;
+        document.querySelectorAll('.mentor-contact').forEach(button => {
+            button.style.display = estudiante.hasMentor && estudiante.whatsappMentor ? '' : 'none';
+        });
+        actualizarDetallesEvento(estudiante.evento);
+        actualizarMensajesConfirmacion(estudiante);
         document.getElementById('studentInfo').classList.remove('hidden');
         document.getElementById('studentInfo').style.opacity = 1;
 
-        // Prevención de duplicados y cupo cerrado
-        const yaRegistradoLocal = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
-            localStorage.getItem('registroTransferido_' + estudiante.matricula) === '1';
-        const yaRegistradoServidor = estudiante.yaRegistrado === true;
-        const yaRegistrado = yaRegistradoLocal || yaRegistradoServidor;
-        const registroCerrado = estudiante.registroCerrado === true;
-        if (registroCerrado) {
-            document.getElementById('attendanceOptions').style.display = 'none';
-            document.getElementById('mensajeYaRegistrado').style.display = 'none';
-            document.getElementById('mensajeCupoCerrado').style.display = 'block';
-            aplicarVistaRegistroCerrado(true);
-        } else if (yaRegistrado) {
-            document.getElementById('attendanceOptions').style.display = 'none';
-            document.getElementById('mensajeYaRegistrado').style.display = 'block';
-            document.getElementById('mensajeCupoCerrado').style.display = 'none';
-            aplicarVistaRegistroCerrado(false);
-        } else {
-            document.getElementById('attendanceOptions').style.display = '';
-            document.getElementById('mensajeYaRegistrado').style.display = 'none';
-            document.getElementById('mensajeCupoCerrado').style.display = 'none';
-            aplicarVistaRegistroCerrado(false);
-        }
+        aplicarEstadoRegistro(estudiante);
     }, 300);
+}
+
+function aplicarEstadoRegistro(estudiante) {
+    const options = document.getElementById('attendanceOptions');
+    const registered = document.getElementById('mensajeYaRegistrado');
+    const full = document.getElementById('mensajeCupoCerrado');
+    const unavailable = document.getElementById('mensajeRegistroNoDisponible');
+    options.style.display = 'none';
+    registered.style.display = 'none';
+    full.style.display = 'none';
+    unavailable.style.display = 'none';
+
+    if (estudiante.registroCerrado === true) {
+        full.style.display = 'block';
+        aplicarVistaRegistroCerrado(true);
+    } else if (estudiante.yaRegistrado === true) {
+        registered.style.display = 'block';
+        aplicarVistaRegistroCerrado(false);
+    } else if (estudiante.registroAbierto !== true) {
+        unavailable.style.display = 'block';
+        aplicarVistaRegistroCerrado(false);
+    } else {
+        options.style.display = '';
+        aplicarVistaRegistroCerrado(false);
+    }
+}
+
+function actualizarDetallesEvento(evento) {
+    if (!evento) return;
+    const fecha = new Date(`${evento.date}T12:00:00`);
+    document.getElementById('eventDate').textContent = new Intl.DateTimeFormat('es-MX', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    }).format(fecha).replace(/^./, char => char.toUpperCase());
+    document.getElementById('eventTime').textContent =
+        `${formatearHora(evento.startTime)} - ${formatearHora(evento.endTime)}`;
+    document.getElementById('eventVenue').textContent = evento.venue;
+    document.getElementById('eventMapLink').href = evento.venueUrl;
+}
+
+function formatearHora(hora) {
+    const [hours, minutes] = String(hora || '').split(':').map(Number);
+    const date = new Date(2026, 0, 1, hours, minutes);
+    return new Intl.DateTimeFormat('es-MX', {
+        hour: 'numeric', minute: '2-digit', hour12: true
+    }).format(date);
+}
+
+function actualizarMensajesConfirmacion(estudiante) {
+    const yes = document.getElementById('confirmationYesText');
+    const no = document.getElementById('confirmationNoText');
+    if (estudiante.hasMentor) {
+        yes.innerHTML = `Hemos confirmado tu asistencia al evento.<br>No olvides contactar a tu mentor/a <span id="mentorConfirm">${estudiante.mentorFullname}</span> por WhatsApp.`;
+        no.innerHTML = `Registramos que no podrás asistir. Tu mentor/a <span id="mentorNoConfirm">${estudiante.mentorFullname}</span> está disponible para apoyarte en tu llegada.`;
+    } else {
+        yes.textContent = 'Hemos confirmado tu asistencia. Te esperamos con la comunidad Salud en Campus Monterrey.';
+        no.textContent = 'Registramos que no podrás asistir. Te invitamos a seguir explorando las oportunidades de bienvenida de Campus Monterrey.';
+    }
 }
 
 async function confirmarAsistencia(asistira, event) {
@@ -1007,6 +1070,8 @@ async function confirmarAsistencia(asistira, event) {
     try {
         const resultado = await enviarConfirmacion(asistira);
         if (resultado && resultado.alreadyRegistered) {
+            estudianteActual.yaRegistrado = true;
+            estudianteActual.respuestaRegistrada = resultado.response;
             if (CONFIG.CONFIRMATION.USE_LOCAL_FLAG) {
                 localStorage.setItem('registroTransferido_' + estudianteActual.matricula, '1');
             }
@@ -1014,10 +1079,13 @@ async function confirmarAsistencia(asistira, event) {
             return;
         }
         if (resultado && resultado.closed) {
-            document.getElementById('attendanceOptions').style.display = 'none';
-            document.getElementById('mensajeYaRegistrado').style.display = 'none';
-            document.getElementById('mensajeCupoCerrado').style.display = 'block';
-            aplicarVistaRegistroCerrado(true);
+            estudianteActual.registroCerrado = true;
+            aplicarEstadoRegistro(estudianteActual);
+            return;
+        }
+        if (resultado && resultado.unavailable) {
+            estudianteActual.registroAbierto = false;
+            aplicarEstadoRegistro(estudianteActual);
             return;
         }
         await new Promise(resolve => setTimeout(resolve, 1500));
@@ -1044,40 +1112,25 @@ async function confirmarAsistencia(asistira, event) {
 async function enviarConfirmacion(asistira) {
   if (!CONFIG.CONFIRMATION.ENDPOINT || !estudianteActual) return;
 
-  const fechaHora = new Date().toLocaleString('es-MX', {
-    timeZone: 'America/Mexico_City',
-    dateStyle: 'short',
-    timeStyle: 'medium'
-  });
-
-  const correoGenerado = (CONFIG.CONFIRMATION.EMAIL_OVERRIDE || estudianteActual.email || (estudianteActual.matricula.toLowerCase() + '@tec.mx')).trim();
-
-  const nombreCorto = obtenerNombreCorto(estudianteActual);
   const payload = {
     matricula: estudianteActual.matricula,
-    nombre: nombreCorto || estudianteActual.nameEstudiante || estudianteActual.fullnameEstudiante,
-    mentor: estudianteActual.mentorFullname,
-    comunidad: estudianteActual.comunidad,
-    asistira: asistira ? 'Sí' : 'No',
-    timestamp: fechaHora,
-    correo: correoGenerado,
-    enviarCorreo: CONFIG.CONFIRMATION.ENVIAR_CORREO === true
+    asistira: asistira ? 'SI' : 'NO'
   };
 
   try {
     logDebug('Enviando confirmación', payload);
     const response = await fetch(CONFIG.CONFIRMATION.ENDPOINT, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_CONFIG.API_KEY
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
     if (response.status === 409) {
-      logDebug('Registro ya existe', { matricula: estudianteActual.matricula });
-      return { alreadyRegistered: true };
+      const errorData = await response.json().catch(() => ({}));
+      if (errorData.code === 'CAPACITY_FULL') {
+        return { closed: true, error: errorData.error };
+      }
+      return { alreadyRegistered: true, response: errorData.response || null };
     }
 
     if (response.status === 403) {
@@ -1088,7 +1141,7 @@ async function enviarConfirmacion(asistira) {
       } catch (parseError) {
         errorMsg = `${response.status} ${response.statusText}`;
       }
-      return { closed: true, error: errorMsg };
+      return { unavailable: true, error: errorMsg };
     }
 
     if (!response.ok) {
@@ -1103,6 +1156,8 @@ async function enviarConfirmacion(asistira) {
     }
 
     const data = await response.json();
+    estudianteActual.yaRegistrado = true;
+    estudianteActual.respuestaRegistrada = data.answer;
     logDebug('Confirmación registrada', data);
     return { ok: true };
   } catch (error) {
@@ -1113,7 +1168,7 @@ async function enviarConfirmacion(asistira) {
 }
 
 function contactarMentor() {
-    if (!estudianteActual) return;
+    if (!estudianteActual || !estudianteActual.hasMentor) return;
     const nombreCorto = obtenerNombreCorto(estudianteActual);
     const mensaje = `¡Hola ${estudianteActual.mentorNickname}! 👋 Soy ${nombreCorto} (${estudianteActual.matricula}) y vengo de ${estudianteActual.campusOrigen}. Ya confirmé mi asistencia al evento de transferencias. ¡Nos vemos pronto! 🎓`;
     // AÑADIR VALIDACIÓN:
@@ -1127,7 +1182,7 @@ function contactarMentor() {
 }
 
 function contactarMentorNoAsistencia() {
-    if (!estudianteActual) return;
+    if (!estudianteActual || !estudianteActual.hasMentor || !estudianteActual.whatsappMentor) return;
     const nombreCorto = obtenerNombreCorto(estudianteActual);
     const mensaje = `¡Hola ${estudianteActual.mentorNickname}! 👋 Soy ${nombreCorto} (${estudianteActual.matricula}) y vengo de ${estudianteActual.campusOrigen}. Lamentablemente no podré asistir al evento de transferencias, pero me gustaría conocerte y platicar sobre mi llegada al campus. ¿Podríamos agendar una cita? 😊`;
     const numeroLimpio = estudianteActual.whatsappMentor.replace(/\D/g, '');
@@ -1166,27 +1221,7 @@ function mostrarInformacionEvento() {
     document.getElementById('studentInfo').scrollIntoView({ behavior: "smooth" });
     resetAttendanceButtons();
     if (estudianteActual) {
-        const yaRegistradoLocal = CONFIG.CONFIRMATION.USE_LOCAL_FLAG &&
-            localStorage.getItem('registroTransferido_' + estudianteActual.matricula) === '1';
-        const yaRegistradoServidor = estudianteActual.yaRegistrado === true;
-        const yaRegistrado = yaRegistradoLocal || yaRegistradoServidor;
-        const registroCerrado = estudianteActual.registroCerrado === true;
-        if (registroCerrado) {
-            document.getElementById('attendanceOptions').style.display = 'none';
-            document.getElementById('mensajeYaRegistrado').style.display = 'none';
-            document.getElementById('mensajeCupoCerrado').style.display = 'block';
-            aplicarVistaRegistroCerrado(true);
-        } else if (yaRegistrado) {
-            document.getElementById('attendanceOptions').style.display = 'none';
-            document.getElementById('mensajeYaRegistrado').style.display = 'block';
-            document.getElementById('mensajeCupoCerrado').style.display = 'none';
-            aplicarVistaRegistroCerrado(false);
-        } else {
-            document.getElementById('attendanceOptions').style.display = '';
-            document.getElementById('mensajeYaRegistrado').style.display = 'none';
-            document.getElementById('mensajeCupoCerrado').style.display = 'none';
-            aplicarVistaRegistroCerrado(false);
-        }
+        aplicarEstadoRegistro(estudianteActual);
     }
 }
 

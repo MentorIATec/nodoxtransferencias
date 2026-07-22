@@ -1,5 +1,17 @@
 # Checklist de pruebas AD26
 
+## Integracion Vercel
+
+- [ ] `GET` de health en Apps Script devuelve `period=AD26`.
+- [ ] Vercel contiene `APPS_SCRIPT_WEBAPP_URL` y `APPS_SCRIPT_API_KEY`.
+- [ ] El HTML publicado no contiene la llave de Apps Script.
+- [ ] `A00000001` muestra mentor, comunidad y contacto de prueba.
+- [ ] `A00000002` muestra comunidad Salud sin tarjeta ni boton de mentor.
+- [ ] Una respuesta crea una sola fila en `Respuestas`.
+- [ ] Un segundo intento queda bloqueado por el servidor.
+- [ ] `reiniciarRespuestasPruebaAd26` permite repetir el flujo.
+- [ ] Una matricula ajena a fixtures no puede responder con el registro real cerrado.
+
 ## Datos
 
 - [ ] Importacion_Raw conserva la sabana original.
