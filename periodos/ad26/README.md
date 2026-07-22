@@ -19,6 +19,7 @@ carpeta contiene solamente archivos especificos del periodo.
 - `config/`: configuracion no secreta del evento.
 - `assets/`: banner y materiales visuales AD26.
 - `templates/`: plantillas HTML especificas del periodo.
+- `automation/`: Apps Script de lookup, normalizacion y registro.
 - `migrations/`: esquema del Sheet y reglas para transformar la sabana de datos.
 - `qa/`: pruebas funcionales, de cupo y de produccion.
 
@@ -33,8 +34,8 @@ carpeta contiene solamente archivos especificos del periodo.
 
 ## Proximos pasos
 
-1. Crear las pestañas del nuevo Google Sheet conforme a `migrations/schema-sheets.md`.
-2. Crear un nuevo proyecto Apps Script y guardar su secreto en Script Properties.
+1. Copiar `automation/apps-script-ad26.js` a un proyecto Apps Script nuevo.
+2. Ejecutar `prepararEstructuraAd26` y guardar el secreto en Script Properties.
 3. Adaptar las APIs y el frontend para leer esta configuracion.
 4. Agregar el banner AD26 y crear la plantilla inicial de invitacion.
 5. Ejecutar el checklist de `qa/checklist-pruebas.md` antes de produccion.
