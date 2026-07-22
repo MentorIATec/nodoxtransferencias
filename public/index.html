@@ -716,7 +716,7 @@
                 <div class="highlight-list">
                     <h4>🌟 En este evento podrás:</h4>
                     <ul>
-                        <li><span>✅</span> Conocer a tu mentor/a y comunidad</li>
+                        <li><span>✅</span> <span id="communityWelcomeActivity">Conocer a tu mentor/a y comunidad</span></li>
                         <li><span>✅</span> Realizar un recorrido guiado por el campus</li>
                         <li><span>✅</span> Ubicar espacios clave antes del inicio de clases</li>
                         <li><span>✅</span> Conocer servicios y oportunidades estudiantiles</li>
@@ -986,6 +986,9 @@ function mostrarInformacionEstudiante(estudiante) {
         }
         mentorNameElem.className = `mentor-comunidad comunidad-${comunidadKey}`;
         document.getElementById('communityName').textContent = estudiante.comunidad;
+        document.getElementById('communityWelcomeActivity').textContent = estudiante.hasMentor
+            ? 'Conocer a tu mentor/a y comunidad'
+            : 'Conocer a tu comunidad y a otros estudiantes de Campus Monterrey';
         document.getElementById('mentorConfirm').textContent = mentorDisplayName;
         document.getElementById('mentorNoConfirm').textContent = mentorDisplayName;
         const comunidadClass = `comunidad-${estudiante.comunidad.toLowerCase()}`;
