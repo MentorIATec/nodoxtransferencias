@@ -21,6 +21,7 @@ carpeta contiene solamente archivos especificos del periodo.
 - `config/`: configuracion no secreta del evento.
 - `assets/`: banner y materiales visuales AD26.
 - `templates/`: plantillas HTML especificas del periodo.
+- `comunicacion-preasignacion/`: evidencia de comunicaciones del 10 y 21 de julio.
 - `automation/`: Apps Script de lookup, normalizacion y registro.
 - `migrations/`: esquema del Sheet y reglas para transformar la sabana de datos.
 - `qa/`: pruebas funcionales, de cupo y de produccion.
@@ -48,7 +49,8 @@ carpeta contiene solamente archivos especificos del periodo.
 1. Ejecutar `reiniciarRespuestasPruebaAd26` para retirar las dos respuestas de QA.
 2. Recibir la sabana definitiva y copiarla sin modificaciones a `Importacion_Raw`.
 3. Ejecutar el pipeline de normalizacion y revisar las hojas de errores y resumen.
-4. Agregar el banner AD26 y crear la plantilla inicial de invitacion.
+4. Integrar la plantilla `templates/email-invitacion-ad26.html` al flujo de envio y
+   validar su banner inline en Outlook.
 5. Completar los casos pendientes de `qa/checklist-pruebas.md`.
 6. Abrir el registro solamente despues de la aprobacion final, cambiando
    `REGISTRO_ABIERTO` a `TRUE` y `MODO_PRUEBA` a `FALSE`.
