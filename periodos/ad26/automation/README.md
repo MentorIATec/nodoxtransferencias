@@ -22,12 +22,13 @@ del navegador.
 1. Ejecuta `prepararEstructuraAd26`.
 2. Autoriza el acceso al Spreadsheet.
 3. Confirma que `Configuracion!REGISTRO_ABIERTO` permanezca en `FALSE`.
-4. Pega la sabana original en `Importacion_Raw`.
+4. Pega las sabanas originales, sin transformar encabezados, en
+   `Importacion_Raw_Verano26` e `Importacion_Raw_AD26`.
 5. Ejecuta `previsualizarImportacionAd26`.
 6. Corrige todos los errores bloqueantes.
 7. Ejecuta `procesarImportacionAd26` para publicar `Asignaciones`.
 
-## Datos de prueba antes de recibir la lista
+## Datos de prueba y lista definitiva
 
 1. Mantén `REGISTRO_ABIERTO=FALSE` y `MODO_PRUEBA=TRUE`.
 2. Ejecuta `cargarDatosPruebaAd26` desde el menu `Transferencias AD26`.
@@ -38,6 +39,10 @@ del navegador.
 4. Para repetir una confirmacion, ejecuta `reiniciarRespuestasPruebaAd26`.
 5. Antes de cargar la lista real, ejecuta `eliminarDatosPruebaAd26`.
 
+La lista definitiva consolidada contiene 766 matriculas activas: 764 de
+Mentoria y 2 de Salud. El pipeline excluye cancelaciones y, cuando una matricula
+aparece en ambas fuentes, conserva la fila de `Importacion_Raw_AD26`.
+
 ## Previsualizacion y envio de correo de prueba
 
 1. Agrega al mismo proyecto el archivo `apps-script-email-preview-ad26.js`.
@@ -46,18 +51,21 @@ del navegador.
    - `email-invitacion-ad26`
    - `email-recordatorio-asignacion-ad26`
 3. Ejecuta `configurarCorreoPruebaAd26` y registra una cuenta autorizada.
-4. Ejecuta `crearBorradorCorreoPruebaAd26` para revisar el correo en Gmail,
+4. Ejecuta `configurarMatriculaCorreoPruebaAd26` y elige una matricula activa de
+   `Asignaciones`. El destinatario real nunca se utiliza durante esta prueba.
+5. Ejecuta `crearBorradorCorreoPruebaAd26` para revisar el correo en Gmail,
    incluyendo el banner inline y el `reply-to` del mentor seleccionado.
-5. Solo despues ejecuta `enviarCorreoPruebaAd26`; exige escribir
+6. Solo despues ejecuta `enviarCorreoPruebaAd26`; exige escribir
    `ENVIAR PRUEBA` y siempre agrega el prefijo `[PRUEBA AD26]` al asunto.
 
 Estas funciones no envian campañas masivas ni modifican respuestas. La prueba de
 preregistro se hace desde Vercel con las tres matriculas fixture.
 
 Para una prueba automatizada desde un entorno administrativo, el Web App admite
-`prepare_test` y `send_test_email`. Ambas acciones exigen la API key, mantienen el
-registro real cerrado, aceptan solo las matriculas fixture y envian exclusivamente
-a `AD26_TEST_EMAIL`. Un cache de cinco minutos evita reenvios identicos.
+`prepare_test` y `send_test_email`. Ambas acciones exigen la API key y mantienen el
+registro real cerrado. `send_test_email` puede renderizar una asignacion activa,
+pero envia exclusivamente a `AD26_TEST_EMAIL`. Un cache de cinco minutos evita
+reenvios identicos.
 
 Mientras el modo de prueba esta activo y el registro real cerrado, solo las tres
 matriculas fixture pueden registrar una respuesta. `abrirRegistroAd26` desactiva
@@ -74,9 +82,9 @@ avance de respuestas `SI` frente al cupo de 400 con los lugares disponibles.
 ## Catalogo de mentores verificado
 
 - Fuente privada: `DATOSME_CURSOR.xlsx`.
-- Registros vigentes cotejados: 47.
-- Telefonos institucionales completos: 47 de 47.
-- Coincidencia con `Datos mentor`: 47 de 47 usando email y telefono normalizado.
+- Registros vigentes: 48, incluida Rocio del Carmen Flores Martinez en Pasio.
+- La fotografia de Rocio existe como `RocíoPasio.jpg` en el repositorio de
+  check-in; debe agregarse al manifiesto de assets antes de publicar ese sistema.
 
 El cotejo confirma el estado actual, pero no sustituye una nueva validacion si se
 reemplazan filas, telefonos o encabezados en `Datos mentor`.

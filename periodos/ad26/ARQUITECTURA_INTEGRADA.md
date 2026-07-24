@@ -64,8 +64,10 @@ Reglas del traspaso:
 ## Estado verificado al 24 de julio de 2026
 
 - Preregistro: backend, cupo, deduplicacion, fixtures y correo de prueba listos.
-- Catalogo de mentores: 47 registros cotejados; 47 telefonos completos y
-  coincidentes con la fuente privada `DATOSME_CURSOR.xlsx`.
+- Poblacion consolidada de preregistro: 766 matriculas activas, 764 de Mentoria
+  y 2 de Salud, provenientes de las cohortes Verano 26 y AD26.
+- Catalogo de mentores: 48 registros vigentes tras incorporar a Rocio del Carmen
+  Flores Martinez en Pasio.
 - Check-in: frontend de dos pasos, idempotencia, incidencias staff y dashboard
   manual implementados en el repositorio separado.
 - Assets: las imagenes de mentor se publican desde
@@ -79,8 +81,8 @@ Reglas del traspaso:
 1. Implementar y ensayar el pipeline ejecutable de fotografia A -> B. Actualmente
    existe el esquema y el contrato, pero no una funcion automatizada de traspaso.
 2. Importar el catalogo privado de 47 mentores a `Mentores_AD26` del Spreadsheet B.
-3. Recibir y validar la sabana definitiva; retirar `A00000001`, `A00000002` y
-   `A00000003` antes de produccion.
+3. Ejecutar la prueba final de correo con una asignacion real redirigida a la
+   cuenta autorizada; no reinsertar fixtures en la lista definitiva.
 4. Configurar Apps Script y Vercel del check-in con secretos exclusivos AD26.
 5. Publicar `campus-checkin-ad26` sin reutilizar el dominio FJ26.
 6. Probar matricula valida, duplicado, Salud, incidencia, doble clic, Enter,

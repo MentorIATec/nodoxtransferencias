@@ -3,16 +3,19 @@
 Spreadsheet configurado:
 `1jHE0OAX7EXTyo5Try8Jh5J_xwP0g_PEztxxiQBuGwZU`
 
-La sabana recibida de Coordinacion debe pegarse sin cambios en `Importacion_Raw`.
-Un pipeline de normalizacion construira `Asignaciones`; el frontend y Apps Script
+Las dos sabanas recibidas de Coordinacion deben pegarse sin cambios en
+`Importacion_Raw_Verano26` e `Importacion_Raw_AD26`. Un pipeline de normalizacion
+construye `Asignaciones`; el frontend y Apps Script
 nunca deben depender directamente del orden de columnas de la sabana original.
 
-## 1. Importacion_Raw
+## 1. Importacion_Raw_Verano26 e Importacion_Raw_AD26
 
-- Copia exacta de la ultima sabana recibida.
+- Copia exacta de cada fuente recibida.
 - No editar nombres de columnas ni transformar valores manualmente.
 - Agregar al final `fecha_importacion` y `fuente` si no existen.
-- Cada nueva carga reemplaza el contenido despues de conservar un respaldo privado.
+- Cada nueva carga reemplaza su pestaña despues de conservar un respaldo privado.
+- Si una matricula aparece en ambas fuentes, prevalece `Importacion_Raw_AD26`.
+- Las filas canceladas se excluyen y se documentan en `Errores`.
 
 ## 2. Asignaciones
 
@@ -33,6 +36,12 @@ Columnas canonicas, en este orden:
 | `activo` | Si | `TRUE` para permitir lookup. |
 | `periodo` | Si | Valor fijo `AD26`. |
 | `fecha_importacion` | Si | Fecha y hora del pipeline. |
+| `nombre_completo` | Si | Valor original para auditoria; no se usa en el saludo. |
+| `carrera` | No | Clave de carrera de la fuente. |
+| `nombre_carrera` | No | Nombre descriptivo de carrera. |
+| `tipo_transferencia` | No | Temporal, definitiva u otro valor de origen. |
+| `cohorte_origen` | Si | `VERANO26` o `AD26`. |
+| `fecha_corte` | No | Corte reportado por Coordinacion. |
 
 Reglas de Salud:
 
@@ -110,7 +119,7 @@ Debe calcular:
 
 ## Pipeline de normalizacion
 
-1. Leer encabezados de `Importacion_Raw`, no posiciones fijas.
+1. Leer encabezados de ambas pestañas raw, no posiciones fijas.
 2. Mapear alias conocidos a las columnas canonicas.
 3. Normalizar matricula, email, espacios, acentos de comparacion y booleanos.
 4. Detectar duplicados por matricula y email.
@@ -118,6 +127,5 @@ Debe calcular:
 6. Identificar Salud y aplicar su regla sin mentor.
 7. Rechazar filas incompletas a `Errores`; no publicarlas parcialmente.
 8. Reemplazar `Asignaciones` solo si el pre-check no tiene errores bloqueantes.
-9. Generar resumen de altas, bajas, cambios y errores.
-
-Los alias concretos se agregaran cuando Coordinacion entregue la primera sabana AD26.
+9. Consolidar duplicados entre fuentes con precedencia AD26.
+10. Generar resumen de altas, bajas, cambios y errores.

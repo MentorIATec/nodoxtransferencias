@@ -40,6 +40,42 @@ const sourceMap = context.buildSourceMap_([
 ]);
 assert.strictEqual(sourceMap.matricula, 0);
 assert.strictEqual(sourceMap.mentor_nombre, 7);
+
+const currentReportSourceMap = context.buildSourceMap_([
+  'MatrÍcula',
+  'No. Ticket',
+  'Nombre del/la estudiante',
+  'Email del/la estudiante',
+  'Campus origen',
+  'Campus destino',
+  'Carrera',
+  'Nombre carrera',
+  'Período',
+  'Tipo de transferencia',
+  'Mentor(a) asignado(a) a partir  AD 26',
+  'Fecha de corte reporte de transferencias',
+  'Comentarios'
+]);
+assert.strictEqual(currentReportSourceMap.matricula, 0);
+assert.strictEqual(currentReportSourceMap.nombre_completo, 2);
+assert.strictEqual(currentReportSourceMap.email, 3);
+assert.strictEqual(currentReportSourceMap.campus_origen, 4);
+assert.strictEqual(currentReportSourceMap.carrera, 6);
+assert.strictEqual(currentReportSourceMap.nombre_carrera, 7);
+assert.strictEqual(currentReportSourceMap.periodo_fuente, 8);
+assert.strictEqual(currentReportSourceMap.tipo_transferencia, 9);
+assert.strictEqual(currentReportSourceMap.mentor_nombre, 10);
+assert.strictEqual(currentReportSourceMap.fecha_corte, 11);
+assert.strictEqual(currentReportSourceMap.comentarios, 12);
+
+const parsedName = context.splitStudentName_('Gerardo Andrés García Berrones', '', '');
+assert.strictEqual(parsedName.nombres, 'Gerardo');
+assert.strictEqual(parsedName.apellidos, 'Andrés García Berrones');
+assert.strictEqual(parsedName.nombreCompleto, 'Gerardo Andrés García Berrones');
+assert.strictEqual(
+  context.canonicalMentorName_('Arturo Temoltzi Torres'),
+  'Arturo Temolzi Torres'
+);
 assert.strictEqual(context.normalizeMatricula_(' a00123456 '), 'A00123456');
 assert.strictEqual(context.normalizeAnswer_('Sí'), 'SI');
 assert.strictEqual(context.normalizeAnswer_('No'), 'NO');

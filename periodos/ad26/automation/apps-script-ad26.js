@@ -30,6 +30,8 @@ const AD26_CONFIG = Object.freeze({
   FULL_MESSAGE: 'El cupo para esta experiencia de bienvenida esta completo. Te invitamos a seguir disfrutando las oportunidades de bienvenida, integracion y vida estudiantil que Campus Monterrey tiene para ti.',
   SHEETS: Object.freeze({
     RAW: 'Importacion_Raw',
+    RAW_SUMMER: 'Importacion_Raw_Verano26',
+    RAW_AD26: 'Importacion_Raw_AD26',
     ASSIGNMENTS: 'Asignaciones',
     MENTORS: 'Datos mentor',
     RESPONSES: 'Respuestas',
@@ -44,7 +46,8 @@ const AD26_HEADERS = Object.freeze({
   ASSIGNMENTS: [
     'matricula', 'nombres', 'apellidos', 'email', 'campus_origen', 'escuela',
     'comunidad', 'tipo_poblacion', 'mentor_id', 'mentor_nombre', 'activo',
-    'periodo', 'fecha_importacion'
+    'periodo', 'fecha_importacion', 'nombre_completo', 'carrera', 'nombre_carrera',
+    'tipo_transferencia', 'cohorte_origen', 'fecha_corte'
   ],
   MENTORS: [
     'mentor_id', 'nombre', 'nombre_mostrar', 'nickname', 'email', 'celular',
@@ -60,15 +63,16 @@ const AD26_HEADERS = Object.freeze({
     'error_code', 'attempt'
   ],
   ERRORS: [
-    'timestamp', 'fila_origen', 'matricula', 'codigo', 'detalle', 'nivel'
+    'timestamp', 'fila_origen', 'matricula', 'codigo', 'detalle', 'nivel', 'fuente'
   ]
 });
 
 const AD26_HEADER_ALIASES = Object.freeze({
   matricula: ['matricula', 'matrícula', 'id estudiante', 'student id'],
-  nombres: ['nombres', 'nombre', 'nombre estudiante', 'first name', 'given name'],
+  nombre_completo: ['nombre del/la estudiante', 'nombre completo', 'nombre estudiante'],
+  nombres: ['nombres', 'nombre', 'first name', 'given name'],
   apellidos: ['apellidos', 'apellido', 'last name', 'surname'],
-  email: ['email', 'correo', 'correo electronico', 'correo electrónico', 'mail'],
+  email: ['email', 'email del/la estudiante', 'correo', 'correo electronico', 'correo electrónico', 'mail'],
   campus_origen: ['campus origen', 'campus de origen', 'campus_origen', 'origen'],
   escuela: ['escuela', 'school', 'escuela academica', 'escuela académica'],
   comunidad: ['comunidad', 'comunidad estudiantil'],
@@ -76,9 +80,33 @@ const AD26_HEADER_ALIASES = Object.freeze({
   mentor_id: ['mentor id', 'mentor_id', 'id mentor'],
   mentor_nombre: [
     'mentor', 'mentor asignado', 'mentor(a) asignado(a)', 'mentora asignada',
-    'nombre mentor', 'mentor_nombre'
+    'nombre mentor', 'mentor_nombre',
+    'mentor(a) asignado(a) a partir del verano 26',
+    'mentor(a) asignado(a) a partir ad 26'
   ],
-  activo: ['activo', 'activa', 'estatus', 'status']
+  activo: ['activo', 'activa', 'estatus', 'status'],
+  carrera: ['carrera', 'programa'],
+  nombre_carrera: ['nombre carrera', 'nombre de carrera', 'programa academico', 'programa académico'],
+  periodo_fuente: ['periodo', 'período'],
+  tipo_transferencia: ['tipo de transferencia', 'tipo transferencia'],
+  fecha_corte: ['fecha de corte reporte de transferencias', 'fecha corte'],
+  comentarios: ['comentarios', 'comentario']
+});
+
+const AD26_IMPORT_SOURCES = Object.freeze([
+  Object.freeze({ sheet: 'Importacion_Raw_Verano26', label: 'VERANO26', priority: 1 }),
+  Object.freeze({ sheet: 'Importacion_Raw_AD26', label: 'AD26', priority: 2 }),
+  Object.freeze({ sheet: 'Importacion_Raw', label: 'LEGACY', priority: 0 })
+]);
+
+const AD26_MENTOR_NAME_ALIASES = Object.freeze({
+  'arturo temoltzi torres': 'Arturo Temolzi Torres'
+});
+
+const AD26_EMAIL_CAMPAIGN = Object.freeze({
+  ID: 'invitacion-ad26-v1',
+  TEMPLATE: 'email-invitacion-ad26',
+  DEFAULT_BATCH_SIZE: 40
 });
 
 const AD26_TEST_FIXTURES = Object.freeze({
@@ -98,8 +126,12 @@ function onOpen() {
     .addItem('Reiniciar respuestas de prueba', 'reiniciarRespuestasPruebaAd26')
     .addItem('Eliminar datos de prueba', 'eliminarDatosPruebaAd26')
     .addItem('Configurar correo de prueba', 'configurarCorreoPruebaAd26')
+    .addItem('Configurar matricula para correo prueba', 'configurarMatriculaCorreoPruebaAd26')
     .addItem('Crear borrador de correo prueba', 'crearBorradorCorreoPruebaAd26')
     .addItem('Enviar correo de prueba', 'enviarCorreoPruebaAd26')
+    .addSeparator()
+    .addItem('Pre-check campaña de invitación', 'precheckCampanaInvitacionAd26')
+    .addItem('Enviar siguiente lote de invitación', 'enviarSiguienteLoteInvitacionAd26')
     .addSeparator()
     .addItem('Actualizar resumen de respuestas', 'generarResumenRespuestasAd26')
     .addItem('Diagnostico', 'diagnosticarAd26')
@@ -113,6 +145,8 @@ function prepararEstructuraAd26() {
   const ss = getAd26Spreadsheet_();
 
   ensureSheet_(ss, AD26_CONFIG.SHEETS.RAW, null);
+  ensureSheet_(ss, AD26_CONFIG.SHEETS.RAW_SUMMER, null);
+  ensureSheet_(ss, AD26_CONFIG.SHEETS.RAW_AD26, null);
   ensureSheet_(ss, AD26_CONFIG.SHEETS.ASSIGNMENTS, AD26_HEADERS.ASSIGNMENTS);
   ensureSheet_(ss, AD26_CONFIG.SHEETS.MENTORS, AD26_HEADERS.MENTORS);
   ensureSheet_(ss, AD26_CONFIG.SHEETS.RESPONSES, AD26_HEADERS.RESPONSES);
@@ -224,118 +258,91 @@ function procesarImportacionAd26() {
 
 function runImportPipeline_(previewOnly) {
   const ss = getAd26Spreadsheet_();
-  const rawSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.RAW);
   const assignmentsSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.ASSIGNMENTS);
   const errorsSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.ERRORS);
   const mentorSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.MENTORS);
-
-  const data = rawSheet.getDataRange().getValues();
-  if (data.length < 2 || data[0].every(value => !String(value || '').trim())) {
-    throw new Error('Importacion_Raw no contiene encabezados y filas de datos.');
-  }
-
-  const sourceHeaders = data[0];
-  const sourceMap = buildSourceMap_(sourceHeaders);
-  const missingHeaders = ['matricula', 'nombres', 'apellidos', 'email', 'campus_origen', 'escuela']
-    .filter(name => sourceMap[name] === undefined);
-
-  const errors = [];
-  if (missingHeaders.length) {
-    errors.push({
-      row: 1,
-      matricula: '',
-      code: 'ENCABEZADOS_FALTANTES',
-      detail: missingHeaders.join(', '),
-      level: 'BLOQUEANTE'
-    });
-    writeErrors_(errorsSheet, errors);
-    return buildImportReport_(previewOnly, 0, errors, false);
+  const sources = readImportSources_(ss);
+  if (!sources.length) {
+    throw new Error('No hay datos en Importacion_Raw_Verano26, Importacion_Raw_AD26 o Importacion_Raw.');
   }
 
   const mentors = readMentors_(mentorSheet);
-  const output = [];
-  const seenMatriculas = new Set();
-  const seenEmails = new Set();
+  const errors = [];
   const importedAt = new Date();
+  const candidates = [];
 
-  for (let index = 1; index < data.length; index++) {
-    const sourceRow = data[index];
-    if (sourceRow.every(value => !String(value || '').trim())) continue;
-
-    const sourceNumber = index + 1;
-    const matricula = normalizeMatricula_(sourceValue_(sourceRow, sourceMap, 'matricula'));
-    const nombres = cleanText_(sourceValue_(sourceRow, sourceMap, 'nombres'));
-    const apellidos = cleanText_(sourceValue_(sourceRow, sourceMap, 'apellidos'));
-    const email = cleanText_(sourceValue_(sourceRow, sourceMap, 'email')).toLowerCase();
-    const campusOrigen = cleanText_(sourceValue_(sourceRow, sourceMap, 'campus_origen'));
-    const escuela = cleanText_(sourceValue_(sourceRow, sourceMap, 'escuela'));
-    let comunidad = cleanText_(sourceValue_(sourceRow, sourceMap, 'comunidad'));
-    let tipoPoblacion = cleanText_(sourceValue_(sourceRow, sourceMap, 'tipo_poblacion')).toUpperCase();
-    let mentorId = cleanText_(sourceValue_(sourceRow, sourceMap, 'mentor_id'));
-    let mentorNombre = cleanText_(sourceValue_(sourceRow, sourceMap, 'mentor_nombre'));
-    const activo = parseActive_(sourceValue_(sourceRow, sourceMap, 'activo'));
-
-    const isSalud = tipoPoblacion === 'SALUD' ||
-      normalizeText_(escuela).includes('salud') ||
-      normalizeText_(comunidad) === 'salud';
-
-    tipoPoblacion = isSalud ? 'SALUD' : 'MENTORIA';
-    if (isSalud) {
-      comunidad = 'Salud';
-      mentorId = '';
-      mentorNombre = '';
+  sources.forEach(source => {
+    const sourceMap = buildSourceMap_(source.data[0]);
+    const missingHeaders = ['matricula', 'email', 'campus_origen', 'mentor_nombre']
+      .filter(name => sourceMap[name] === undefined);
+    if (sourceMap.nombre_completo === undefined && sourceMap.nombres === undefined) {
+      missingHeaders.push('nombre_completo');
+    }
+    if (missingHeaders.length) {
+      errors.push(importError_(source.label, 1, '', 'ENCABEZADOS_FALTANTES', missingHeaders.join(', '), 'BLOQUEANTE'));
+      return;
     }
 
-    const rowErrors = [];
-    if (!/^[A-Z]\d{8}$/.test(matricula)) rowErrors.push(['MATRICULA_INVALIDA', 'La matricula debe tener una letra y ocho digitos.']);
-    if (!nombres) rowErrors.push(['NOMBRES_VACIOS', 'Faltan nombres.']);
-    if (!apellidos) rowErrors.push(['APELLIDOS_VACIOS', 'Faltan apellidos.']);
-    if (!isValidEmail_(email)) rowErrors.push(['EMAIL_INVALIDO', 'El correo no tiene un formato valido.']);
-    if (!campusOrigen) rowErrors.push(['CAMPUS_VACIO', 'Falta campus de origen.']);
-    if (!escuela) rowErrors.push(['ESCUELA_VACIA', 'Falta escuela.']);
-
-    if (matricula && seenMatriculas.has(matricula)) {
-      rowErrors.push(['MATRICULA_DUPLICADA', 'La matricula se repite en la importacion.']);
+    for (let index = 1; index < source.data.length; index++) {
+      const sourceRow = source.data[index];
+      if (sourceRow.every(value => !cleanText_(value))) continue;
+      const candidate = normalizeImportCandidate_(sourceRow, sourceMap, source, index + 1, mentors, importedAt);
+      candidate.errors.forEach(error => errors.push(error));
+      if (candidate.cancelled || candidate.errors.some(error => error.level === 'BLOQUEANTE')) continue;
+      candidates.push(candidate);
     }
-    if (email && seenEmails.has(email)) {
-      rowErrors.push(['EMAIL_DUPLICADO', 'El correo se repite en la importacion.']);
-    }
+  });
 
-    if (!isSalud) {
-      if (!mentorId && !mentorNombre) {
-        rowErrors.push(['MENTOR_VACIO', 'La poblacion de Mentoria requiere mentor.']);
-      } else {
-        const mentor = resolveMentor_(mentors, mentorId, mentorNombre);
-        if (mentors.hasRows && !mentor) {
-          rowErrors.push(['MENTOR_NO_ENCONTRADO', 'El mentor no coincide con Datos mentor.']);
-        } else if (mentor && !mentor.active) {
-          rowErrors.push(['MENTOR_INACTIVO', 'El mentor esta marcado como inactivo.']);
-        } else if (mentor) {
-          mentorId = mentor.id;
-          mentorNombre = mentor.name;
-          comunidad = comunidad || mentor.community;
-        }
-      }
-      if (!comunidad) rowErrors.push(['COMUNIDAD_VACIA', 'No fue posible resolver la comunidad.']);
+  const deduplicated = new Map();
+  candidates.forEach(candidate => {
+    const previous = deduplicated.get(candidate.matricula);
+    if (!previous) {
+      deduplicated.set(candidate.matricula, candidate);
+      return;
     }
 
-    rowErrors.forEach(error => errors.push({
-      row: sourceNumber,
-      matricula,
-      code: error[0],
-      detail: error[1],
-      level: 'BLOQUEANTE'
-    }));
+    if (!sameStudentCandidate_(previous, candidate)) {
+      errors.push(importError_(
+        candidate.source,
+        candidate.row,
+        candidate.matricula,
+        'MATRICULA_DUPLICADA_CONFLICTO',
+        `Los datos difieren de ${previous.source}, fila ${previous.row}.`,
+        'BLOQUEANTE'
+      ));
+      return;
+    }
 
-    if (rowErrors.length) continue;
+    const selected = candidate.priority >= previous.priority ? candidate : previous;
+    deduplicated.set(candidate.matricula, selected);
+    errors.push(importError_(
+      candidate.source,
+      candidate.row,
+      candidate.matricula,
+      'MATRICULA_CONSOLIDADA',
+      `Registro repetido; se conserva ${selected.source}.`,
+      'ADVERTENCIA'
+    ));
+  });
 
-    seenMatriculas.add(matricula);
-    seenEmails.add(email);
-    output.push([
-      matricula, nombres, apellidos, email, campusOrigen, escuela, comunidad,
-      tipoPoblacion, mentorId, mentorNombre, activo, AD26_CONFIG.PERIOD, importedAt
-    ]);
-  }
+  const uniqueEmails = new Map();
+  deduplicated.forEach(candidate => {
+    const previousMatricula = uniqueEmails.get(candidate.email);
+    if (previousMatricula && previousMatricula !== candidate.matricula) {
+      errors.push(importError_(candidate.source, candidate.row, candidate.matricula, 'EMAIL_DUPLICADO', `El correo tambien pertenece a ${previousMatricula}.`, 'BLOQUEANTE'));
+    } else {
+      uniqueEmails.set(candidate.email, candidate.matricula);
+    }
+  });
+
+  const output = Array.from(deduplicated.values()).map(candidate => [
+    candidate.matricula, candidate.nombres, candidate.apellidos, candidate.email,
+    candidate.campusOrigen, candidate.escuela, candidate.comunidad,
+    candidate.tipoPoblacion, candidate.mentorId, candidate.mentorNombre,
+    candidate.activo, AD26_CONFIG.PERIOD, importedAt, candidate.nombreCompleto,
+    candidate.carrera, candidate.nombreCarrera, candidate.tipoTransferencia,
+    candidate.cohorteOrigen, candidate.fechaCorte
+  ]);
 
   writeErrors_(errorsSheet, errors);
   const hasBlockingErrors = errors.some(error => error.level === 'BLOQUEANTE');
@@ -347,6 +354,121 @@ function runImportPipeline_(previewOnly) {
   }
 
   return buildImportReport_(previewOnly, output.length, errors, published);
+}
+
+function readImportSources_(ss) {
+  return AD26_IMPORT_SOURCES.map(config => {
+    const sheet = ss.getSheetByName(config.sheet);
+    if (!sheet || sheet.getLastRow() < 2) return null;
+    const data = sheet.getDataRange().getValues();
+    if (!data.length || data[0].every(value => !cleanText_(value))) return null;
+    return Object.assign({}, config, { data });
+  }).filter(Boolean);
+}
+
+function normalizeImportCandidate_(row, map, source, rowNumber, mentors, importedAt) {
+  const matricula = normalizeMatricula_(sourceValue_(row, map, 'matricula'));
+  const suppliedNames = cleanText_(sourceValue_(row, map, 'nombres'));
+  const suppliedSurnames = cleanText_(sourceValue_(row, map, 'apellidos'));
+  const suppliedFullName = cleanText_(sourceValue_(row, map, 'nombre_completo'));
+  const nameParts = splitStudentName_(suppliedFullName, suppliedNames, suppliedSurnames);
+  const email = cleanText_(sourceValue_(row, map, 'email')).toLowerCase();
+  const campusOrigen = cleanText_(sourceValue_(row, map, 'campus_origen'));
+  const carrera = cleanText_(sourceValue_(row, map, 'carrera'));
+  const nombreCarrera = cleanText_(sourceValue_(row, map, 'nombre_carrera'));
+  const comments = cleanText_(sourceValue_(row, map, 'comentarios'));
+  let escuela = cleanText_(sourceValue_(row, map, 'escuela'));
+  let comunidad = cleanText_(sourceValue_(row, map, 'comunidad'));
+  let tipoPoblacion = cleanText_(sourceValue_(row, map, 'tipo_poblacion')).toUpperCase();
+  let mentorId = cleanText_(sourceValue_(row, map, 'mentor_id'));
+  let mentorNombre = canonicalMentorName_(sourceValue_(row, map, 'mentor_nombre'));
+  const cancelled = normalizeText_(mentorNombre) === 'cancelo solicitud' || normalizeText_(comments).includes('cancelo transferencia');
+  const isSalud = tipoPoblacion === 'SALUD' || normalizeText_(mentorNombre) === 'salud' ||
+    normalizeText_(escuela).includes('salud') || normalizeText_(comunidad) === 'salud';
+  const errors = [];
+
+  if (cancelled) {
+    errors.push(importError_(source.label, rowNumber, matricula, 'SOLICITUD_CANCELADA', 'La solicitud cancelada no se publica ni recibe invitacion.', 'ADVERTENCIA'));
+  }
+
+  tipoPoblacion = isSalud ? 'SALUD' : 'MENTORIA';
+  escuela = escuela || (isSalud ? 'Escuela de Medicina y Ciencias de la Salud' : 'Por clasificar');
+  if (isSalud) {
+    comunidad = 'Salud';
+    mentorId = '';
+    mentorNombre = '';
+  } else if (!cancelled) {
+    const mentor = resolveMentor_(mentors, mentorId, mentorNombre);
+    if (!mentorId && !mentorNombre) {
+      errors.push(importError_(source.label, rowNumber, matricula, 'MENTOR_VACIO', 'La poblacion de Mentoria requiere mentor.', 'BLOQUEANTE'));
+    } else if (mentors.hasRows && !mentor) {
+      errors.push(importError_(source.label, rowNumber, matricula, 'MENTOR_NO_ENCONTRADO', `No coincide con Datos mentor: ${mentorNombre || mentorId}.`, 'BLOQUEANTE'));
+    } else if (mentor && !mentor.active) {
+      errors.push(importError_(source.label, rowNumber, matricula, 'MENTOR_INACTIVO', 'El mentor esta marcado como inactivo.', 'BLOQUEANTE'));
+    } else if (mentor) {
+      mentorId = mentor.id;
+      mentorNombre = mentor.name;
+      comunidad = comunidad || mentor.community;
+    }
+    if (!comunidad) errors.push(importError_(source.label, rowNumber, matricula, 'COMUNIDAD_VACIA', 'No fue posible resolver la comunidad.', 'BLOQUEANTE'));
+  }
+
+  if (!/^[A-Z]\d{8}$/.test(matricula)) errors.push(importError_(source.label, rowNumber, matricula, 'MATRICULA_INVALIDA', 'La matricula debe tener una letra y ocho digitos.', 'BLOQUEANTE'));
+  if (!nameParts.nombres) errors.push(importError_(source.label, rowNumber, matricula, 'NOMBRE_VACIO', 'Falta el nombre del estudiante.', 'BLOQUEANTE'));
+  if (!isValidEmail_(email)) errors.push(importError_(source.label, rowNumber, matricula, 'EMAIL_INVALIDO', 'El correo no tiene un formato valido.', 'BLOQUEANTE'));
+  if (!campusOrigen) errors.push(importError_(source.label, rowNumber, matricula, 'CAMPUS_VACIO', 'Falta campus de origen.', 'BLOQUEANTE'));
+
+  return {
+    source: source.label,
+    priority: source.priority,
+    row: rowNumber,
+    matricula,
+    nombres: nameParts.nombres,
+    apellidos: nameParts.apellidos,
+    nombreCompleto: nameParts.nombreCompleto,
+    email,
+    campusOrigen,
+    escuela,
+    carrera,
+    nombreCarrera,
+    comunidad,
+    tipoPoblacion,
+    mentorId,
+    mentorNombre,
+    activo: parseActive_(sourceValue_(row, map, 'activo')) && !cancelled,
+    tipoTransferencia: cleanText_(sourceValue_(row, map, 'tipo_transferencia')),
+    cohorteOrigen: cleanText_(sourceValue_(row, map, 'periodo_fuente')) || source.label,
+    fechaCorte: sourceValue_(row, map, 'fecha_corte'),
+    importedAt,
+    cancelled,
+    errors
+  };
+}
+
+function splitStudentName_(fullName, names, surnames) {
+  const exact = cleanText_(fullName || `${names} ${surnames}`);
+  if (names) return { nombres: cleanText_(names), apellidos: cleanText_(surnames), nombreCompleto: exact };
+  const parts = exact.split(' ').filter(Boolean);
+  return {
+    nombres: parts.shift() || '',
+    apellidos: parts.join(' '),
+    nombreCompleto: exact
+  };
+}
+
+function canonicalMentorName_(value) {
+  const cleaned = cleanText_(value);
+  return AD26_MENTOR_NAME_ALIASES[normalizeText_(cleaned)] || cleaned;
+}
+
+function sameStudentCandidate_(left, right) {
+  return left.matricula === right.matricula && left.email === right.email &&
+    normalizeText_(left.nombreCompleto) === normalizeText_(right.nombreCompleto) &&
+    normalizeText_(left.mentorNombre) === normalizeText_(right.mentorNombre);
+}
+
+function importError_(source, row, matricula, code, detail, level) {
+  return { source, row, matricula, code, detail, level };
 }
 
 function doGet(e) {
@@ -791,11 +913,15 @@ function ensureSheet_(ss, name, headers) {
   if (!sheet) sheet = ss.insertSheet(name);
   if (!headers || !headers.length) return sheet;
 
-  const existing = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
-  const hasExistingHeader = existing.some(value => String(value || '').trim());
+  const existingWidth = Math.max(1, sheet.getLastColumn());
+  const existing = sheet.getRange(1, 1, 1, existingWidth).getValues()[0]
+    .map(value => String(value || '').trim());
+  const hasExistingHeader = existing.some(Boolean);
   if (hasExistingHeader) {
-    const mismatch = headers.some((header, index) => String(existing[index] || '').trim() !== header);
+    const mismatch = existing.some((header, index) => header && headers[index] !== header);
     if (mismatch) throw new Error(`La hoja ${name} tiene encabezados distintos. No se modifico.`);
+    const missing = headers.slice(existing.length);
+    if (missing.length) sheet.getRange(1, existing.length + 1, 1, missing.length).setValues([missing]);
   } else {
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   }
@@ -816,6 +942,7 @@ function ensureSettings_(sheet) {
     ['REGISTRO_ABIERTO', 'FALSE', 'Switch operativo; iniciar siempre cerrado'],
     ['MODO_PRUEBA', 'TRUE', 'Permite responder solo a las matriculas fixture con el registro real cerrado'],
     ['CUPO_MAXIMO', String(AD26_CONFIG.DEFAULT_CAPACITY), 'Maximo de respuestas SI unicas'],
+    ['LOTE_ENVIO', String(AD26_EMAIL_CAMPAIGN.DEFAULT_BATCH_SIZE), 'Maximo de invitaciones por ejecucion manual'],
     ['FECHA_EVENTO', AD26_CONFIG.EVENT_DATE, 'Fecha ISO'],
     ['HORA_INICIO', AD26_CONFIG.START_TIME, 'Hora local'],
     ['HORA_FIN', AD26_CONFIG.END_TIME, 'Hora local'],
@@ -1101,7 +1228,7 @@ function writeErrors_(sheet, errors) {
   if (!errors.length) return;
   const now = new Date();
   const rows = errors.map(error => [
-    now, error.row, error.matricula, error.code, error.detail, error.level
+    now, error.row, error.matricula, error.code, error.detail, error.level, error.source || ''
   ]);
   sheet.getRange(2, 1, rows.length, AD26_HEADERS.ERRORS.length).setValues(rows);
 }
@@ -1111,6 +1238,7 @@ function buildImportReport_(previewOnly, validRows, errors, published) {
     mode: previewOnly ? 'PREVIEW' : 'PUBLISH',
     validRows,
     blockingErrors: errors.filter(error => error.level === 'BLOQUEANTE').length,
+    warnings: errors.filter(error => error.level === 'ADVERTENCIA').length,
     published,
     message: published
       ? 'Asignaciones actualizada.'
@@ -1122,7 +1250,7 @@ function buildImportReport_(previewOnly, validRows, errors, published) {
 
 function showImportReport_(report, previewOnly) {
   const title = previewOnly ? 'Previsualizacion AD26' : 'Importacion AD26';
-  notify_(`${title}\n\nFilas validas: ${report.validRows}\nErrores bloqueantes: ${report.blockingErrors}\n${report.message}`);
+  notify_(`${title}\n\nFilas validas: ${report.validRows}\nErrores bloqueantes: ${report.blockingErrors}\nAdvertencias: ${report.warnings}\n${report.message}`);
 }
 
 function requireSheet_(ss, name) {
