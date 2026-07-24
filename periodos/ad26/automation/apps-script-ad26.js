@@ -126,6 +126,17 @@ function prepararEstructuraAd26() {
 }
 
 function cargarDatosPruebaAd26() {
+  const result = prepareTestDataAd26_(getTestEmail_());
+  notify_(
+    'Datos de prueba listos.\n\n' +
+    `Mentoria: A00000001 - ${result.mentors[0].displayName} (${result.mentors[0].community})\n` +
+    'Salud sin mentor: A00000002\n' +
+    `Mentoria: A00000003 - ${result.mentors[1].displayName} (${result.mentors[1].community})\n\n` +
+    'El registro real sigue cerrado; solo estas matriculas pueden responder.'
+  );
+}
+
+function prepareTestDataAd26_(testEmail) {
   const ss = getAd26Spreadsheet_();
   prepararEstructuraAd26();
 
@@ -134,6 +145,10 @@ function cargarDatosPruebaAd26() {
   if (parseBoolean_(settings.REGISTRO_ABIERTO)) {
     throw new Error('Cierra el registro real antes de cargar fixtures de prueba.');
   }
+
+  const email = cleanText_(testEmail).toLowerCase();
+  if (!isValidEmail_(email)) throw new Error('Correo de prueba invalido.');
+  PropertiesService.getScriptProperties().setProperty('AD26_TEST_EMAIL', email);
 
   const assignmentSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.ASSIGNMENTS);
   const mentors = selectTestMentors_(
@@ -153,13 +168,7 @@ function cargarDatosPruebaAd26() {
   PropertiesService.getScriptProperties()
     .setProperty('AD26_TEST_MATRICULA', AD26_TEST_FIXTURES.matriculas[0]);
   SpreadsheetApp.flush();
-  notify_(
-    'Datos de prueba listos.\n\n' +
-    `Mentoria: A00000001 - ${mentors[0].displayName} (${mentors[0].community})\n` +
-    'Salud sin mentor: A00000002\n' +
-    `Mentoria: A00000003 - ${mentors[1].displayName} (${mentors[1].community})\n\n` +
-    'El registro real sigue cerrado; solo estas matriculas pueden responder.'
-  );
+  return { email, mentors };
 }
 
 function reiniciarRespuestasPruebaAd26() {
@@ -364,11 +373,29 @@ function doPost(e) {
     if (action === 'health') return detailedHealth_();
     if (action === 'lookup') return lookupStudent_(body);
     if (action === 'confirmacion') return registerResponse_(body);
+    if (action === 'prepare_test') return prepareRemoteTestAd26_(body);
+    if (action === 'send_test_email') return sendRemoteTestEmailAd26_(body);
     return jsonResponse_({ error: 'Accion no valida' }, 400);
   } catch (error) {
     console.error('AD26 doPost:', error && error.message ? error.message : error);
     return jsonResponse_({ error: 'Error interno' }, 500);
   }
+}
+
+function prepareRemoteTestAd26_(body) {
+  const email = cleanText_(body.recipient).toLowerCase();
+  if (!isValidEmail_(email)) return jsonResponse_({ error: 'Correo de prueba invalido' }, 400);
+  if (email !== AD26_TEST_FIXTURES.defaultTestEmail.toLowerCase()) {
+    return jsonResponse_({ error: 'Destinatario de prueba no autorizado' }, 403);
+  }
+  const result = prepareTestDataAd26_(email);
+  return jsonResponse_({
+    ok: true,
+    recipient: result.email,
+    fixtures: AD26_TEST_FIXTURES.matriculas,
+    registrationOpen: false,
+    testMode: true
+  }, 200);
 }
 
 function detailedHealth_() {

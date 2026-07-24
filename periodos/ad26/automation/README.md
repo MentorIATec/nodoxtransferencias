@@ -54,6 +54,11 @@ del navegador.
 Estas funciones no envian campañas masivas ni modifican respuestas. La prueba de
 preregistro se hace desde Vercel con las tres matriculas fixture.
 
+Para una prueba automatizada desde un entorno administrativo, el Web App admite
+`prepare_test` y `send_test_email`. Ambas acciones exigen la API key, mantienen el
+registro real cerrado, aceptan solo las matriculas fixture y envian exclusivamente
+a `AD26_TEST_EMAIL`. Un cache de cinco minutos evita reenvios identicos.
+
 Mientras el modo de prueba esta activo y el registro real cerrado, solo las tres
 matriculas fixture pueden registrar una respuesta. `abrirRegistroAd26` desactiva
 automaticamente el modo de prueba.

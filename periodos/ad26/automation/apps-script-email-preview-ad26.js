@@ -72,21 +72,39 @@ function enviarCorreoPruebaAd26() {
   notify_(`Correo de prueba enviado a ${payload.recipient}.`);
 }
 
-function buildEmailPreviewPayloadAd26_() {
-  const ui = SpreadsheetApp.getUi();
-  const templateResponse = ui.prompt(
-    'Template para previsualizar',
-    'Escribe email-invitacion-ad26 o email-recordatorio-asignacion-ad26.',
-    ui.ButtonSet.OK_CANCEL
-  );
-  if (templateResponse.getSelectedButton() !== ui.Button.OK) throw new Error('Prueba cancelada.');
+function ejecutarPruebaConfirmadaAd26() {
+  const recipient = AD26_TEST_FIXTURES.defaultTestEmail;
+  prepareTestDataAd26_(recipient);
+  const result = sendRemoteTestEmailAd26_({
+    recipient,
+    template: 'email-invitacion-ad26',
+    matricula: 'A00000001'
+  });
+  const response = JSON.parse(result.getContent());
+  if (!response.ok) throw new Error(response.error || 'No fue posible enviar la prueba AD26.');
+  notify_('Prueba AD26 ejecutada. Revisa kareng@tec.mx y la matricula A00000001.');
+  return response;
+}
 
-  const templateName = cleanText_(templateResponse.getResponseText());
+function buildEmailPreviewPayloadAd26_(options) {
+  const settings = options || {};
+  let templateName = cleanText_(settings.templateName);
+  if (!templateName) {
+    const ui = SpreadsheetApp.getUi();
+    const templateResponse = ui.prompt(
+      'Template para previsualizar',
+      'Escribe email-invitacion-ad26 o email-recordatorio-asignacion-ad26.',
+      ui.ButtonSet.OK_CANCEL
+    );
+    if (templateResponse.getSelectedButton() !== ui.Button.OK) throw new Error('Prueba cancelada.');
+    templateName = cleanText_(templateResponse.getResponseText());
+  }
   const subject = AD26_EMAIL_PREVIEW.TEMPLATES[templateName];
   if (!subject) throw new Error('Template no permitido para prueba AD26.');
 
   const ss = getAd26Spreadsheet_();
   const matricula = normalizeMatricula_(
+    settings.matricula ||
     PropertiesService.getScriptProperties().getProperty('AD26_TEST_MATRICULA') ||
     AD26_TEST_FIXTURES.matriculas[0]
   );
@@ -127,6 +145,54 @@ function buildEmailPreviewPayloadAd26_() {
       }
     }
   };
+}
+
+function sendRemoteTestEmailAd26_(body) {
+  const recipient = cleanText_(body.recipient).toLowerCase();
+  const authorizedRecipient = getTestEmail_().toLowerCase();
+  const templateName = cleanText_(body.template);
+  const matricula = normalizeMatricula_(body.matricula);
+
+  if (!isValidEmail_(recipient) || recipient !== authorizedRecipient) {
+    return jsonResponse_({ error: 'Destinatario de prueba no autorizado' }, 403);
+  }
+  if (!AD26_EMAIL_PREVIEW.TEMPLATES[templateName] || !isTestMatricula_(matricula)) {
+    return jsonResponse_({ error: 'Parametros de prueba no permitidos' }, 400);
+  }
+
+  const ss = getAd26Spreadsheet_();
+  const registration = readSettings_(requireSheet_(ss, AD26_CONFIG.SHEETS.SETTINGS));
+  if (parseBoolean_(registration.REGISTRO_ABIERTO) || !parseBoolean_(registration.MODO_PRUEBA)) {
+    return jsonResponse_({ error: 'La prueba remota requiere registro cerrado y modo de prueba activo' }, 409);
+  }
+
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(30000)) return jsonResponse_({ error: 'Prueba ocupada; intenta nuevamente' }, 503);
+  try {
+    const cache = CacheService.getScriptCache();
+    const cacheKey = `ad26-email-test:${templateName}:${matricula}:${recipient}`;
+    if (cache.get(cacheKey)) {
+      return jsonResponse_({ error: 'La misma prueba ya fue enviada recientemente' }, 409);
+    }
+
+    const payload = buildEmailPreviewPayloadAd26_({ templateName, matricula });
+    GmailApp.sendEmail(
+      payload.recipient,
+      `[PRUEBA AD26] ${payload.subject}`,
+      '',
+      payload.options
+    );
+    cache.put(cacheKey, 'sent', 300);
+    return jsonResponse_({
+      ok: true,
+      recipient: payload.recipient,
+      template: payload.templateName,
+      matricula: payload.assignment.matricula,
+      subject: `[PRUEBA AD26] ${payload.subject}`
+    }, 200);
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function renderTemplateAd26_(templateName, data) {
