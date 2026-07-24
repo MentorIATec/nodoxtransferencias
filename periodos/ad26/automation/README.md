@@ -12,6 +12,7 @@ Archivo principal: `apps-script-ad26.js`.
    - `AD26_SPREADSHEET_ID`: ID del Spreadsheet AD26.
    - `AD26_API_KEY`: secreto nuevo y exclusivo de AD26.
    - `AD26_TEST_MATRICULA`: opcional; se agrega cuando exista la lista.
+   - `AD26_TEST_EMAIL`: cuenta autorizada para borradores y correos de prueba.
 
 No reutilices la llave FJ26 y no escribas la llave nueva en Git, HTML o JavaScript
 del navegador.
@@ -30,16 +31,42 @@ del navegador.
 
 1. Mantén `REGISTRO_ABIERTO=FALSE` y `MODO_PRUEBA=TRUE`.
 2. Ejecuta `cargarDatosPruebaAd26` desde el menu `Transferencias AD26`.
-3. Usa `A00000001` para probar una persona con mentor.
-4. Usa `A00000002` para probar una persona de Salud sin mentor.
-5. La funcion usa `kareng@tec.mx` como correo de ambos fixtures; no envia
-   mensajes por si sola.
-6. Para repetir una confirmacion, ejecuta `reiniciarRespuestasPruebaAd26`.
-7. Antes de cargar la lista real, ejecuta `eliminarDatosPruebaAd26`.
+3. La funcion selecciona dos mentores activos de comunidades distintas y crea:
+   - `A00000001`: Mentoria con mentor y comunidad de prueba.
+   - `A00000002`: Salud sin mentor.
+   - `A00000003`: Mentoria con un segundo mentor y comunidad de prueba.
+4. Para repetir una confirmacion, ejecuta `reiniciarRespuestasPruebaAd26`.
+5. Antes de cargar la lista real, ejecuta `eliminarDatosPruebaAd26`.
 
-Mientras el modo de prueba esta activo y el registro real cerrado, solo las dos
+## Previsualizacion y envio de correo de prueba
+
+1. Agrega al mismo proyecto el archivo `apps-script-email-preview-ad26.js`.
+2. Crea dos archivos HTML en Apps Script, copiando las plantillas con estos
+   nombres exactos (sin extension):
+   - `email-invitacion-ad26`
+   - `email-recordatorio-asignacion-ad26`
+3. Ejecuta `configurarCorreoPruebaAd26` y registra una cuenta autorizada.
+4. Ejecuta `crearBorradorCorreoPruebaAd26` para revisar el correo en Gmail,
+   incluyendo el banner inline y el `reply-to` del mentor seleccionado.
+5. Solo despues ejecuta `enviarCorreoPruebaAd26`; exige escribir
+   `ENVIAR PRUEBA` y siempre agrega el prefijo `[PRUEBA AD26]` al asunto.
+
+Estas funciones no envian campañas masivas ni modifican respuestas. La prueba de
+preregistro se hace desde Vercel con las tres matriculas fixture.
+
+Mientras el modo de prueba esta activo y el registro real cerrado, solo las tres
 matriculas fixture pueden registrar una respuesta. `abrirRegistroAd26` desactiva
 automaticamente el modo de prueba.
+
+## Catalogo de mentores verificado
+
+- Fuente privada: `DATOSME_CURSOR.xlsx`.
+- Registros vigentes cotejados: 47.
+- Telefonos institucionales completos: 47 de 47.
+- Coincidencia con `Datos mentor`: 47 de 47 usando email y telefono normalizado.
+
+El cotejo confirma el estado actual, pero no sustituye una nueva validacion si se
+reemplazan filas, telefonos o encabezados en `Datos mentor`.
 
 ## Desplegar como Web App
 

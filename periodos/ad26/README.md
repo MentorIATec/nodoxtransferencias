@@ -25,6 +25,7 @@ carpeta contiene solamente archivos especificos del periodo.
 - `automation/`: Apps Script de lookup, normalizacion y registro.
 - `migrations/`: esquema del Sheet y reglas para transformar la sabana de datos.
 - `qa/`: pruebas funcionales, de cupo y de produccion.
+- `ARQUITECTURA_INTEGRADA.md`: contrato de integracion con el check-in presencial.
 
 ## Principios
 
@@ -43,14 +44,21 @@ carpeta contiene solamente archivos especificos del periodo.
 - Registro SI/NO en `Respuestas` y rechazo de duplicados en servidor.
 - Cupo de 400 respuestas SI unicas, protegido con `LockService`.
 - Registro real cerrado mientras `REGISTRO_ABIERTO=FALSE`.
+- Catalogo privado de 47 mentores cotejado contra `DATOSME_CURSOR.xlsx`; los
+  47 telefonos institucionales coinciden y estan completos.
 
 ## Proximos pasos
 
-1. Ejecutar `reiniciarRespuestasPruebaAd26` para retirar las dos respuestas de QA.
+1. Ejecutar `reiniciarRespuestasPruebaAd26` para retirar las respuestas de QA.
 2. Recibir la sabana definitiva y copiarla sin modificaciones a `Importacion_Raw`.
 3. Ejecutar el pipeline de normalizacion y revisar las hojas de errores y resumen.
 4. Integrar la plantilla `templates/email-invitacion-ad26.html` al flujo de envio y
-   validar su banner inline en Outlook.
+   validar su banner inline en Outlook. Para QA controlado, usar
+   `automation/apps-script-email-preview-ad26.js` para crear primero un borrador
+   en Gmail y despues enviar una prueba individual.
 5. Completar los casos pendientes de `qa/checklist-pruebas.md`.
 6. Abrir el registro solamente despues de la aprobacion final, cambiando
    `REGISTRO_ABIERTO` a `TRUE` y `MODO_PRUEBA` a `FALSE`.
+7. Antes del evento, ejecutar y validar el traspaso controlado descrito en
+   `ARQUITECTURA_INTEGRADA.md`; el check-in no debe consultar este Spreadsheet
+   en tiempo real.

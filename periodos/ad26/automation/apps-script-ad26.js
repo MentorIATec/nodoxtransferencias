@@ -82,24 +82,9 @@ const AD26_HEADER_ALIASES = Object.freeze({
 });
 
 const AD26_TEST_FIXTURES = Object.freeze({
-  mentorId: 'TEST-MENTOR-AD26',
-  matriculas: Object.freeze(['A00000001', 'A00000002']),
-  mentor: Object.freeze([
-    'TEST-MENTOR-AD26', 'Mentora Prueba AD26', 'Mentora Prueba', 'Mentora',
-    'kareng@tec.mx', '520000000000', 'Krei', true
-  ]),
-  assignments: Object.freeze([
-    Object.freeze([
-      'A00000001', 'Prueba Mentoria', 'AD26', 'kareng@tec.mx', 'Campus Puebla',
-      'Ingenieria', 'Krei', 'MENTORIA', 'TEST-MENTOR-AD26',
-      'Mentora Prueba AD26', true, 'AD26-TEST', null
-    ]),
-    Object.freeze([
-      'A00000002', 'Prueba Salud', 'AD26', 'kareng@tec.mx',
-      'Campus Ciudad de Mexico', 'Escuela de Medicina y Ciencias de la Salud',
-      'Salud', 'SALUD', '', '', true, 'AD26-TEST', null
-    ])
-  ])
+  legacyMentorId: 'TEST-MENTOR-AD26',
+  matriculas: Object.freeze(['A00000001', 'A00000002', 'A00000003']),
+  defaultTestEmail: 'kareng@tec.mx'
 });
 
 function onOpen() {
@@ -112,6 +97,9 @@ function onOpen() {
     .addItem('Cargar datos de prueba', 'cargarDatosPruebaAd26')
     .addItem('Reiniciar respuestas de prueba', 'reiniciarRespuestasPruebaAd26')
     .addItem('Eliminar datos de prueba', 'eliminarDatosPruebaAd26')
+    .addItem('Configurar correo de prueba', 'configurarCorreoPruebaAd26')
+    .addItem('Crear borrador de correo prueba', 'crearBorradorCorreoPruebaAd26')
+    .addItem('Enviar correo de prueba', 'enviarCorreoPruebaAd26')
     .addSeparator()
     .addItem('Diagnostico', 'diagnosticarAd26')
     .addItem('Probar lookup', 'probarLookupAd26')
@@ -147,21 +135,12 @@ function cargarDatosPruebaAd26() {
     throw new Error('Cierra el registro real antes de cargar fixtures de prueba.');
   }
 
-  const mentorSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.MENTORS);
   const assignmentSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.ASSIGNMENTS);
-  const importedAt = new Date();
-  const assignments = AD26_TEST_FIXTURES.assignments.map(row => {
-    const copy = Array.from(row);
-    copy[AD26_HEADERS.ASSIGNMENTS.indexOf('fecha_importacion')] = importedAt;
-    return copy;
-  });
-
-  upsertRowsByKey_(
-    mentorSheet,
-    AD26_HEADERS.MENTORS,
-    'mentor_id',
-    [Array.from(AD26_TEST_FIXTURES.mentor)]
+  const mentors = selectTestMentors_(
+    requireSheet_(ss, AD26_CONFIG.SHEETS.MENTORS),
+    2
   );
+  const assignments = buildTestAssignments_(mentors, new Date());
   upsertRowsByKey_(
     assignmentSheet,
     AD26_HEADERS.ASSIGNMENTS,
@@ -176,8 +155,9 @@ function cargarDatosPruebaAd26() {
   SpreadsheetApp.flush();
   notify_(
     'Datos de prueba listos.\n\n' +
-    'Mentoria: A00000001\n' +
-    'Salud sin mentor: A00000002\n\n' +
+    `Mentoria: A00000001 - ${mentors[0].displayName} (${mentors[0].community})\n` +
+    'Salud sin mentor: A00000002\n' +
+    `Mentoria: A00000003 - ${mentors[1].displayName} (${mentors[1].community})\n\n` +
     'El registro real sigue cerrado; solo estas matriculas pueden responder.'
   );
 }
@@ -208,7 +188,7 @@ function eliminarDatosPruebaAd26() {
   const deletedMentors = deleteRowsByValues_(
     requireSheet_(ss, AD26_CONFIG.SHEETS.MENTORS),
     'mentor_id',
-    [AD26_TEST_FIXTURES.mentorId]
+    [AD26_TEST_FIXTURES.legacyMentorId]
   );
 
   setSetting_('MODO_PRUEBA', 'FALSE');
@@ -216,7 +196,7 @@ function eliminarDatosPruebaAd26() {
   SpreadsheetApp.flush();
   notify_(
     `Fixtures eliminados: ${deletedAssignments} asignaciones, ` +
-    `${deletedMentors} mentores y ${deletedResponses} respuestas.`
+    `${deletedMentors} mentores legacy y ${deletedResponses} respuestas.`
   );
 }
 
@@ -670,6 +650,66 @@ function setSetting_(key, value) {
 
 function isTestMatricula_(matricula) {
   return AD26_TEST_FIXTURES.matriculas.includes(normalizeMatricula_(matricula));
+}
+
+function selectTestMentors_(sheet, count) {
+  const mentors = Array.from(readMentors_(sheet).byId.values())
+    .filter(mentor => mentor.active && mentor.id !== AD26_TEST_FIXTURES.legacyMentorId);
+  if (mentors.length < count) {
+    throw new Error(`Se requieren al menos ${count} mentores activos para crear los datos de prueba.`);
+  }
+
+  // Prioriza comunidades distintas para comprobar que el lookup no mezcla asignaciones.
+  const shuffled = shuffle_(mentors);
+  const selected = [];
+  const communities = new Set();
+  shuffled.forEach(mentor => {
+    if (selected.length >= count || communities.has(normalizeText_(mentor.community))) return;
+    selected.push(mentor);
+    communities.add(normalizeText_(mentor.community));
+  });
+  shuffled.forEach(mentor => {
+    if (selected.length >= count || selected.some(item => item.id === mentor.id)) return;
+    selected.push(mentor);
+  });
+  return selected;
+}
+
+function buildTestAssignments_(mentors, importedAt) {
+  const email = getTestEmail_();
+  return [
+    [
+      'A00000001', 'Prueba Comunidad Uno', 'AD26', email, 'Campus Puebla',
+      'Ingenieria', mentors[0].community, 'MENTORIA', mentors[0].id,
+      mentors[0].name, true, 'AD26-TEST', importedAt
+    ],
+    [
+      'A00000002', 'Prueba Salud', 'AD26', email,
+      'Campus Ciudad de Mexico', 'Escuela de Medicina y Ciencias de la Salud',
+      'Salud', 'SALUD', '', '', true, 'AD26-TEST', importedAt
+    ],
+    [
+      'A00000003', 'Prueba Comunidad Dos', 'AD26', email, 'Campus Guadalajara',
+      'Negocios', mentors[1].community, 'MENTORIA', mentors[1].id,
+      mentors[1].name, true, 'AD26-TEST', importedAt
+    ]
+  ];
+}
+
+function getTestEmail_() {
+  const configured = cleanText_(PropertiesService.getScriptProperties().getProperty('AD26_TEST_EMAIL'));
+  return isValidEmail_(configured) ? configured : AD26_TEST_FIXTURES.defaultTestEmail;
+}
+
+function shuffle_(items) {
+  const copy = items.slice();
+  for (let index = copy.length - 1; index > 0; index--) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    const current = copy[index];
+    copy[index] = copy[swapIndex];
+    copy[swapIndex] = current;
+  }
+  return copy;
 }
 
 function upsertRowsByKey_(sheet, headers, keyHeader, rows) {

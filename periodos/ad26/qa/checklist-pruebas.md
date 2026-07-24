@@ -7,6 +7,7 @@
 - [x] El HTML publicado no contiene la llave de Apps Script.
 - [x] `A00000001` muestra mentor, comunidad y contacto de prueba.
 - [x] `A00000002` muestra comunidad Salud sin tarjeta ni boton de mentor.
+- [ ] `A00000003` muestra un segundo mentor y comunidad de prueba.
 - [x] Una respuesta crea una sola fila en `Respuestas`.
 - [x] Un segundo intento queda bloqueado por el servidor.
 - [ ] `reiniciarRespuestasPruebaAd26` permite repetir el flujo.
@@ -57,3 +58,5 @@
 - [ ] Banner AD26 visible en Outlook y Gmail.
 - [ ] Boton compatible con Outlook y enlace correcto.
 - [ ] Pruebas solo a cuentas autorizadas antes de produccion.
+- [ ] Borrador de invitacion AD26 revisado en Gmail.
+- [ ] Correo de prueba AD26 recibido con banner inline y reply-to esperado.
