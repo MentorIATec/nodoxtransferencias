@@ -70,6 +70,17 @@ reemplazan filas, telefonos o encabezados en `Datos mentor`.
 
 ## Desplegar como Web App
 
+El proyecto esta vinculado mediante `clasp` en `../clasp/`. Para sincronizar los
+dos scripts y las dos plantillas desde la raiz del repositorio:
+
+```bash
+npm run apps-script:status
+npm run apps-script:push
+```
+
+La carpeta generada `clasp/build/` no es fuente y no debe editarse ni subirse a
+Git.
+
 1. `Implementar > Nueva implementacion > Aplicacion web`.
 2. Ejecutar como la propietaria del proyecto.
 3. Configurar el acceso requerido por la cuenta institucional.

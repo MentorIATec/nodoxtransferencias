@@ -5,7 +5,12 @@
   "engines": {
     "node": ">=18.x"
   },
- "dependencies": {
+  "scripts": {
+    "apps-script:build": "node periodos/ad26/clasp/build.mjs",
+    "apps-script:status": "npm run apps-script:build && cd periodos/ad26/clasp && clasp status",
+    "apps-script:push": "npm run apps-script:build && cd periodos/ad26/clasp && clasp push --force"
+  },
+  "dependencies": {
     "node-fetch": "^3.3.2"
   }
 }
