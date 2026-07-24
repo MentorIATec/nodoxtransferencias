@@ -78,6 +78,10 @@ Reglas del traspaso:
 
 ## Pendientes bloqueantes de liberacion
 
+> Seguimiento acordado: despues de liberar la invitacion definitiva de
+> preregistro, retomar y no cerrar la implementacion hasta completar el catalogo
+> onsite, la fotografia A -> B y sus pruebas de concurrencia.
+
 1. Implementar y ensayar el pipeline ejecutable de fotografia A -> B. Actualmente
    existe el esquema y el contrato, pero no una funcion automatizada de traspaso.
 2. Importar el catalogo privado de 47 mentores a `Mentores_AD26` del Spreadsheet B.
