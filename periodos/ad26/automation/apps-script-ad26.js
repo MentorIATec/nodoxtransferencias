@@ -101,6 +101,7 @@ function onOpen() {
     .addItem('Crear borrador de correo prueba', 'crearBorradorCorreoPruebaAd26')
     .addItem('Enviar correo de prueba', 'enviarCorreoPruebaAd26')
     .addSeparator()
+    .addItem('Actualizar resumen de respuestas', 'generarResumenRespuestasAd26')
     .addItem('Diagnostico', 'diagnosticarAd26')
     .addItem('Probar lookup', 'probarLookupAd26')
     .addItem('Cerrar registro', 'cerrarRegistroAd26')
@@ -551,6 +552,183 @@ function diagnosticarAd26() {
   console.log(JSON.stringify(result));
   notify_(JSON.stringify(result, null, 2));
   return result;
+}
+
+/**
+ * Genera un reporte manual de preregistro. No usa triggers ni modifica
+ * Asignaciones o Respuestas; solo actualiza la hoja Resumen.
+ */
+function generarResumenRespuestasAd26() {
+  const ss = getAd26Spreadsheet_();
+  const assignmentSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.ASSIGNMENTS);
+  const responseSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.RESPONSES);
+  const settings = readSettings_(requireSheet_(ss, AD26_CONFIG.SHEETS.SETTINGS));
+  const summarySheet = ensureSheet_(ss, AD26_CONFIG.SHEETS.SUMMARY, null);
+  const capacity = positiveInteger_(settings.CUPO_MAXIMO, AD26_CONFIG.DEFAULT_CAPACITY);
+  const summary = buildRegistrationSummary_(
+    assignmentSheet.getDataRange().getValues(),
+    responseSheet.getDataRange().getValues(),
+    capacity
+  );
+
+  writeRegistrationSummary_(summarySheet, summary);
+  SpreadsheetApp.flush();
+  notify_(
+    `Resumen actualizado. Respuestas: ${summary.kpis.responses}. ` +
+    `SI: ${summary.kpis.yes}. Avance de cupo: ${summary.kpis.capacityProgress}.`
+  );
+  return summary;
+}
+
+function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
+  const assignments = assignmentValues.length > 1 ? assignmentValues : [];
+  const responses = responseValues.length > 1 ? responseValues : [];
+  const assignmentHeaders = assignments.length ? headerMap_(assignments[0]) : {};
+  const responseHeaders = responses.length ? headerMap_(responses[0]) : {};
+  const activeAssignments = new Map();
+
+  for (let index = 1; index < assignments.length; index++) {
+    const row = assignments[index];
+    const matricula = normalizeMatricula_(row[assignmentHeaders.matricula]);
+    if (!matricula || !parseActive_(row[assignmentHeaders.activo])) continue;
+    activeAssignments.set(matricula, {
+      community: cleanText_(row[assignmentHeaders.comunidad]) || 'Sin comunidad',
+      population: cleanText_(row[assignmentHeaders.tipo_poblacion]).toUpperCase(),
+      mentorId: cleanText_(row[assignmentHeaders.mentor_id]),
+      mentorName: cleanText_(row[assignmentHeaders.mentor_nombre])
+    });
+  }
+
+  // Conserva la ultima respuesta por matricula por tolerancia a registros historicos.
+  const latestResponses = new Map();
+  for (let index = 1; index < responses.length; index++) {
+    const row = responses[index];
+    if (cleanText_(row[responseHeaders.event_id]) !== AD26_CONFIG.EVENT_ID) continue;
+    const matricula = normalizeMatricula_(row[responseHeaders.matricula]);
+    const answer = normalizeAnswer_(row[responseHeaders.asistira]);
+    if (!matricula || !answer) continue;
+    latestResponses.set(matricula, {
+      answer,
+      community: cleanText_(row[responseHeaders.comunidad]),
+      population: cleanText_(row[responseHeaders.tipo_poblacion]).toUpperCase(),
+      mentorId: cleanText_(row[responseHeaders.mentor_id])
+    });
+  }
+
+  const mentorCounts = new Map();
+  const communityCounts = new Map();
+  const healthCounts = { total: 0, yes: 0, no: 0 };
+  let yes = 0;
+  let no = 0;
+
+  latestResponses.forEach((response, matricula) => {
+    const assignment = activeAssignments.get(matricula);
+    const population = assignment ? assignment.population : response.population;
+    const community = population === 'SALUD'
+      ? 'Salud'
+      : (assignment ? assignment.community : response.community) || 'Sin comunidad';
+    const mentor = population === 'SALUD'
+      ? 'Escuela de Salud'
+      : (assignment ? assignment.mentorName : '') || response.mentorId || 'Sin mentor/a';
+    const target = response.answer === 'SI' ? 'yes' : 'no';
+
+    if (target === 'yes') yes++;
+    else no++;
+    incrementSummaryCount_(mentorCounts, mentor, target);
+    incrementSummaryCount_(communityCounts, community, target);
+    if (population === 'SALUD' || normalizeText_(community) === 'salud') {
+      healthCounts.total++;
+      healthCounts[target]++;
+    }
+  });
+
+  const responsesCount = yes + no;
+  const activeCount = activeAssignments.size;
+  const pending = Math.max(0, activeCount - responsesCount);
+  const toRow = entry => [
+    entry.label,
+    entry.total,
+    entry.yes,
+    entry.no,
+    entry.total ? entry.yes / entry.total : 0
+  ];
+
+  return {
+    generatedAt: new Date(),
+    kpis: {
+      active: activeCount,
+      responses: responsesCount,
+      yes,
+      no,
+      pending,
+      responseRate: activeCount ? responsesCount / activeCount : 0,
+      capacity,
+      capacityProgress: capacity ? yes / capacity : 0,
+      available: Math.max(0, capacity - yes),
+      health: healthCounts
+    },
+    byMentor: Array.from(mentorCounts.values()).sort(sortSummaryEntries_).map(toRow),
+    byCommunity: Array.from(communityCounts.values()).sort(sortSummaryEntries_).map(toRow)
+  };
+}
+
+function incrementSummaryCount_(counts, label, answerKey) {
+  const key = cleanText_(label) || 'Sin especificar';
+  if (!counts.has(key)) counts.set(key, { label: key, total: 0, yes: 0, no: 0 });
+  const entry = counts.get(key);
+  entry.total++;
+  entry[answerKey]++;
+}
+
+function sortSummaryEntries_(first, second) {
+  if (second.total !== first.total) return second.total - first.total;
+  return first.label.localeCompare(second.label, 'es');
+}
+
+function writeRegistrationSummary_(sheet, summary) {
+  sheet.clear();
+  const kpis = summary.kpis;
+  const rows = [
+    ['Resumen de preregistro - Bienvenida de Transferencias AD26'],
+    [`Actualizado: ${Utilities.formatDate(summary.generatedAt, AD26_CONFIG.TIMEZONE, 'dd/MM/yyyy HH:mm')}`],
+    [],
+    ['Indicador', 'Valor'],
+    ['Poblacion activa', kpis.active],
+    ['Respuestas unicas', kpis.responses],
+    ['Si asistire', kpis.yes],
+    ['No podre asistir', kpis.no],
+    ['Pendientes', kpis.pending],
+    ['% de respuesta', kpis.responseRate],
+    [`Avance hacia cupo (${kpis.capacity})`, kpis.capacityProgress],
+    ['Lugares disponibles', kpis.available],
+    ['Salud - respuestas', kpis.health.total],
+    ['Salud - SI', kpis.health.yes],
+    ['Salud - NO', kpis.health.no]
+  ];
+  sheet.getRange(1, 1, rows.length, 2).setValues(rows);
+  sheet.getRange(1, 1, 1, 2).merge().setFontWeight('bold').setFontSize(14).setBackground('#0b3f67').setFontColor('#ffffff');
+  sheet.getRange(4, 1, 1, 2).setFontWeight('bold').setBackground('#d9ead3');
+  sheet.getRange(10, 2, 2, 1).setNumberFormat('0.0%');
+
+  const mentorStart = 18;
+  const headers = [['Confirmaciones por mentor/a', 'Total', 'SI', 'NO', '% SI']];
+  sheet.getRange(mentorStart, 1, 1, 5).setValues(headers).setFontWeight('bold').setBackground('#d9eaf7');
+  if (summary.byMentor.length) {
+    sheet.getRange(mentorStart + 1, 1, summary.byMentor.length, 5).setValues(summary.byMentor);
+    sheet.getRange(mentorStart + 1, 5, summary.byMentor.length, 1).setNumberFormat('0.0%');
+  }
+
+  const communityStart = mentorStart + Math.max(summary.byMentor.length, 1) + 3;
+  sheet.getRange(communityStart, 1, 1, 5)
+    .setValues([['Confirmaciones por comunidad', 'Total', 'SI', 'NO', '% SI']])
+    .setFontWeight('bold').setBackground('#fce5cd');
+  if (summary.byCommunity.length) {
+    sheet.getRange(communityStart + 1, 1, summary.byCommunity.length, 5).setValues(summary.byCommunity);
+    sheet.getRange(communityStart + 1, 5, summary.byCommunity.length, 1).setNumberFormat('0.0%');
+  }
+
+  sheet.setFrozenRows(4);
+  sheet.autoResizeColumns(1, 5);
 }
 
 function probarLookupAd26() {

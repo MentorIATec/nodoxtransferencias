@@ -63,6 +63,14 @@ Mientras el modo de prueba esta activo y el registro real cerrado, solo las tres
 matriculas fixture pueden registrar una respuesta. `abrirRegistroAd26` desactiva
 automaticamente el modo de prueba.
 
+## Resumen de respuestas
+
+Desde el menu `Transferencias AD26`, ejecuta `Actualizar resumen de respuestas`.
+La funcion actualiza manualmente la hoja `Resumen` sin crear triggers ni modificar
+la poblacion o las respuestas. Incluye confirmaciones `SI` y `NO` por mentor/a y
+comunidad, el bloque separado de Salud, porcentaje de respuesta, pendientes y el
+avance de respuestas `SI` frente al cupo de 400 con los lugares disponibles.
+
 ## Catalogo de mentores verificado
 
 - Fuente privada: `DATOSME_CURSOR.xlsx`.

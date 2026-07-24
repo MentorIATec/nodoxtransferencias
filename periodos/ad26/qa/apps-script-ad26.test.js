@@ -91,4 +91,33 @@ assert.strictEqual(snapshot.full, true);
 const existing = context.findExistingResponse_(mockSpreadsheet(rows399), 'A88888888');
 assert.strictEqual(existing.answer, 'SI');
 
+const assignmentHeaders = [
+  'matricula', 'nombres', 'apellidos', 'email', 'campus_origen', 'escuela',
+  'comunidad', 'tipo_poblacion', 'mentor_id', 'mentor_nombre', 'activo'
+];
+const assignmentRows = [
+  assignmentHeaders,
+  ['A00000001', 'Ana', 'Prueba', 'ana@tec.mx', 'Campus Puebla', 'Ingenieria', 'Krei', 'MENTORIA', 'M-1', 'Mentora Krei', true],
+  ['A00000002', 'Luis', 'Prueba', 'luis@tec.mx', 'Campus Puebla', 'Salud', 'Salud', 'SALUD', '', '', true],
+  ['A00000003', 'Inactivo', 'Prueba', 'inactivo@tec.mx', 'Campus Puebla', 'Ingenieria', 'Pasio', 'MENTORIA', 'M-2', 'Mentor Pasio', false]
+];
+const summaryResponses = [
+  responseHeaders,
+  ['r-1', 'bienvenida-transferencias-ad26', new Date(), 'A00000001', 'SI', 'MENTORIA', 'Krei', 'M-1'],
+  ['r-2', 'bienvenida-transferencias-ad26', new Date(), 'A00000002', 'NO', 'SALUD', 'Salud', ''],
+  ['r-old', 'otro-evento', new Date(), 'A00000003', 'SI', 'MENTORIA', 'Pasio', 'M-2']
+];
+const summary = context.buildRegistrationSummary_(assignmentRows, summaryResponses, 400);
+assert.strictEqual(summary.kpis.active, 2);
+assert.strictEqual(summary.kpis.responses, 2);
+assert.strictEqual(summary.kpis.yes, 1);
+assert.strictEqual(summary.kpis.no, 1);
+assert.strictEqual(summary.kpis.pending, 0);
+assert.strictEqual(summary.kpis.capacityProgress, 1 / 400);
+assert.strictEqual(summary.kpis.health.total, 1);
+assert.deepStrictEqual(JSON.parse(JSON.stringify(summary.byCommunity)), [
+  ['Krei', 1, 1, 0, 1],
+  ['Salud', 1, 0, 1, 0]
+]);
+
 console.log('AD26 Apps Script tests OK');
