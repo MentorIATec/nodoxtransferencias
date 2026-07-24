@@ -71,25 +71,21 @@ Reglas del traspaso:
 - Assets: las imagenes de mentor se publican desde
   `/Users/karenguzman/campus-checkin/public/mentores/` y se validan con
   `npm run validate:mentor-assets`.
-- Auditoria de assets: el catalogo vigente todavia referencia
-  `DaciaKresko.jpg`, `MarianaPasio.jpg`, `FerSpirita.jpg` y `AnaTalenta.jpg`,
-  pero esos cuatro archivos fueron retirados intencionalmente del repositorio de
-  check-in. Deben definirse sus reemplazos antes de produccion.
+- Auditoria de assets: 47 referencias y 47 coincidencias exactas verificadas con
+  `npm run validate:mentor-assets`.
 
 ## Pendientes bloqueantes de liberacion
 
 1. Implementar y ensayar el pipeline ejecutable de fotografia A -> B. Actualmente
    existe el esquema y el contrato, pero no una funcion automatizada de traspaso.
 2. Importar el catalogo privado de 47 mentores a `Mentores_AD26` del Spreadsheet B.
-3. Resolver las cuatro referencias de imagen retiradas o actualizar el catalogo
-   si esas personas ya no formaran parte de la operacion AD26.
-4. Recibir y validar la sabana definitiva; retirar `A00000001`, `A00000002` y
+3. Recibir y validar la sabana definitiva; retirar `A00000001`, `A00000002` y
    `A00000003` antes de produccion.
-5. Configurar Apps Script y Vercel del check-in con secretos exclusivos AD26.
-6. Publicar `campus-checkin-ad26` sin reutilizar el dominio FJ26.
-7. Probar matricula valida, duplicado, Salud, incidencia, doble clic, Enter,
+4. Configurar Apps Script y Vercel del check-in con secretos exclusivos AD26.
+5. Publicar `campus-checkin-ad26` sin reutilizar el dominio FJ26.
+6. Probar matricula valida, duplicado, Salud, incidencia, doble clic, Enter,
    refresh, timeout y 20 a 30 dispositivos concurrentes.
-8. Preparar procedimiento manual y QR de contingencia.
+7. Preparar procedimiento manual y QR de contingencia.
 
 ## Criterio de cierre
 
