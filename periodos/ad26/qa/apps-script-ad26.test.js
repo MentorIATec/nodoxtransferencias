@@ -7,7 +7,10 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const scriptPath = path.join(__dirname, '..', 'automation', 'apps-script-ad26.js');
-const context = { console };
+const context = {
+  console,
+  Utilities: { formatDate: () => '24/07/2026 18:00' }
+};
 vm.createContext(context);
 vm.runInContext(fs.readFileSync(scriptPath, 'utf8'), context);
 
@@ -155,5 +158,8 @@ assert.deepStrictEqual(JSON.parse(JSON.stringify(summary.byCommunity)), [
   ['Krei', 1, 1, 0, 1],
   ['Salud', 1, 0, 1, 0]
 ]);
+const summaryRows = context.buildRegistrationSummaryKpiRows_(summary);
+assert.strictEqual(summaryRows.length, 15);
+assert.ok(summaryRows.every(row => row.length === 2));
 
 console.log('AD26 Apps Script tests OK');

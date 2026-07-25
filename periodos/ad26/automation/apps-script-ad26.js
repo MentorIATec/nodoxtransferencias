@@ -810,23 +810,7 @@ function sortSummaryEntries_(first, second) {
 function writeRegistrationSummary_(sheet, summary) {
   sheet.clear();
   const kpis = summary.kpis;
-  const rows = [
-    ['Resumen de preregistro - Bienvenida de Transferencias AD26'],
-    [`Actualizado: ${Utilities.formatDate(summary.generatedAt, AD26_CONFIG.TIMEZONE, 'dd/MM/yyyy HH:mm')}`],
-    [],
-    ['Indicador', 'Valor'],
-    ['Poblacion activa', kpis.active],
-    ['Respuestas unicas', kpis.responses],
-    ['Si asistire', kpis.yes],
-    ['No podre asistir', kpis.no],
-    ['Pendientes', kpis.pending],
-    ['% de respuesta', kpis.responseRate],
-    [`Avance hacia cupo (${kpis.capacity})`, kpis.capacityProgress],
-    ['Lugares disponibles', kpis.available],
-    ['Salud - respuestas', kpis.health.total],
-    ['Salud - SI', kpis.health.yes],
-    ['Salud - NO', kpis.health.no]
-  ];
+  const rows = buildRegistrationSummaryKpiRows_(summary);
   sheet.getRange(1, 1, rows.length, 2).setValues(rows);
   sheet.getRange(1, 1, 1, 2).merge().setFontWeight('bold').setFontSize(14).setBackground('#0b3f67').setFontColor('#ffffff');
   sheet.getRange(4, 1, 1, 2).setFontWeight('bold').setBackground('#d9ead3');
@@ -851,6 +835,27 @@ function writeRegistrationSummary_(sheet, summary) {
 
   sheet.setFrozenRows(4);
   sheet.autoResizeColumns(1, 5);
+}
+
+function buildRegistrationSummaryKpiRows_(summary) {
+  const kpis = summary.kpis;
+  return [
+    ['Resumen de preregistro - Bienvenida de Transferencias AD26', ''],
+    [`Actualizado: ${Utilities.formatDate(summary.generatedAt, AD26_CONFIG.TIMEZONE, 'dd/MM/yyyy HH:mm')}`, ''],
+    ['', ''],
+    ['Indicador', 'Valor'],
+    ['Poblacion activa', kpis.active],
+    ['Respuestas unicas', kpis.responses],
+    ['Si asistire', kpis.yes],
+    ['No podre asistir', kpis.no],
+    ['Pendientes', kpis.pending],
+    ['% de respuesta', kpis.responseRate],
+    [`Avance hacia cupo (${kpis.capacity})`, kpis.capacityProgress],
+    ['Lugares disponibles', kpis.available],
+    ['Salud - respuestas', kpis.health.total],
+    ['Salud - SI', kpis.health.yes],
+    ['Salud - NO', kpis.health.no]
+  ];
 }
 
 function probarLookupAd26() {
