@@ -138,7 +138,9 @@ const assignmentRows = [
   assignmentHeaders,
   ['A00000001', 'Ana', 'Prueba', 'ana@tec.mx', 'Campus Puebla', 'Ingenieria', 'Krei', 'MENTORIA', 'M-1', 'Mentora Krei', true],
   ['A00000002', 'Luis', 'Prueba', 'luis@tec.mx', 'Campus Puebla', 'Salud', 'Salud', 'SALUD', '', '', true],
-  ['A00000003', 'Inactivo', 'Prueba', 'inactivo@tec.mx', 'Campus Puebla', 'Ingenieria', 'Pasio', 'MENTORIA', 'M-2', 'Mentor Pasio', false]
+  ['A00000003', 'Inactivo', 'Prueba', 'inactivo@tec.mx', 'Campus Puebla', 'Ingenieria', 'Pasio', 'MENTORIA', 'M-2', 'Mentor Pasio', false],
+  ['A00000004', 'Marta', 'Pendiente', 'marta@tec.mx', 'Campus Guadalajara', 'Ingenieria', 'Spirita', 'MENTORIA', 'M-3', 'Mentor Spirita', true],
+  ['A00000005', 'Sofia', 'Salud', 'sofia@tec.mx', 'Campus Queretaro', 'Salud', 'Salud', 'SALUD', '', '', true]
 ];
 const summaryResponses = [
   responseHeaders,
@@ -147,11 +149,11 @@ const summaryResponses = [
   ['r-old', 'otro-evento', new Date(), 'A00000003', 'SI', 'MENTORIA', 'Pasio', 'M-2']
 ];
 const summary = context.buildRegistrationSummary_(assignmentRows, summaryResponses, 400);
-assert.strictEqual(summary.kpis.active, 2);
+assert.strictEqual(summary.kpis.active, 4);
 assert.strictEqual(summary.kpis.responses, 2);
 assert.strictEqual(summary.kpis.yes, 1);
 assert.strictEqual(summary.kpis.no, 1);
-assert.strictEqual(summary.kpis.pending, 0);
+assert.strictEqual(summary.kpis.pending, 2);
 assert.strictEqual(summary.kpis.capacityProgress, 1 / 400);
 assert.strictEqual(summary.kpis.health.total, 1);
 assert.deepStrictEqual(JSON.parse(JSON.stringify(summary.byCommunity)), [
@@ -161,5 +163,11 @@ assert.deepStrictEqual(JSON.parse(JSON.stringify(summary.byCommunity)), [
 const summaryRows = context.buildRegistrationSummaryKpiRows_(summary);
 assert.strictEqual(summaryRows.length, 15);
 assert.ok(summaryRows.every(row => row.length === 2));
+
+const pendingRows = context.buildPendingMentorRows_(assignmentRows, summaryResponses);
+assert.deepStrictEqual(JSON.parse(JSON.stringify(pendingRows)), [
+  ['Sofia Salud', 'A00000005', 'Escuela de Salud (sin mentor/a)', 'Campus Queretaro'],
+  ['Marta Pendiente', 'A00000004', 'Mentor Spirita', 'Campus Guadalajara']
+]);
 
 console.log('AD26 Apps Script tests OK');

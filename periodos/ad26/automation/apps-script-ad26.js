@@ -38,6 +38,7 @@ const AD26_CONFIG = Object.freeze({
     SETTINGS: 'Configuracion',
     SEND_LOG: 'Log_Envios',
     SUMMARY: 'Resumen',
+    PENDING: 'Pendientes_Mentores',
     ERRORS: 'Errores'
   })
 });
@@ -134,6 +135,7 @@ function onOpen() {
     .addItem('Enviar siguiente lote de invitación', 'enviarSiguienteLoteInvitacionAd26')
     .addSeparator()
     .addItem('Actualizar resumen de respuestas', 'generarResumenRespuestasAd26')
+    .addItem('Generar pendientes por mentor/a', 'generarPendientesMentoresAd26')
     .addItem('Diagnostico', 'diagnosticarAd26')
     .addItem('Probar lookup', 'probarLookupAd26')
     .addItem('Cerrar registro', 'cerrarRegistroAd26')
@@ -153,6 +155,7 @@ function prepararEstructuraAd26() {
   ensureSheet_(ss, AD26_CONFIG.SHEETS.SETTINGS, AD26_HEADERS.SETTINGS);
   ensureSheet_(ss, AD26_CONFIG.SHEETS.SEND_LOG, AD26_HEADERS.SEND_LOG);
   ensureSheet_(ss, AD26_CONFIG.SHEETS.SUMMARY, null);
+  ensureSheet_(ss, AD26_CONFIG.SHEETS.PENDING, null);
   ensureSheet_(ss, AD26_CONFIG.SHEETS.ERRORS, AD26_HEADERS.ERRORS);
   ensureSettings_(ss.getSheetByName(AD26_CONFIG.SHEETS.SETTINGS));
 
@@ -700,6 +703,93 @@ function generarResumenRespuestasAd26() {
     `SI: ${summary.kpis.yes}. Avance de cupo: ${summary.kpis.capacityProgress}.`
   );
   return summary;
+}
+
+/**
+ * Regenera una lista operativa de estudiantes activos que aun no han
+ * contestado SI o NO para el evento AD26. No modifica las fuentes.
+ */
+function generarPendientesMentoresAd26() {
+  const ss = getAd26Spreadsheet_();
+  const assignmentSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.ASSIGNMENTS);
+  const responseSheet = requireSheet_(ss, AD26_CONFIG.SHEETS.RESPONSES);
+  const pendingSheet = ensureSheet_(ss, AD26_CONFIG.SHEETS.PENDING, null);
+  const pending = buildPendingMentorRows_(
+    assignmentSheet.getDataRange().getValues(),
+    responseSheet.getDataRange().getValues()
+  );
+
+  writePendingMentorRows_(pendingSheet, pending);
+  SpreadsheetApp.flush();
+  notify_(`Lista de pendientes actualizada: ${pending.length} estudiantes sin respuesta.`);
+  return pending;
+}
+
+function buildPendingMentorRows_(assignmentValues, responseValues) {
+  if (assignmentValues.length < 2) return [];
+
+  const assignmentHeaders = headerMap_(assignmentValues[0]);
+  const responseHeaders = responseValues.length ? headerMap_(responseValues[0]) : {};
+  const answered = new Set();
+
+  for (let index = 1; index < responseValues.length; index++) {
+    const row = responseValues[index];
+    if (cleanText_(row[responseHeaders.event_id]) !== AD26_CONFIG.EVENT_ID) continue;
+    const matricula = normalizeMatricula_(row[responseHeaders.matricula]);
+    const answer = normalizeAnswer_(row[responseHeaders.asistira]);
+    if (matricula && answer) answered.add(matricula);
+  }
+
+  const pendingByMatricula = new Map();
+  for (let index = 1; index < assignmentValues.length; index++) {
+    const row = assignmentValues[index];
+    const matricula = normalizeMatricula_(row[assignmentHeaders.matricula]);
+    if (!matricula || answered.has(matricula) || !parseActive_(row[assignmentHeaders.activo])) continue;
+
+    const population = cleanText_(row[assignmentHeaders.tipo_poblacion]).toUpperCase();
+    const names = cleanText_(row[assignmentHeaders.nombres]);
+    const surnames = cleanText_(row[assignmentHeaders.apellidos]);
+    const fullName = cleanText_(row[assignmentHeaders.nombre_completo]) ||
+      [names, surnames].filter(Boolean).join(' ');
+    const mentor = population === 'SALUD'
+      ? 'Escuela de Salud (sin mentor/a)'
+      : cleanText_(row[assignmentHeaders.mentor_nombre]) || 'Sin mentor/a asignado/a';
+
+    pendingByMatricula.set(matricula, [
+      fullName || 'Sin nombre',
+      matricula,
+      mentor,
+      cleanText_(row[assignmentHeaders.campus_origen]) || 'Sin campus de origen'
+    ]);
+  }
+
+  return Array.from(pendingByMatricula.values()).sort((first, second) => {
+    const byMentor = first[2].localeCompare(second[2], 'es');
+    if (byMentor) return byMentor;
+    return first[0].localeCompare(second[0], 'es');
+  });
+}
+
+function writePendingMentorRows_(sheet, rows) {
+  if (sheet.getFilter()) sheet.getFilter().remove();
+  sheet.clear();
+  sheet.getRange(1, 1, 1, 4)
+    .setValues([['Estudiante', 'Matricula', 'Mentor/a asignado/a', 'Campus de origen']])
+    .setFontWeight('bold')
+    .setBackground('#0b3f67')
+    .setFontColor('#ffffff');
+
+  if (rows.length) {
+    sheet.getRange(2, 1, rows.length, 4).setValues(rows);
+    sheet.getRange(1, 1, rows.length + 1, 4).createFilter();
+  }
+
+  sheet.setFrozenRows(1);
+  sheet.setTabColor('#f6b26b');
+  sheet.autoResizeColumns(1, 4);
+  sheet.setColumnWidth(1, Math.max(sheet.getColumnWidth(1), 240));
+  sheet.setColumnWidth(3, Math.max(sheet.getColumnWidth(3), 240));
+  sheet.setColumnWidth(4, Math.max(sheet.getColumnWidth(4), 180));
 }
 
 function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {

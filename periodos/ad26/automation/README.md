@@ -79,6 +79,19 @@ la poblacion o las respuestas. Incluye confirmaciones `SI` y `NO` por mentor/a y
 comunidad, el bloque separado de Salud, porcentaje de respuesta, pendientes y el
 avance de respuestas `SI` frente al cupo de 400 con los lugares disponibles.
 
+## Pendientes para seguimiento de mentoría
+
+Desde el mismo menú, ejecuta `Generar pendientes por mentor/a`. La función
+regenera manualmente la hoja `Pendientes_Mentores` con estudiantes activos que
+todavía no tienen una respuesta válida `SI` o `NO` para AD26. Incluye únicamente
+nombre, matrícula, mentor/a y campus de origen; ordena por mentor/a y agrega un
+filtro para facilitar el seguimiento. La población de Salud aparece como
+`Escuela de Salud (sin mentor/a)`.
+
+La hoja es derivada: puede borrarse o regenerarse sin afectar `Asignaciones` ni
+`Respuestas`. Debe actualizarse manualmente después de importar una nueva lista
+o cuando se requiera compartir un corte reciente con el equipo de mentoría.
+
 ## Catalogo de mentores verificado
 
 - Fuente privada: `DATOSME_CURSOR.xlsx`.
