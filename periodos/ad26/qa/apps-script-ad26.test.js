@@ -132,15 +132,16 @@ assert.strictEqual(existing.answer, 'SI');
 
 const assignmentHeaders = [
   'matricula', 'nombres', 'apellidos', 'email', 'campus_origen', 'escuela',
-  'comunidad', 'tipo_poblacion', 'mentor_id', 'mentor_nombre', 'activo'
+  'comunidad', 'tipo_poblacion', 'mentor_id', 'mentor_nombre', 'activo',
+  'carrera', 'nombre_carrera'
 ];
 const assignmentRows = [
   assignmentHeaders,
-  ['A00000001', 'Ana', 'Prueba', 'ana@tec.mx', 'Campus Puebla', 'Ingenieria', 'Krei', 'MENTORIA', 'M-1', 'Mentora Krei', true],
-  ['A00000002', 'Luis', 'Prueba', 'luis@tec.mx', 'Campus Puebla', 'Salud', 'Salud', 'SALUD', '', '', true],
-  ['A00000003', 'Inactivo', 'Prueba', 'inactivo@tec.mx', 'Campus Puebla', 'Ingenieria', 'Pasio', 'MENTORIA', 'M-2', 'Mentor Pasio', false],
-  ['A00000004', 'Marta', 'Pendiente', 'marta@tec.mx', 'Campus Guadalajara', 'Ingenieria', 'Spirita', 'MENTORIA', 'M-3', 'Mentor Spirita', true],
-  ['A00000005', 'Sofia', 'Salud', 'sofia@tec.mx', 'Campus Queretaro', 'Salud', 'Salud', 'SALUD', '', '', true]
+  ['A00000001', 'Ana', 'Prueba', 'ana@tec.mx', 'Campus Puebla', 'Por clasificar', 'Krei', 'MENTORIA', 'M-1', 'Mentora Krei', true, 'ITC', 'Ing. en Tecnologias Computacionales'],
+  ['A00000002', 'Luis', 'Prueba', 'luis@tec.mx', 'Campus Puebla', 'Por clasificar', 'Salud', 'SALUD', '', '', true, 'LPS', 'Psicologia Clinica y de la Salud'],
+  ['A00000003', 'Inactivo', 'Prueba', 'inactivo@tec.mx', 'Campus Puebla', 'Por clasificar', 'Pasio', 'MENTORIA', 'M-2', 'Mentor Pasio', false, 'IIS', 'Ing. Industrial y de Sistemas'],
+  ['A00000004', 'Marta', 'Pendiente', 'marta@tec.mx', 'Campus Guadalajara', 'Por clasificar', 'Spirita', 'MENTORIA', 'M-3', 'Mentor Spirita', true, 'LRI', 'Relaciones Internacionales'],
+  ['A00000005', 'Sofia', 'Salud', 'sofia@tec.mx', 'Campus Queretaro', 'Por clasificar', 'Salud', 'SALUD', '', '', true, 'MC', 'Medico Cirujano']
 ];
 const summaryResponses = [
   responseHeaders,
@@ -161,9 +162,21 @@ assert.deepStrictEqual(JSON.parse(JSON.stringify(summary.byCommunity)), [
   ['Salud', 1, 0, 1, 0]
 ]);
 assert.deepStrictEqual(JSON.parse(JSON.stringify(summary.bySchool)), [
-  ['Ingenieria', 1, 1, 0, 1],
-  ['Salud', 1, 0, 1, 0]
+  ['Escuela de Ingeniería y Ciencias', 1, 1, 0, 1],
+  ['Escuela de Medicina y Ciencias de la Salud', 1, 0, 1, 0]
 ]);
+assert.deepStrictEqual(JSON.parse(JSON.stringify(summary.byCareer)), [
+  ['Ing. en Tecnologias Computacionales', 1, 1, 0, 1],
+  ['Psicologia Clinica y de la Salud', 1, 0, 1, 0]
+]);
+assert.strictEqual(
+  context.academicProfileAd26_('ITC', '', 'Por clasificar').school,
+  'Escuela de Ingeniería y Ciencias'
+);
+assert.strictEqual(
+  context.academicProfileAd26_('MC', '', '').school,
+  'Escuela de Medicina y Ciencias de la Salud'
+);
 const summaryRows = context.buildRegistrationSummaryKpiRows_(summary);
 assert.strictEqual(summaryRows.length, 15);
 assert.ok(summaryRows.every(row => row.length === 2));

@@ -100,6 +100,30 @@ const AD26_IMPORT_SOURCES = Object.freeze([
   Object.freeze({ sheet: 'Importacion_Raw', label: 'LEGACY', priority: 0 })
 ]);
 
+// Las hojas raw conservan la clave y el nombre de carrera, pero no siempre la escuela.
+// Este catalogo cubre las 54 claves presentes en los reportes Verano 26 y AD26.
+const AD26_SCHOOL_CAREER_CODES = Object.freeze({
+  'Escuela de Arquitectura, Arte y Diseño': Object.freeze([
+    'AMC', 'ARQ', 'BA', 'ESC', 'LAD', 'LDI', 'LUB'
+  ]),
+  'Escuela de Ciencias Sociales y Gobierno': Object.freeze([
+    'CIS', 'LEC', 'LED', 'LRI'
+  ]),
+  'Escuela de Humanidades y Educación': Object.freeze([
+    'LC', 'LEI', 'LLE', 'LTM'
+  ]),
+  'Escuela de Ingeniería y Ciencias': Object.freeze([
+    'BIE', 'BME', 'IAG', 'IAL', 'IBQ', 'IBT', 'IC', 'ICI', 'ICT', 'IDM',
+    'IDS', 'IE', 'IFI', 'IID', 'IIS', 'IIT', 'IM', 'IMD', 'IMT', 'INA',
+    'ING', 'IQ', 'IRS', 'ITC', 'ITD'
+  ]),
+  'Escuela de Negocios': Object.freeze([
+    'BBA', 'BFI', 'BGB', 'CPF', 'LAE', 'LAF', 'LDE', 'LDO', 'LEM', 'LIN',
+    'LIT', 'NEG'
+  ]),
+  'Escuela de Medicina y Ciencias de la Salud': Object.freeze(['LPS', 'MC'])
+});
+
 const AD26_MENTOR_NAME_ALIASES = Object.freeze({
   'arturo temoltzi torres': 'Arturo Temolzi Torres'
 });
@@ -369,6 +393,49 @@ function readImportSources_(ss) {
   }).filter(Boolean);
 }
 
+function buildRawAcademicIndexAd26_(ss) {
+  const result = new Map();
+  readImportSources_(ss).forEach(source => {
+    const map = buildSourceMap_(source.data[0]);
+    for (let index = 1; index < source.data.length; index++) {
+      const row = source.data[index];
+      const matricula = normalizeMatricula_(sourceValue_(row, map, 'matricula'));
+      if (!/^[A-Z]\d{8}$/.test(matricula)) continue;
+      const current = result.get(matricula);
+      if (current && current.priority > source.priority) continue;
+      const profile = academicProfileAd26_(
+        sourceValue_(row, map, 'carrera'),
+        sourceValue_(row, map, 'nombre_carrera'),
+        sourceValue_(row, map, 'escuela')
+      );
+      result.set(matricula, Object.assign({ priority: source.priority }, profile));
+    }
+  });
+  return result;
+}
+
+function academicProfileAd26_(careerCode, careerName, explicitSchool) {
+  const code = cleanText_(careerCode).toUpperCase();
+  const suppliedSchool = cleanText_(explicitSchool);
+  const schoolIsUseful = suppliedSchool && !['por clasificar', 'sin clasificar']
+    .includes(normalizeText_(suppliedSchool));
+  let school = schoolIsUseful ? suppliedSchool : '';
+
+  if (!school && code) {
+    Object.keys(AD26_SCHOOL_CAREER_CODES).some(label => {
+      if (!AD26_SCHOOL_CAREER_CODES[label].includes(code)) return false;
+      school = label;
+      return true;
+    });
+  }
+
+  return {
+    careerCode: code,
+    careerName: cleanText_(careerName) || code || 'Sin carrera',
+    school: school || 'Por clasificar'
+  };
+}
+
 function normalizeImportCandidate_(row, map, source, rowNumber, mentors, importedAt) {
   const matricula = normalizeMatricula_(sourceValue_(row, map, 'matricula'));
   const suppliedNames = cleanText_(sourceValue_(row, map, 'nombres'));
@@ -378,13 +445,16 @@ function normalizeImportCandidate_(row, map, source, rowNumber, mentors, importe
   const email = cleanText_(sourceValue_(row, map, 'email')).toLowerCase();
   const campusOrigen = cleanText_(sourceValue_(row, map, 'campus_origen'));
   const carrera = cleanText_(sourceValue_(row, map, 'carrera'));
-  const nombreCarrera = cleanText_(sourceValue_(row, map, 'nombre_carrera'));
+  let nombreCarrera = cleanText_(sourceValue_(row, map, 'nombre_carrera'));
   const comments = cleanText_(sourceValue_(row, map, 'comentarios'));
   let escuela = cleanText_(sourceValue_(row, map, 'escuela'));
   let comunidad = cleanText_(sourceValue_(row, map, 'comunidad'));
   let tipoPoblacion = cleanText_(sourceValue_(row, map, 'tipo_poblacion')).toUpperCase();
   let mentorId = cleanText_(sourceValue_(row, map, 'mentor_id'));
   let mentorNombre = canonicalMentorName_(sourceValue_(row, map, 'mentor_nombre'));
+  const academic = academicProfileAd26_(carrera, nombreCarrera, escuela);
+  escuela = academic.school;
+  nombreCarrera = academic.careerName;
   const cancelled = normalizeText_(mentorNombre) === 'cancelo solicitud' || normalizeText_(comments).includes('cancelo transferencia');
   const isSalud = tipoPoblacion === 'SALUD' || normalizeText_(mentorNombre) === 'salud' ||
     normalizeText_(escuela).includes('salud') || normalizeText_(comunidad) === 'salud';
@@ -693,7 +763,8 @@ function generarResumenRespuestasAd26() {
   const summary = buildRegistrationSummary_(
     assignmentSheet.getDataRange().getValues(),
     responseSheet.getDataRange().getValues(),
-    capacity
+    capacity,
+    buildRawAcademicIndexAd26_(ss)
   );
 
   writeRegistrationSummary_(summarySheet, summary);
@@ -792,20 +863,27 @@ function writePendingMentorRows_(sheet, rows) {
   sheet.setColumnWidth(4, Math.max(sheet.getColumnWidth(4), 180));
 }
 
-function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
+function buildRegistrationSummary_(assignmentValues, responseValues, capacity, rawAcademicIndex) {
   const assignments = assignmentValues.length > 1 ? assignmentValues : [];
   const responses = responseValues.length > 1 ? responseValues : [];
   const assignmentHeaders = assignments.length ? headerMap_(assignments[0]) : {};
   const responseHeaders = responses.length ? headerMap_(responses[0]) : {};
   const activeAssignments = new Map();
+  const academicIndex = rawAcademicIndex || new Map();
 
   for (let index = 1; index < assignments.length; index++) {
     const row = assignments[index];
     const matricula = normalizeMatricula_(row[assignmentHeaders.matricula]);
     if (!matricula || !parseActive_(row[assignmentHeaders.activo])) continue;
+    const academic = academicIndex.get(matricula) || academicProfileAd26_(
+      row[assignmentHeaders.carrera],
+      row[assignmentHeaders.nombre_carrera],
+      row[assignmentHeaders.escuela]
+    );
     activeAssignments.set(matricula, {
       community: cleanText_(row[assignmentHeaders.comunidad]) || 'Sin comunidad',
-      school: cleanText_(row[assignmentHeaders.escuela]) || 'Sin escuela',
+      school: academic.school,
+      career: academic.careerName,
       population: cleanText_(row[assignmentHeaders.tipo_poblacion]).toUpperCase(),
       mentorId: cleanText_(row[assignmentHeaders.mentor_id]),
       mentorName: cleanText_(row[assignmentHeaders.mentor_nombre])
@@ -831,6 +909,7 @@ function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
   const mentorCounts = new Map();
   const communityCounts = new Map();
   const schoolCounts = new Map();
+  const careerCounts = new Map();
   const healthCounts = { total: 0, yes: 0, no: 0 };
   let yes = 0;
   let no = 0;
@@ -842,6 +921,7 @@ function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
       ? 'Salud'
       : (assignment ? assignment.community : response.community) || 'Sin comunidad';
     const school = assignment ? assignment.school : 'Sin escuela';
+    const career = assignment ? assignment.career : 'Sin carrera';
     const mentor = population === 'SALUD'
       ? 'Escuela de Salud'
       : (assignment ? assignment.mentorName : '') || response.mentorId || 'Sin mentor/a';
@@ -852,6 +932,7 @@ function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
     incrementSummaryCount_(mentorCounts, mentor, target);
     incrementSummaryCount_(communityCounts, community, target);
     incrementSummaryCount_(schoolCounts, school, target);
+    incrementSummaryCount_(careerCounts, career, target);
     if (population === 'SALUD' || normalizeText_(community) === 'salud') {
       healthCounts.total++;
       healthCounts[target]++;
@@ -885,7 +966,8 @@ function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
     },
     byMentor: Array.from(mentorCounts.values()).sort(sortSummaryEntries_).map(toRow),
     byCommunity: Array.from(communityCounts.values()).sort(sortSummaryEntries_).map(toRow),
-    bySchool: Array.from(schoolCounts.values()).sort(sortSummaryEntries_).map(toRow)
+    bySchool: Array.from(schoolCounts.values()).sort(sortSummaryEntries_).map(toRow),
+    byCareer: Array.from(careerCounts.values()).sort(sortSummaryEntries_).map(toRow)
   };
 }
 
@@ -935,6 +1017,15 @@ function writeRegistrationSummary_(sheet, summary) {
   if (summary.bySchool.length) {
     sheet.getRange(schoolStart + 1, 1, summary.bySchool.length, 5).setValues(summary.bySchool);
     sheet.getRange(schoolStart + 1, 5, summary.bySchool.length, 1).setNumberFormat('0.0%');
+  }
+
+  const careerStart = schoolStart + Math.max(summary.bySchool.length, 1) + 3;
+  sheet.getRange(careerStart, 1, 1, 5)
+    .setValues([['Confirmaciones por carrera', 'Total', 'SI', 'NO', '% SI']])
+    .setFontWeight('bold').setBackground('#cfe2f3');
+  if (summary.byCareer.length) {
+    sheet.getRange(careerStart + 1, 1, summary.byCareer.length, 5).setValues(summary.byCareer);
+    sheet.getRange(careerStart + 1, 5, summary.byCareer.length, 1).setNumberFormat('0.0%');
   }
 
   sheet.setFrozenRows(4);
