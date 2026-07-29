@@ -805,6 +805,7 @@ function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
     if (!matricula || !parseActive_(row[assignmentHeaders.activo])) continue;
     activeAssignments.set(matricula, {
       community: cleanText_(row[assignmentHeaders.comunidad]) || 'Sin comunidad',
+      school: cleanText_(row[assignmentHeaders.escuela]) || 'Sin escuela',
       population: cleanText_(row[assignmentHeaders.tipo_poblacion]).toUpperCase(),
       mentorId: cleanText_(row[assignmentHeaders.mentor_id]),
       mentorName: cleanText_(row[assignmentHeaders.mentor_nombre])
@@ -829,6 +830,7 @@ function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
 
   const mentorCounts = new Map();
   const communityCounts = new Map();
+  const schoolCounts = new Map();
   const healthCounts = { total: 0, yes: 0, no: 0 };
   let yes = 0;
   let no = 0;
@@ -839,6 +841,7 @@ function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
     const community = population === 'SALUD'
       ? 'Salud'
       : (assignment ? assignment.community : response.community) || 'Sin comunidad';
+    const school = assignment ? assignment.school : 'Sin escuela';
     const mentor = population === 'SALUD'
       ? 'Escuela de Salud'
       : (assignment ? assignment.mentorName : '') || response.mentorId || 'Sin mentor/a';
@@ -848,6 +851,7 @@ function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
     else no++;
     incrementSummaryCount_(mentorCounts, mentor, target);
     incrementSummaryCount_(communityCounts, community, target);
+    incrementSummaryCount_(schoolCounts, school, target);
     if (population === 'SALUD' || normalizeText_(community) === 'salud') {
       healthCounts.total++;
       healthCounts[target]++;
@@ -880,7 +884,8 @@ function buildRegistrationSummary_(assignmentValues, responseValues, capacity) {
       health: healthCounts
     },
     byMentor: Array.from(mentorCounts.values()).sort(sortSummaryEntries_).map(toRow),
-    byCommunity: Array.from(communityCounts.values()).sort(sortSummaryEntries_).map(toRow)
+    byCommunity: Array.from(communityCounts.values()).sort(sortSummaryEntries_).map(toRow),
+    bySchool: Array.from(schoolCounts.values()).sort(sortSummaryEntries_).map(toRow)
   };
 }
 
@@ -921,6 +926,15 @@ function writeRegistrationSummary_(sheet, summary) {
   if (summary.byCommunity.length) {
     sheet.getRange(communityStart + 1, 1, summary.byCommunity.length, 5).setValues(summary.byCommunity);
     sheet.getRange(communityStart + 1, 5, summary.byCommunity.length, 1).setNumberFormat('0.0%');
+  }
+
+  const schoolStart = communityStart + Math.max(summary.byCommunity.length, 1) + 3;
+  sheet.getRange(schoolStart, 1, 1, 5)
+    .setValues([['Confirmaciones por escuela', 'Total', 'SI', 'NO', '% SI']])
+    .setFontWeight('bold').setBackground('#d9ead3');
+  if (summary.bySchool.length) {
+    sheet.getRange(schoolStart + 1, 1, summary.bySchool.length, 5).setValues(summary.bySchool);
+    sheet.getRange(schoolStart + 1, 5, summary.bySchool.length, 1).setNumberFormat('0.0%');
   }
 
   sheet.setFrozenRows(4);

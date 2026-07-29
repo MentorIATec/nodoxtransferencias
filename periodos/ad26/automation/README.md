@@ -75,8 +75,8 @@ automaticamente el modo de prueba.
 
 Desde el menu `Transferencias AD26`, ejecuta `Actualizar resumen de respuestas`.
 La funcion actualiza manualmente la hoja `Resumen` sin crear triggers ni modificar
-la poblacion o las respuestas. Incluye confirmaciones `SI` y `NO` por mentor/a y
-comunidad, el bloque separado de Salud, porcentaje de respuesta, pendientes y el
+la poblacion o las respuestas. Incluye confirmaciones `SI` y `NO` por mentor/a,
+comunidad y escuela, el bloque separado de Salud, porcentaje de respuesta, pendientes y el
 avance de respuestas `SI` frente al cupo de 400 con los lugares disponibles.
 
 ## Pendientes para seguimiento de mentoría

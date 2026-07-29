@@ -160,6 +160,10 @@ assert.deepStrictEqual(JSON.parse(JSON.stringify(summary.byCommunity)), [
   ['Krei', 1, 1, 0, 1],
   ['Salud', 1, 0, 1, 0]
 ]);
+assert.deepStrictEqual(JSON.parse(JSON.stringify(summary.bySchool)), [
+  ['Ingenieria', 1, 1, 0, 1],
+  ['Salud', 1, 0, 1, 0]
+]);
 const summaryRows = context.buildRegistrationSummaryKpiRows_(summary);
 assert.strictEqual(summaryRows.length, 15);
 assert.ok(summaryRows.every(row => row.length === 2));
